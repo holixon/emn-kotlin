@@ -1,5 +1,8 @@
 name: Development branches
 
+permissions:
+  content: read
+
 on:
   push:
     branches:
