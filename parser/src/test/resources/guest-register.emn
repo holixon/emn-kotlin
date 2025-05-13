@@ -9,8 +9,10 @@
   exporter="Hand crafted"
   exporterVersion="1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ./resources/emn/xsd/EMN.xsd
-  https://holixon.io/spec/EMN/20241231/DI ./resources/emn/xsd/EMNDI.xsd"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL EMN.xsd
+  https://holixon.io/spec/EMN/20241231/DI EMNDI.xsd
+  http://www.omg.org/spec/DD/20100524/DC DC.xsd
+  http://www.omg.org/spec/DD/20100524/DI DI.xsd"
 >
   <emn:types>
     <emn:viewType id="viewType_register">

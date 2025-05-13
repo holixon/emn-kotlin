@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  targetNamespace="https://holixon.io/spec/EMN/20241231/DI"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+
+	<xsd:import namespace="http://www.omg.org/spec/DD/20100524/DC" schemaLocation="DC.xsd" />
+	<xsd:import namespace="http://www.omg.org/spec/DD/20100524/DI" schemaLocation="DI.xsd" />
+
+	<xsd:element name="EMNDiagram" type="emndi:EMNDiagram" />
+	<xsd:element name="EMNPlane" type="emndi:EMNPlane" />
+	<xsd:element name="EMNLabelStyle" type="emndi:EMNLabelStyle" />
+	<xsd:element name="EMNShape" type="emndi:EMNShape" substitutionGroup="di:DiagramElement" />
+	<xsd:element name="EMNLabel" type="emndi:EMNLabel" />
+	<xsd:element name="EMNEdge" type="emndi:EMNEdge" substitutionGroup="di:DiagramElement" />
+
+	<xsd:complexType name="EMNDiagram">
+		<xsd:complexContent>
+			<xsd:extension base="di:Diagram">
+				<xsd:sequence>
+					<xsd:element ref="emndi:EMNPlane" />
+					<xsd:element ref="emndi:EMNLabelStyle" maxOccurs="unbounded" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="EMNPlane">
+		<xsd:complexContent>
+			<xsd:extension base="di:Plane">
+				<xsd:attribute name="emnElement" type="xsd:QName" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="EMNEdge">
+		<xsd:complexContent>
+			<xsd:extension base="di:LabeledEdge">
+				<xsd:sequence>
+					<xsd:element ref="emndi:EMNLabel" minOccurs="0" />
+				</xsd:sequence>
+				<xsd:attribute name="emnElement" type="xsd:QName" />
+				<xsd:attribute name="sourceElement" type="xsd:QName" />
+				<xsd:attribute name="targetElement" type="xsd:QName" />
+        <!--
+        TODO?
+				<xsd:attribute name="messageVisibleKind" type="emndi:MessageVisibleKind" />
+				-->
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="EMNShape">
+		<xsd:complexContent>
+			<xsd:extension base="di:LabeledShape">
+				<xsd:sequence>
+					<xsd:element ref="emndi:EMNLabel" minOccurs="0" />
+				</xsd:sequence>
+				<xsd:attribute name="emnElement" type="xsd:QName" />
+				<xsd:attribute name="isHorizontal" type="xsd:boolean" />
+				<xsd:attribute name="isExpanded" type="xsd:boolean" />
+        <!--
+        TODO?
+				<xsd:attribute name="isMessageVisible" type="xsd:boolean" />
+        <xsd:attribute name="isMarkerVisible" type="xsd:boolean" />
+				<xsd:attribute name="participantBandKind" type="emndi:ParticipantBandKind" />
+      	<xsd:attribute name="choreographyActivityShape" type="xsd:QName"/>
+      	-->
+			</xsd:extension>
+
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="EMNLabel">
+		<xsd:complexContent>
+			<xsd:extension base="di:Label">
+				<xsd:attribute name="labelStyle" type="xsd:QName" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="EMNLabelStyle">
+		<xsd:complexContent>
+			<xsd:extension base="di:Style">
+				<xsd:sequence>
+					<xsd:element ref="dc:Font" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+  <!--
+  TODO, see above?
+	<xsd:simpleType name="ParticipantBandKind">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="top_initiating" />
+			<xsd:enumeration value="middle_initiating" />
+			<xsd:enumeration value="bottom_initiating" />
+			<xsd:enumeration value="top_non_initiating" />
+			<xsd:enumeration value="middle_non_initiating" />
+			<xsd:enumeration value="bottom_non_initiating" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="MessageVisibleKind">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="initiating" />
+			<xsd:enumeration value="non_initiating" />
+		</xsd:restriction>
+	</xsd:simpleType>
+   -->
+
+</xsd:schema>
