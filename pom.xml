@@ -11,6 +11,7 @@
 
   <groupId>io.holixon.emn</groupId>
   <artifactId>emn-kotlin</artifactId>
+  <packaging>pom</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <description>emn-kotlin</description>
@@ -21,6 +22,10 @@
     <mockito.version>5.4.0</mockito.version>
     <assertj.version>3.27.3</assertj.version>
   </properties>
+
+  <modules>
+    <module>parser</module>
+  </modules>
 
   <dependencies>
     <!-- KOTLIN -->
