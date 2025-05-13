@@ -13,7 +13,7 @@
   <artifactId>emn-kotlin</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>${project.artifactId}</name>
-  <description>emn-kotlin</description>
+  <description>BASE_DESCRIPTION</description>
   <url>https://github.com/holixon/emn-kotlin/</url>
 
   <properties>
