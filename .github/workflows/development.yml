@@ -1,7 +1,7 @@
 name: Development branches
 
 permissions:
-  content: read
+  contents: read
 
 on:
   push:

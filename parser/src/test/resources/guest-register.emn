@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emn:definitions
+  xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
+  xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_1p59kc5"
+  targetNamespace="https://holixon.io/schema/emn"
+  exporter="Hand crafted"
+  exporterVersion="1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ./resources/emn/xsd/EMN.xsd
+  https://holixon.io/spec/EMN/20241231/DI ./resources/emn/xsd/EMNDI.xsd"
+>
+  <emn:types>
+    <emn:viewType id="viewType_register">
+      <emn:outgoingType>FlowType_0dqki78</emn:outgoingType>
+    </emn:viewType>
+    <emn:commandType id="commandType_register" name="Register" schemaFormat="JSONSchema">
+      <emn:incomingType>FlowType_0dqki78</emn:incomingType>
+      <emn:outgoingType>FlowType_1wvxgnj</emn:outgoingType>
+      <emn:schema>
+        {
+          "$id": "https://example.com/address.schema.json",
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "description": "An address similar to http://microformats.org/wiki/h-card",
+          "type": "object",
+          "properties": {
+            "postOfficeBox": {
+              "type": "string"
+            },
+            "extendedAddress": {
+              "type": "string"
+            }
+        }
+      </emn:schema>
+    </emn:commandType>
+    <emn:eventType id="eventType_registered" name="Registered">
+      <emn:incomingType>FlowType_1wvxgnj</emn:incomingType>
+    </emn:eventType>
+    <emn:viewType id="viewType_add_room">
+      <emn:outgoingType>FlowType_0jb9b1k</emn:outgoingType>
+    </emn:viewType>
+    <emn:commandType id="commandType_add_room" name="Add room">
+      <emn:incomingType>FlowType_0jb9b1k</emn:incomingType>
+      <emn:outgoingType>FlowType_057t34b</emn:outgoingType>
+    </emn:commandType>
+    <emn:eventType id="eventType_room_added" name="Room added">
+      <emn:incomingType>FlowType_057t34b</emn:incomingType>
+      <emn:outgoingType>FlowType_012j3jp</emn:outgoingType>
+    </emn:eventType>
+    <emn:queryType id="queryType_room_availability" name="Room availability">
+      <emn:incomingType>FlowType_012j3jp</emn:incomingType>
+      <emn:outgoingType>FlowType_0iyhsxq</emn:outgoingType>
+    </emn:queryType>
+    <emn:viewType id="viewType_room_overview">
+      <emn:incomingType>FlowType_0iyhsxq</emn:incomingType>
+    </emn:viewType>
+    <emn:messageFlowType id="FlowType_0dqki78" sourceRef="viewType_register" targetRef="commandType_register"/>
+    <emn:messageFlowType id="FlowType_1wvxgnj" sourceRef="commandType_register" targetRef="eventType_registered"/>
+    <emn:messageFlowType id="FlowType_0jb9b1k" sourceRef="viewType_add_room" targetRef="commandType_add_room"/>
+    <emn:messageFlowType id="FlowType_057t34b" sourceRef="commandType_add_room" targetRef="eventType_room_added"/>
+    <emn:messageFlowType id="FlowType_012j3jp" sourceRef="eventType_room_added" targetRef="queryType_room_availability"/>
+    <emn:messageFlowType id="FlowType_0iyhsxq" sourceRef="queryType_room_availability" targetRef="viewType_room_overview"/>
+  </emn:types>
+
+  <emn:journey id="customer_registration" name="Customer Registration">
+    <emn:laneSet id="LaneSet_0yx2839">
+      <emn:aggregateLane id="aggregate_inventory" name="Inventory">
+        <emn:flowNodeRef>room_added_event</emn:flowNodeRef>
+      </emn:aggregateLane>
+      <emn:aggregateLane id="aggregate_auth" name="Auth">
+        <emn:flowNodeRef>event_registered</emn:flowNodeRef>
+      </emn:aggregateLane>
+      <emn:aggregateLane id="aggregate_payment" name="Payment"/>
+      <emn:aggregateLane id="aggregate_gps" name="GPS"/>
+      <emn:triggerLane id="trigger_manager" name="Manager">
+        <emn:flowNodeRef>view_add_room</emn:flowNodeRef>
+      </emn:triggerLane>
+      <emn:triggerLane id="trigger_guest" name="Guest">
+        <emn:flowNodeRef>view_register</emn:flowNodeRef>
+        <emn:flowNodeRef>view_room_overview</emn:flowNodeRef>
+      </emn:triggerLane>
+      <emn:interactionLane id="interaction">
+        <emn:flowNodeRef>command_register</emn:flowNodeRef>
+        <emn:flowNodeRef>add_room_command</emn:flowNodeRef>
+        <emn:flowNodeRef>room_availability_query</emn:flowNodeRef>
+      </emn:interactionLane>
+    </emn:laneSet>
+    <emn:view id="view_register" typeRef="viewType_register">
+      <emn:outgoing>Flow_0dqki78</emn:outgoing>
+    </emn:view>
+    <emn:command id="command_register" typeRef="commandType_register">
+      <emn:incoming>Flow_0dqki78</emn:incoming>
+      <emn:outgoing>Flow_1wvxgnj</emn:outgoing>
+    </emn:command>
+    <emn:event id="event_registered" typeRef="eventType_registered">
+      <emn:incoming>Flow_1wvxgnj</emn:incoming>
+    </emn:event>
+    <emn:view id="view_add_room" typeRef="viewType_add_room">
+      <emn:outgoing>Flow_0jb9b1k</emn:outgoing>
+    </emn:view>
+    <emn:command id="add_room_command" typeRef="commandType_add_room">
+      <emn:incoming>Flow_0jb9b1k</emn:incoming>
+      <emn:outgoing>Flow_057t34b</emn:outgoing>
+    </emn:command>
+    <emn:event id="room_added_event" typeRef="eventType_room_added">
+      <emn:incoming>Flow_057t34b</emn:incoming>
+      <emn:outgoing>Flow_012j3jp</emn:outgoing>
+    </emn:event>
+    <emn:query id="room_availability_query" typeRef="queryType_room_availability">
+      <emn:incoming>Flow_012j3jp</emn:incoming>
+      <emn:outgoing>Flow_0iyhsxq</emn:outgoing>
+    </emn:query>
+    <emn:view id="view_room_overview" typeRef="viewType_room_overview">
+      <emn:incoming>Flow_0iyhsxq</emn:incoming>
+    </emn:view>
+    <emn:messageFlow id="Flow_0dqki78" typeRef="FlowType_0dqki78" sourceRef="view_register" targetRef="command_register" />
+    <emn:messageFlow id="Flow_1wvxgnj" typeRef="FlowType_1wvxgnj" sourceRef="command_register" targetRef="event_registered"/>
+    <emn:messageFlow id="Flow_0jb9b1k" typeRef="FlowType_0jb9b1k" sourceRef="view_add_room" targetRef="add_room_command"/>
+    <emn:messageFlow id="Flow_057t34b" typeRef="FlowType_057t34b" sourceRef="add_room_command" targetRef="room_added_event"/>
+    <emn:messageFlow id="Flow_012j3jp" typeRef="FlowType_012j3jp" sourceRef="room_added_event" targetRef="room_availability_query"/>
+    <emn:messageFlow id="Flow_0iyhsxq" typeRef="FlowType_0iyhsxq" sourceRef="room_availability_query" targetRef="view_room_overview"/>
+  </emn:journey>
+
+  <emndi:EMNDiagram id="EMNDiagram_1">
+    <emndi:EMNPlane id="EMNPlane_1" emnElement="trigger_manager">
+      <emndi:EMNShape id="Participant_0o3jsep_di" emnElement="plot_customer_registration" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1260" height="1130"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Lane_0p5ia40_di" emnElement="aggregate_inventory" isHorizontal="true">
+        <dc:Bounds x="190" y="650" width="1230" height="170"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Lane_0ilfz9l_di" emnElement="aggregate_auth" isHorizontal="true">
+        <dc:Bounds x="190" y="820" width="1230" height="150"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Lane_00ipfb4_di" emnElement="aggregate_payment" isHorizontal="true">
+        <dc:Bounds x="190" y="970" width="1230" height="120"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Lane_1vnc19o_di" emnElement="aggregate_gps" isHorizontal="true">
+        <dc:Bounds x="190" y="1090" width="1230" height="120"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="trigger_manager_di" emnElement="trigger_manager" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1230" height="223"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Lane_0q19ntn_di" emnElement="trigger_guest" isHorizontal="true">
+        <dc:Bounds x="190" y="303" width="1230" height="227"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Lane_1kgnm2r_di" emnElement="interaction" isHorizontal="true">
+        <dc:Bounds x="190" y="530" width="1230" height="120"/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="view_register_di" emnElement="view_register">
+        <dc:Bounds x="270" y="370" width="100" height="80"/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Activity_1wf9m1j_di" emnElement="command_register">
+        <dc:Bounds x="350" y="550" width="100" height="80"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Activity_0auf4z2_di" emnElement="event_registered">
+        <dc:Bounds x="420" y="860" width="100" height="80"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="view_add_room_di" emnElement="view_add_room">
+        <dc:Bounds x="470" y="160" width="100" height="80"/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Activity_0hqi05j_di" emnElement="add_room_command">
+        <dc:Bounds x="520" y="550" width="100" height="80"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Activity_083cpmu_di" emnElement="room_added_event">
+        <dc:Bounds x="630" y="705" width="100" height="80"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Activity_1hy7wfq_di" emnElement="room_availability_query">
+        <dc:Bounds x="780" y="550" width="100" height="80"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Activity_07jn4z3_di" emnElement="view_room_overview">
+        <dc:Bounds x="860" y="370" width="100" height="80"/>
+      </emndi:EMNShape>
+      <emndi:EMNEdge id="Flow_0dqki78_di" emnElement="Flow_0dqki78">
+        <di:waypoint x="320" y="450"/>
+        <di:waypoint x="320" y="500"/>
+        <di:waypoint x="400" y="500"/>
+        <di:waypoint x="400" y="550"/>
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1wvxgnj_di" emnElement="Flow_1wvxgnj">
+        <di:waypoint x="400" y="630"/>
+        <di:waypoint x="400" y="745"/>
+        <di:waypoint x="470" y="745"/>
+        <di:waypoint x="470" y="860"/>
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_0jb9b1k_di" emnElement="Flow_0jb9b1k">
+        <di:waypoint x="520" y="240"/>
+        <di:waypoint x="520" y="395"/>
+        <di:waypoint x="570" y="395"/>
+        <di:waypoint x="570" y="550"/>
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_057t34b_di" emnElement="Flow_057t34b">
+        <di:waypoint x="570" y="630"/>
+        <di:waypoint x="570" y="660"/>
+        <di:waypoint x="680" y="660"/>
+        <di:waypoint x="680" y="705"/>
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_012j3jp_di" emnElement="Flow_012j3jp">
+        <di:waypoint x="730" y="745"/>
+        <di:waypoint x="755" y="745"/>
+        <di:waypoint x="755" y="590"/>
+        <di:waypoint x="780" y="590"/>
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_0iyhsxq_di" emnElement="Flow_0iyhsxq">
+        <di:waypoint x="830" y="550"/>
+        <di:waypoint x="830" y="500"/>
+        <di:waypoint x="910" y="500"/>
+        <di:waypoint x="910" y="450"/>
+      </emndi:EMNEdge>
+    </emndi:EMNPlane>
+  </emndi:EMNDiagram>
+</emn:definitions>
