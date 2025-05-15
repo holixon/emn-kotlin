@@ -9,31 +9,30 @@
   exporter="Hand crafted"
   exporterVersion="1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL EMN.xsd
-  https://holixon.io/spec/EMN/20241231/DI EMNDI.xsd
-  http://www.omg.org/spec/DD/20100524/DC DC.xsd
-  http://www.omg.org/spec/DD/20100524/DI DI.xsd"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ./resources/emn/xsd/EMN.xsd
+  https://holixon.io/spec/EMN/20241231/DI ./resources/emn/xsd/EMNDI.xsd"
 >
   <emn:types>
-    <emn:viewType id="viewType_register">
+    <emn:viewType id="viewType_register" schemaFormat="AVRO">
       <emn:outgoingType>FlowType_0dqki78</emn:outgoingType>
+      <emn:schema resource="view.avsc" />
     </emn:viewType>
     <emn:commandType id="commandType_register" name="Register" schemaFormat="JSONSchema">
       <emn:incomingType>FlowType_0dqki78</emn:incomingType>
       <emn:outgoingType>FlowType_1wvxgnj</emn:outgoingType>
       <emn:schema>
         {
-          "$id": "https://example.com/address.schema.json",
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "description": "An address similar to http://microformats.org/wiki/h-card",
-          "type": "object",
-          "properties": {
-            "postOfficeBox": {
-              "type": "string"
-            },
-            "extendedAddress": {
-              "type": "string"
-            }
+        "$id": "https://example.com/address.schema.json",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "description": "An address similar to http://microformats.org/wiki/h-card",
+        "type": "object",
+        "properties": {
+        "postOfficeBox": {
+        "type": "string"
+        },
+        "extendedAddress": {
+        "type": "string"
+        }
         }
       </emn:schema>
     </emn:commandType>

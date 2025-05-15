@@ -11,4 +11,13 @@
   <name>${project.artifactId}</name>
   <artifactId>emn-parser</artifactId>
 
+  <dependencies>
+
+    <dependency>
+      <groupId>org.dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>2.1.4</version>
+    </dependency>
+
+  </dependencies>
 </project>
