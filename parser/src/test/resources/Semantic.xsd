@@ -2,15 +2,15 @@
 <xsd:schema
   elementFormDefault="qualified"
   attributeFormDefault="unqualified"
-	xmlns="https://holixon.io/spec/EMN/20241231/MODEL"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="https://holixon.io/spec/EMN/20241231/MODEL">
+  xmlns="https://holixon.io/spec/EMN/20241231/MODEL"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="https://holixon.io/spec/EMN/20241231/MODEL">
 
   <xsd:element name="baseElement" type="tBaseElement"/>
   <xsd:complexType name="tBaseElement" abstract="true">
     <xsd:sequence>
       <xsd:element ref="documentation" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element ref="extensionElements" minOccurs="0" maxOccurs="1" />
+      <xsd:element ref="extensionElements" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:ID" use="optional"/>
     <xsd:anyAttribute namespace="##other" processContents="lax"/>
@@ -34,10 +34,10 @@
     <xsd:attribute name="mustUnderstand" type="xsd:boolean" use="optional" default="false"/>
   </xsd:complexType>
 
-  <xsd:element name="extensionElements" type="tExtensionElements" />
+  <xsd:element name="extensionElements" type="tExtensionElements"/>
   <xsd:complexType name="tExtensionElements">
     <xsd:sequence>
-      <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -66,13 +66,10 @@
     <xsd:complexContent>
       <xsd:extension base="tFlowElementType">
         <xsd:sequence>
-          <!-- TODO muss maxOccurs auf unbounded bleiben oder is 1 möglich? -->
           <xsd:element name="incomingType" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
-          <!-- TODO muss maxOccurs auf unbounded bleiben oder is 1 möglich? -->
           <xsd:element name="outgoingType" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
           <xsd:element ref="schema" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
-        <xsd:attribute name="schemaFormat" type="xsd:string"/>
       </xsd:extension>
     </xsd:complexContent>
 
@@ -180,6 +177,7 @@
       <xsd:any namespace="##any" processContents="lax" minOccurs="0"/>
     </xsd:sequence>
     <xsd:attribute name="resource" type="xsd:string"/>
+    <xsd:attribute name="schemaFormat" type="xsd:string"/>
   </xsd:complexType>
 
   <!-- Types Container -->
@@ -213,9 +211,7 @@
     <xsd:complexContent>
       <xsd:extension base="tFlowElement">
         <xsd:sequence>
-          <!-- TODO muss maxOccurs auf unbounded bleiben oder is 1 möglich?-->
           <xsd:element name="incoming" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
-          <!-- TODO muss maxOccurs auf unbounded bleiben oder is 1 möglich?-->
           <xsd:element name="outgoing" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
       </xsd:extension>
@@ -315,9 +311,9 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <!-- Journey -->
-  <xsd:element name="journey" type="tJourney" substitutionGroup="rootElement"/>
-  <xsd:complexType name="tJourney">
+  <!-- Timeline -->
+  <xsd:element name="timeline" type="tTimeline" substitutionGroup="rootElement"/>
+  <xsd:complexType name="tTimeline">
     <xsd:complexContent>
       <xsd:extension base="tRootElement">
         <xsd:sequence>
@@ -329,7 +325,8 @@
           <xsd:element ref="correlationSubscription" minOccurs="0" maxOccurs="unbounded"/>
           -->
           <xsd:element ref="artifact" minOccurs="0" maxOccurs="unbounded"/>
-          <xsd:element ref="laneSet" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="laneSet" minOccurs="0" maxOccurs="1"/>
+          <xsd:element ref="sliceSet" minOccurs="0" maxOccurs="1"/>
           <xsd:element ref="flowElement" minOccurs="0" maxOccurs="unbounded"/>
           <xsd:element name="supports" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
@@ -344,15 +341,38 @@
     </xsd:complexContent>
   </xsd:complexType>
 
+  <xsd:element name="sliceSet" type="tSliceSet"/>
+  <xsd:complexType name="tSliceSet">
+    <xsd:complexContent>
+      <xsd:extension base="tBaseElement">
+        <xsd:sequence>
+          <xsd:element ref="slice" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="slice" type="tSlice"/>
+  <xsd:complexType name="tSlice">
+    <xsd:complexContent>
+      <xsd:extension base="tBaseElement">
+        <xsd:sequence>
+          <xsd:element name="flowNodeRef" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
 
   <xsd:element name="laneSet" type="tLaneSet"/>
   <xsd:complexType name="tLaneSet">
     <xsd:complexContent>
       <xsd:extension base="tBaseElement">
         <xsd:sequence>
-          <xsd:element name="triggerLane" type="tTriggerLane" minOccurs="0" maxOccurs="1"/>
-          <xsd:element name="interactionLane" type="tInteractionLane" minOccurs="0" maxOccurs="1"/>
-          <xsd:element name="aggregateLane" type="tAggregateLane" minOccurs="0" maxOccurs="1"/>
+          <xsd:element ref="triggerLaneSet" minOccurs="0" maxOccurs="1"/>
+          <xsd:element ref="interactionLane" minOccurs="0" maxOccurs="1"/>
+          <xsd:element ref="aggregateLaneSet" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
         <xsd:attribute name="name" type="xsd:string"/>
       </xsd:extension>
@@ -364,21 +384,19 @@
     <xsd:complexContent>
       <xsd:extension base="tBaseElement">
         <xsd:sequence>
-          <xsd:element name="partitionElement" type="tBaseElement" minOccurs="0" maxOccurs="1"/>
           <xsd:element name="flowNodeRef" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
         <xsd:attribute name="name" type="xsd:string"/>
-        <xsd:attribute name="partitionElementRef" type="xsd:QName"/>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:element name="compositeLane" type="tCompositeLane"/>
-  <xsd:complexType name="tCompositeLane" abstract="true">
+  <xsd:element name="triggerLaneSet" type="tTriggerLaneSet" />
+  <xsd:complexType name="tTriggerLaneSet">
     <xsd:complexContent>
-      <xsd:extension base="tLane">
+      <xsd:extension base="tBaseElement">
         <xsd:sequence>
-          <xsd:element name="childLaneSet" type="tLaneSet" minOccurs="0" maxOccurs="1"/>
+          <xsd:element ref="triggerLane" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -387,7 +405,7 @@
   <xsd:element name="triggerLane" type="tTriggerLane"/>
   <xsd:complexType name="tTriggerLane">
     <xsd:complexContent>
-      <xsd:extension base="tCompositeLane">
+      <xsd:extension base="tLane">
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
@@ -400,13 +418,25 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:element name="aggregateLane" type="tAggregateLane"/>
-  <xsd:complexType name="tAggregateLane">
+  <xsd:element name="aggregateLaneSet" type="tAggregateLaneSet" />
+  <xsd:complexType name="tAggregateLaneSet">
     <xsd:complexContent>
-      <xsd:extension base="tCompositeLane">
+      <xsd:extension base="tBaseElement">
+        <xsd:sequence>
+          <xsd:element ref="aggregateLane" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+
+  <xsd:element name="aggregateLane" type="tAggregateLane"/>
+  <xsd:complexType name="tAggregateLane">
+    <xsd:complexContent>
+      <xsd:extension base="tLane">
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
 
   <xsd:element name="artifact" type="tArtifact"/>
   <xsd:complexType name="tArtifact" abstract="true">

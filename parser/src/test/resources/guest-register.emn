@@ -9,32 +9,19 @@
   exporter="Hand crafted"
   exporterVersion="1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ./resources/emn/xsd/EMN.xsd
-  https://holixon.io/spec/EMN/20241231/DI ./resources/emn/xsd/EMNDI.xsd"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ./EMN.xsd
+  https://holixon.io/spec/EMN/20241231/DI ./EMNDI.xsd"
 >
   <emn:types>
-    <emn:viewType id="viewType_register" schemaFormat="AVRO">
+    <emn:viewType id="viewType_register">
       <emn:outgoingType>FlowType_0dqki78</emn:outgoingType>
-      <emn:schema resource="view.avsc" />
+      <emn:schema schemaFormat="json">
+        [ "key": "value" ]
+      </emn:schema>
     </emn:viewType>
-    <emn:commandType id="commandType_register" name="Register" schemaFormat="JSONSchema">
+    <emn:commandType id="commandType_register" name="Register">
       <emn:incomingType>FlowType_0dqki78</emn:incomingType>
       <emn:outgoingType>FlowType_1wvxgnj</emn:outgoingType>
-      <emn:schema>
-        {
-        "$id": "https://example.com/address.schema.json",
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "description": "An address similar to http://microformats.org/wiki/h-card",
-        "type": "object",
-        "properties": {
-        "postOfficeBox": {
-        "type": "string"
-        },
-        "extendedAddress": {
-        "type": "string"
-        }
-        }
-      </emn:schema>
     </emn:commandType>
     <emn:eventType id="eventType_registered" name="Registered">
       <emn:incomingType>FlowType_1wvxgnj</emn:incomingType>
@@ -65,29 +52,42 @@
     <emn:messageFlowType id="FlowType_0iyhsxq" sourceRef="queryType_room_availability" targetRef="viewType_room_overview"/>
   </emn:types>
 
-  <emn:journey id="customer_registration" name="Customer Registration">
+  <emn:timeline id="customer_registration" name="Customer Registration">
     <emn:laneSet id="LaneSet_0yx2839">
-      <emn:aggregateLane id="aggregate_inventory" name="Inventory">
-        <emn:flowNodeRef>room_added_event</emn:flowNodeRef>
-      </emn:aggregateLane>
-      <emn:aggregateLane id="aggregate_auth" name="Auth">
-        <emn:flowNodeRef>event_registered</emn:flowNodeRef>
-      </emn:aggregateLane>
-      <emn:aggregateLane id="aggregate_payment" name="Payment"/>
-      <emn:aggregateLane id="aggregate_gps" name="GPS"/>
-      <emn:triggerLane id="trigger_manager" name="Manager">
-        <emn:flowNodeRef>view_add_room</emn:flowNodeRef>
-      </emn:triggerLane>
-      <emn:triggerLane id="trigger_guest" name="Guest">
-        <emn:flowNodeRef>view_register</emn:flowNodeRef>
-        <emn:flowNodeRef>view_room_overview</emn:flowNodeRef>
-      </emn:triggerLane>
+      <emn:triggerLaneSet>
+        <emn:triggerLane id="trigger_manager" name="Manager">
+          <emn:flowNodeRef>view_add_room</emn:flowNodeRef>
+        </emn:triggerLane>
+        <emn:triggerLane id="trigger_guest" name="Guest">
+          <emn:flowNodeRef>view_register</emn:flowNodeRef>
+          <emn:flowNodeRef>view_room_overview</emn:flowNodeRef>
+        </emn:triggerLane>
+      </emn:triggerLaneSet>
       <emn:interactionLane id="interaction">
         <emn:flowNodeRef>command_register</emn:flowNodeRef>
         <emn:flowNodeRef>add_room_command</emn:flowNodeRef>
         <emn:flowNodeRef>room_availability_query</emn:flowNodeRef>
       </emn:interactionLane>
+      <emn:aggregateLaneSet>
+        <emn:aggregateLane id="aggregate_inventory" name="Inventory">
+          <emn:flowNodeRef>room_added_event</emn:flowNodeRef>
+        </emn:aggregateLane>
+        <emn:aggregateLane id="aggregate_auth" name="Auth">
+          <emn:flowNodeRef>event_registered</emn:flowNodeRef>
+        </emn:aggregateLane>
+        <emn:aggregateLane id="aggregate_payment" name="Payment"/>
+        <emn:aggregateLane id="aggregate_gps" name="GPS"/>
+      </emn:aggregateLaneSet>
     </emn:laneSet>
+
+    <emn:sliceSet id="Slide_1234">
+      <emn:slice id="add_room" name="Add room">
+        <emn:flowNodeRef>view_add_room</emn:flowNodeRef>
+        <emn:flowNodeRef>command_register</emn:flowNodeRef>
+        <emn:flowNodeRef>event_registered</emn:flowNodeRef>
+      </emn:slice>
+    </emn:sliceSet>
+
     <emn:view id="view_register" typeRef="viewType_register">
       <emn:outgoing>Flow_0dqki78</emn:outgoing>
     </emn:view>
@@ -122,7 +122,7 @@
     <emn:messageFlow id="Flow_057t34b" typeRef="FlowType_057t34b" sourceRef="add_room_command" targetRef="room_added_event"/>
     <emn:messageFlow id="Flow_012j3jp" typeRef="FlowType_012j3jp" sourceRef="room_added_event" targetRef="room_availability_query"/>
     <emn:messageFlow id="Flow_0iyhsxq" typeRef="FlowType_0iyhsxq" sourceRef="room_availability_query" targetRef="view_room_overview"/>
-  </emn:journey>
+  </emn:timeline>
 
   <emndi:EMNDiagram id="EMNDiagram_1">
     <emndi:EMNPlane id="EMNPlane_1" emnElement="trigger_manager">
