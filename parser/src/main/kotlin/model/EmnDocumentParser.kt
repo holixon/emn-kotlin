@@ -200,13 +200,13 @@ class EmnDocumentParser {
   fun Element.targetRef(): String = requireNotNull(attributeValue("targetRef")) { "Message flow must define a 'targetRef' attribute, but $this has none." }
 
   fun Element.triggerLanes(): List<Lane.TriggerLane> {
-    return this.elements("triggerLane")?.map { triggerLane ->
+    return this.element("triggerLaneSet")?.elements("triggerLane")?.map { triggerLane ->
       Lane.TriggerLane(id = triggerLane.id(), name = triggerLane.name(), flowElements = triggerLane.flowNodeReferences())
     } ?: emptyList()
   }
 
   fun Element.aggregateLanes(): List<Lane.AggregateLane> {
-    return this.elements("aggregateLane")?.map { aggregateLane ->
+    return this.element("aggregateLaneSet")?.elements("aggregateLane")?.map { aggregateLane ->
       Lane.AggregateLane(id = aggregateLane.id(), name = aggregateLane.name(), flowElements = aggregateLane.flowNodeReferences())
     } ?: emptyList()
   }

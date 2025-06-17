@@ -25,14 +25,26 @@ class ParserTest {
 
     assertThat(result.flowTypes).isNotEmpty
     for (flow in result.flowTypes) {
-      println("Flow: ${flow.id}, source: ${flow.source.id}, target: ${flow.target.id}")
+      println("FlowType: ${flow.id}, source: ${flow.source.id}, target: ${flow.target.id}")
     }
 
     assertThat(result.timelines).isNotEmpty
+
     assertThat(result.timelines[0].laneSet.triggerLaneSet).isNotNull
-    
     assertThat(result.timelines[0].laneSet.aggregateLaneSet).isNotNull
+
+    for (lane in result.timelines[0].laneSet.triggerLaneSet) {
+      println("Trigger lane: ${lane.id}, ${lane.name}")
+    }
+    println("Interaction lane: ${result.timelines[0].laneSet.interactionLane}")
+    for (lane in result.timelines[0].laneSet.aggregateLaneSet) {
+      println("Aggregate lane: ${lane.id}, ${lane.name}")
+    }
+
     assertThat(result.timelines[0].sliceSet).isNotEmpty
+    for (slice in result.timelines[0].sliceSet) {
+      println("Slice: ${slice.id}")
+    }
 
     assertThat(result.timelines[0].nodes).isNotEmpty
     for (node in result.timelines[0].nodes) {
