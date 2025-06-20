@@ -12,36 +12,87 @@
   <groupId>io.holixon.emn._</groupId>
   <artifactId>emn-kotlin-root</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-
-  <name>pom: ${project.artifactId}</name>
-  <description>Root of emn-kotlin.</description>
-  <url>https://github.com/holixon/emn-kotlin/</url>
   <packaging>pom</packaging>
+  <name>pom: ${project.artifactId}</name>
+  <description>Root of emn-kotlin</description>
+  <url>https://github.com/holixon/emn-kotlin/</url>
 
   <properties>
-    <!-- Global relevant version definitions. -->
+    <!-- TEST -->
     <mockito.version>5.4.0</mockito.version>
     <assertj.version>3.27.3</assertj.version>
   </properties>
 
   <modules>
-    <module>_build/parent</module>
-
     <module>parser</module>
-    <module>emn-kotlin-axon5-generator</module>
   </modules>
 
-  <!-- this is the maven root, all dependencies have to be declared in the concrete modules, using emn-kotlin-parent -->
-  <dependencyManagement />
+  <dependencies>
+    <!-- KOTLIN -->
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-reflect</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.oshai</groupId>
+      <artifactId>kotlin-logging-jvm</artifactId>
+    </dependency>
 
-  <!-- this is the maven root, all dependencies have to be declared in the concrete modules -->
-  <dependencies/>
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.mockito.kotlin</groupId>
+      <artifactId>mockito-kotlin</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <defaultGoal>clean jacoco:prepare-agent package</defaultGoal>
 
-    <!-- this is the maven root, all plugins have to be declared in the concrete modules -->
-    <plugins/>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+    </plugins>
   </build>
 
   <licenses>
