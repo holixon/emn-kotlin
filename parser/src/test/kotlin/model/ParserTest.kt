@@ -13,6 +13,7 @@ class ParserTest {
 
     val file = File("src/test/resources/guest-register.emn")
     val result = parser.parseDefinitions(file)
+    println(result)
     assertThat(result).isNotNull
 
     assertThat(result.nodeTypes).isNotEmpty
