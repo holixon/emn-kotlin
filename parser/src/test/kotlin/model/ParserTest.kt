@@ -22,7 +22,7 @@ class ParserTest {
     for (type in result.nodeTypes) {
       println("Type: ${type.id}, incoming: ${type.incoming.map { it.id }}, outgoing: ${type.outgoing.map { it.id }}")
       if (type.schema != null) {
-        println(" Schema (type=${type.schema!!.schemaFormat}), \n ${type.schema!!.printable()}")
+        println(" Schema (type=${type.schema!!.schemaFormat}), \n ${type.schema}")
       }
     }
     assertThat(result.nodeTypes.filterIsInstance<FlowNodeTypeReference>()).isEmpty()
@@ -39,15 +39,20 @@ class ParserTest {
 
     for (lane in result.timelines[0].laneSet.triggerLaneSet) {
       println("Trigger lane: ${lane.id}, ${lane.name}")
+      assertThat(lane.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
     }
     println("Interaction lane: ${result.timelines[0].laneSet.interactionLane}")
+    assertThat(result.timelines[0].laneSet.interactionLane.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
+
     for (lane in result.timelines[0].laneSet.aggregateLaneSet) {
       println("Aggregate lane: ${lane.id}, ${lane.name}")
+      assertThat(lane.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
     }
 
     assertThat(result.timelines[0].sliceSet).isNotEmpty
     for (slice in result.timelines[0].sliceSet) {
       println("Slice: ${slice.id}")
+      assertThat(slice.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
     }
 
     assertThat(result.timelines[0].nodes).isNotEmpty

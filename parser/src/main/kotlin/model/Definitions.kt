@@ -58,24 +58,22 @@ sealed class FlowElementType(
     class ErrorType(id: String, name: String?, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
     open class FlowNodeTypeReference(id: String) : FlowNodeType(id = id, name = null, schema = null)
     object NoTypeReference : FlowNodeTypeReference(id = "NONE")
-
-    override fun toString(): String = "${this::class.simpleName} [ id = $id, name = $name ]"
-
   }
+
+  override fun toString(): String = "${this::class.simpleName}(id=$id, name=$name)"
 }
 
 sealed class Schema(
   open val schemaFormat: String,
 ) {
   data class EmbeddedSchema(override val schemaFormat: String, val content: String) : Schema(schemaFormat = schemaFormat) {
-    override fun printable(): String = "content: \'${content}\'"
+    override fun toString(): String = "content: \'${content}\'"
   }
 
   data class ResourceSchema(override val schemaFormat: String, val resource: String) : Schema(schemaFormat = schemaFormat) {
-    override fun printable(): String = "resource: $resource"
+    override fun toString(): String = "resource: $resource"
   }
 
-  open fun printable(): String = throw RuntimeException("Implemented in subclass only")
 }
 
 data class Timeline(
@@ -105,40 +103,37 @@ data class LaneSet(
 
 sealed class FlowElement(
   open val id: String,
-  open val name: String? = null,
   open val typeReference: FlowElementType,
 ) {
 
   data class MessageFlow(
     override val id: String,
-    override val name: String?,
     override val typeReference: MessageFlowType,
     val source: FlowNode,
     val target: FlowNode
-  ) : FlowElement(id = id, name = name, typeReference = typeReference)
+  ) : FlowElement(id = id, typeReference = typeReference)
 
   sealed class FlowNode(
     override val id: String,
-    override val name: String?,
     override val typeReference: FlowNodeType,
     open val incoming: MutableList<MessageFlow> = mutableListOf(),
     open val outgoing: MutableList<MessageFlow> = mutableListOf(),
-  ) : FlowElement(id = id, name = name, typeReference = typeReference) {
+  ) : FlowElement(id = id, typeReference = typeReference) {
 
-    class Command(id: String, name: String, typeReference: CommandType) : FlowNode(id = id, name = name, typeReference = typeReference)
-    class Query(id: String, name: String, typeReference: QueryType) : FlowNode(id = id, name = name, typeReference = typeReference)
-    class Event(id: String, name: String, typeReference: EventType) : FlowNode(id = id, name = name, typeReference = typeReference)
-    class ExternalEvent(id: String, name: String, typeReference: ExternalEventType) : FlowNode(id = id, name = name, typeReference = typeReference)
-    class View(id: String, name: String?, typeReference: ViewType) : FlowNode(id = id, name = name, typeReference = typeReference)
-    class Translation(id: String, name: String?, typeReference: TranslationType) : FlowNode(id = id, name = name, typeReference = typeReference)
-    class Automation(id: String, name: String?, typeReference: AutomationType) : FlowNode(id = id, name = name, typeReference = typeReference)
-    class ExternalSystem(id: String, name: String?, typeReference: ExternalSystemType) : FlowNode(id = id, name = name, typeReference = typeReference)
-    class Error(id: String, name: String?, typeReference: ErrorType) : FlowNode(id = id, name = name, typeReference = typeReference)
-    class FlowNodeReference(id: String) : FlowNode(id = id, name = null, typeReference = NoTypeReference)
-
-    override fun toString(): String = "${this::class.simpleName} [ id = $id, name = $name, type=${typeReference.id} ]"
-
+    class Command(id: String, name: String, typeReference: CommandType) : FlowNode(id = id, typeReference = typeReference)
+    class Query(id: String, name: String, typeReference: QueryType) : FlowNode(id = id, typeReference = typeReference)
+    class Event(id: String, name: String, typeReference: EventType) : FlowNode(id = id, typeReference = typeReference)
+    class ExternalEvent(id: String, name: String, typeReference: ExternalEventType) : FlowNode(id = id, typeReference = typeReference)
+    class View(id: String, name: String?, typeReference: ViewType) : FlowNode(id = id, typeReference = typeReference)
+    class Translation(id: String, name: String?, typeReference: TranslationType) : FlowNode(id = id, typeReference = typeReference)
+    class Automation(id: String, name: String?, typeReference: AutomationType) : FlowNode(id = id, typeReference = typeReference)
+    class ExternalSystem(id: String, name: String?, typeReference: ExternalSystemType) : FlowNode(id = id, typeReference = typeReference)
+    class Error(id: String, name: String?, typeReference: ErrorType) : FlowNode(id = id, typeReference = typeReference)
+    class FlowNodeReference(id: String) : FlowNode(id = id, typeReference = NoTypeReference)
   }
+
+  override fun toString(): String = "${this::class.simpleName}(id=$id, name=${typeReference.name}, type=${typeReference.id})"
+
 }
 
 sealed class Lane(

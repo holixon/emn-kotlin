@@ -21,7 +21,7 @@ class EmnAxon5GeneratorTest {
 
   @Test
   fun `generate dummy`() {
-    val file = File("src/test/resources/guest-register.emn")
+    val file = File("src/test/resources/faculty.emn")
     val definitions = parser.parseDefinitions(file)
 
     val fileSpec = generator.generate(definitions).single()

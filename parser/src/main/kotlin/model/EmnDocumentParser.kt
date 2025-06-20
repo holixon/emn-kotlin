@@ -68,7 +68,7 @@ class EmnDocumentParser {
     }
 
     /*
-     Parse elements
+     Parse timelines
      */
     val timelines = mutableListOf<Timeline>()
     root.elements("timeline")?.forEach { element ->
@@ -100,13 +100,30 @@ class EmnDocumentParser {
      * Patch lanes and slices
      */
     val patchedTimelines = timelines.map { timeline ->
-      // TODO!
+      val nodesById: Map<String, FlowNode> = timeline.nodes.associateBy { it.id }
+      timeline.copy(
+        sliceSet = timeline.sliceSet.map { slice ->
+          slice.copy(flowElements = slice.flowElements.filterIsInstance<FlowNode.FlowNodeReference>().map { e -> nodesById.getValue(e.id) })
+        },
+        laneSet = timeline.laneSet.copy(
+          triggerLaneSet = timeline.laneSet.triggerLaneSet.map { triggerLane ->
+            triggerLane.copy(flowElements = triggerLane.flowElements.filterIsInstance<FlowNode.FlowNodeReference>().map { e -> nodesById.getValue(e.id) })
+          },
+          interactionLane = timeline.laneSet
+            .interactionLane.copy(
+              flowElements = timeline.laneSet.interactionLane.flowElements.filterIsInstance<FlowNode.FlowNodeReference>()
+                .map { e -> nodesById.getValue(e.id) }),
+          aggregateLaneSet = timeline.laneSet.aggregateLaneSet.map { aggregateLane ->
+            aggregateLane.copy(flowElements = aggregateLane.flowElements.filterIsInstance<FlowNode.FlowNodeReference>().map { e -> nodesById.getValue(e.id) })
+          }
+        )
+      )
     }
 
     return Definitions(
       nodeTypes = nodeTypes,
       flowTypes = flowTypes,
-      timelines = timelines
+      timelines = patchedTimelines
     )
   }
 
@@ -117,29 +134,28 @@ class EmnDocumentParser {
 
     timeline.elements()
       .filterNot { it.name == "sliceSet" || it.name == "laneSet" }.map { element ->
-      when (element.name) {
-        "view" -> nodes.add(FlowNode.View(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-        "command" -> nodes.add(FlowNode.Command(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-        "event" -> nodes.add(FlowNode.Event(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-        "query" -> nodes.add(FlowNode.Query(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-        "error" -> nodes.add(FlowNode.Error(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-        "externalEvent" -> nodes.add(FlowNode.ExternalEvent(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-        "externalSystem" -> nodes.add(FlowNode.ExternalSystem(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-        "translation" -> nodes.add(FlowNode.Translation(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-        "automation" -> nodes.add(FlowNode.Automation(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-        "messageFlow" -> messageFlows.add(
-          MessageFlow(
-            id = element.id(),
-            name = element.name(),
-            typeReference = element.untypedMessageFlowType(),
-            source = FlowNode.FlowNodeReference(id = element.sourceRef()),
-            target = FlowNode.FlowNodeReference(id = element.targetRef())
+        when (element.name) {
+          "view" -> nodes.add(FlowNode.View(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
+          "command" -> nodes.add(FlowNode.Command(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
+          "event" -> nodes.add(FlowNode.Event(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
+          "query" -> nodes.add(FlowNode.Query(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
+          "error" -> nodes.add(FlowNode.Error(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
+          "externalEvent" -> nodes.add(FlowNode.ExternalEvent(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
+          "externalSystem" -> nodes.add(FlowNode.ExternalSystem(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
+          "translation" -> nodes.add(FlowNode.Translation(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
+          "automation" -> nodes.add(FlowNode.Automation(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
+          "messageFlow" -> messageFlows.add(
+            MessageFlow(
+              id = element.id(),
+              typeReference = element.untypedMessageFlowType(),
+              source = FlowNode.FlowNodeReference(id = element.sourceRef()),
+              target = FlowNode.FlowNodeReference(id = element.targetRef())
+            )
           )
-        )
 
-        else -> println("Unknown element '${element.name}'")
+          else -> println("Unknown element '${element.name}'")
+        }
       }
-    }
     /*
      * Patch flows
      */
