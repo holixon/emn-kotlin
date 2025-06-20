@@ -3,21 +3,34 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>io.holixon.emn</groupId>
-    <artifactId>emn-kotlin</artifactId>
+    <groupId>io.holixon.emn._</groupId>
+    <artifactId>emn-kotlin-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../_build/parent/pom.xml</relativePath>
   </parent>
 
-  <name>${project.artifactId}</name>
+  <groupId>io.holixon.emn</groupId>
   <artifactId>emn-parser</artifactId>
+  <name>${project.artifactId}</name>
 
   <dependencies>
-
     <dependency>
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>2.1.4</version>
     </dependency>
-
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.holixon.emn._</groupId>
+    <artifactId>emn-kotlin-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../_build/parent/pom.xml</relativePath>
+  </parent>
+
+  <groupId>io.holixon.emn.generation</groupId>
+  <artifactId>emn-kotlin-axon5-generator</artifactId>
+  <description>Generate Axon5 Command and Eventhandler based on EMN.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.holixon.emn</groupId>
+      <artifactId>emn-parser</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.toolisticon.kotlin.generation</groupId>
+      <artifactId>kotlin-code-generation</artifactId>
+    </dependency>
+
+    <!--    <dependency>-->
+<!--      <groupId>com.squareup</groupId>-->
+<!--      <artifactId>kotlinpoet-jvm</artifactId>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.jetbrains.kotlinx</groupId>-->
+<!--      <artifactId>kotlinx-serialization-core-jvm</artifactId>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>jakarta.annotation</groupId>-->
+<!--      <artifactId>jakarta.annotation-api</artifactId>-->
+<!--      <version>3.0.0</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>ch.qos.logback</groupId>-->
+<!--      <artifactId>logback-classic</artifactId>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
