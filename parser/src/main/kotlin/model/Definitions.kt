@@ -58,6 +58,9 @@ sealed class FlowElementType(
     class ErrorType(id: String, name: String?, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
     open class FlowNodeTypeReference(id: String) : FlowNodeType(id = id, name = null, schema = null)
     object NoTypeReference : FlowNodeTypeReference(id = "NONE")
+
+    override fun toString(): String = "${this::class.simpleName} [ id = $id, name = $name ]"
+
   }
 }
 
@@ -132,6 +135,9 @@ sealed class FlowElement(
     class ExternalSystem(id: String, name: String?, typeReference: ExternalSystemType) : FlowNode(id = id, name = name, typeReference = typeReference)
     class Error(id: String, name: String?, typeReference: ErrorType) : FlowNode(id = id, name = name, typeReference = typeReference)
     class FlowNodeReference(id: String) : FlowNode(id = id, name = null, typeReference = NoTypeReference)
+
+    override fun toString(): String = "${this::class.simpleName} [ id = $id, name = $name, type=${typeReference.id} ]"
+
   }
 }
 
