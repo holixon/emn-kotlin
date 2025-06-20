@@ -163,7 +163,7 @@ class EmnDocumentParser {
   }
 
 
-  fun Element.id(): String = attributeValue("id")
+  fun Element.id(): String = requireNotNull(attributeValue("id")) { "Element must define 'id' attribute, but $this has none." }
   fun Element.name(): String = attributeValue("name") ?: ""
   fun Element.schema(): Schema? {
     val schemaElement = this.element("schema")

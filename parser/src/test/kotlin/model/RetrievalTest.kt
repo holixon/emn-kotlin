@@ -12,7 +12,7 @@ class RetrievalTest {
 
   @Test
   fun retrieves_for_command_handlers() {
-    val file = File("src/test/resources/guest-register.emn")
+    val file = File("src/test/resources/faculty.emn")
     val result = parser.parseDefinitions(file)
 
 

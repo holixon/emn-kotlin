@@ -1,5 +1,7 @@
 package io.holixon.emn.model
 
+import io.holixon.emn.model.FlowElement.FlowNode.FlowNodeReference
+import io.holixon.emn.model.FlowElementType.FlowNodeType.FlowNodeTypeReference
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -23,6 +25,7 @@ class ParserTest {
         println(" Schema (type=${type.schema!!.schemaFormat}), \n ${type.schema!!.printable()}")
       }
     }
+    assertThat(result.nodeTypes.filterIsInstance<FlowNodeTypeReference>()).isEmpty()
 
     assertThat(result.flowTypes).isNotEmpty
     for (flow in result.flowTypes) {
@@ -51,6 +54,7 @@ class ParserTest {
     for (node in result.timelines[0].nodes) {
       println("Node: ${node.id}, incoming: ${node.incoming.map { it.id }}, outgoing: ${node.outgoing.map { it.id }}, type: ${node.typeReference.id}")
     }
+    assertThat(result.timelines[0].nodes.filterIsInstance<FlowNodeReference>()).isEmpty()
 
     assertThat(result.timelines[0].messages).isNotEmpty
     for (message in result.timelines[0].messages) {
