@@ -31,12 +31,12 @@
     <dependency>
       <groupId>org.axonframework</groupId>
       <artifactId>axon-messaging</artifactId>
-      <version>5.0.0-M1</version>
+      <version>${axon.version}</version>
     </dependency>
     <dependency>
       <groupId>org.axonframework</groupId>
       <artifactId>axon-eventsourcing</artifactId>
-      <version>5.0.0-M1</version>
+      <version>${axon.version}</version>
     </dependency>
 
     <!--    <dependency>-->

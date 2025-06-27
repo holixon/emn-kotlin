@@ -13,7 +13,6 @@
   <artifactId>university-example</artifactId>
   <description>University Example using DCB and Axon 5.</description>
   <properties>
-    <axon.version>5.0.0-SNAPSHOT</axon.version>
     <log4j.version>2.24.3</log4j.version>
   </properties>
 

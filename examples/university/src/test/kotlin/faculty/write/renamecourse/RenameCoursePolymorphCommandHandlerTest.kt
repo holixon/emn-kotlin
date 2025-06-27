@@ -8,7 +8,7 @@ import org.axonframework.test.fixture.AxonTestFixture
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-internal class RenameCourseCommandHandlerTest {
+internal class RenameCoursePolymorphCommandHandlerTest {
 
   private lateinit var fixture: AxonTestFixture
 

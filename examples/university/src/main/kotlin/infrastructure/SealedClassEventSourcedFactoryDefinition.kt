@@ -7,19 +7,20 @@ import org.axonframework.eventsourcing.annotation.EventSourcedEntityFactoryDefin
 import org.axonframework.eventsourcing.annotation.reflection.AnnotationBasedEventSourcedEntityFactory
 import org.axonframework.messaging.MessageTypeResolver
 import org.axonframework.messaging.annotation.ParameterResolverFactory
+import org.axonframework.serialization.Converter
 
-class SealedClassEventSourcedFactoryDefinition : EventSourcedEntityFactoryDefinition<Any, Any> {
-
-
+class SealedClassEventSourcedFactoryDefinition<ENTITY, ID> : EventSourcedEntityFactoryDefinition<ENTITY, ID> {
+  
   override fun createFactory(
-    @Nonnull entityType: Class<Any>,
-    @Nonnull entitySubTypes: Set<Class<out Any>>,
-    @Nonnull idType: Class<Any>,
+    @Nonnull entityType: Class<ENTITY>,
+    @Nonnull entitySubTypes: Set<Class<out ENTITY>>,
+    @Nonnull idType: Class<ID>,
     @Nonnull configuration: Configuration
-  ): EventSourcedEntityFactory<Any, Any> {
+  ): EventSourcedEntityFactory<ID, ENTITY> {
 
-    val subTypes = if (entityType.isSealed) {
-      entitySubTypes + entityType.permittedSubclasses
+    val subTypes: Set<Class<out ENTITY>> = if (entityType.isSealed) {
+      @Suppress("UNCHECKED_CAST")
+      entitySubTypes + entityType.permittedSubclasses.toSet() as Set<Class<out ENTITY>>
     } else {
       entitySubTypes
     }
@@ -29,7 +30,8 @@ class SealedClassEventSourcedFactoryDefinition : EventSourcedEntityFactoryDefini
       idType,
       subTypes,
       configuration.getComponent(ParameterResolverFactory::class.java),
-      configuration.getComponent(MessageTypeResolver::class.java)
+      configuration.getComponent(MessageTypeResolver::class.java),
+      configuration.getComponent(Converter::class.java),
     )
   }
 
