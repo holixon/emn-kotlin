@@ -3,7 +3,6 @@ package io.holixon.emn.example.university.faculty.write.renamecourse
 import io.holixon.emn.example.university.faculty.FacultyTags
 import io.holixon.emn.example.university.faculty.events.CourseCreated
 import io.holixon.emn.example.university.faculty.events.CourseRenamed
-import io.holixon.emn.example.university.infrastructure.Initial
 import io.holixon.emn.example.university.infrastructure.SealedClassEventSourcedFactoryDefinition
 import org.axonframework.commandhandling.annotation.CommandHandler
 import org.axonframework.eventhandling.gateway.EventAppender
@@ -16,52 +15,44 @@ class RenameCourseCommandHandler {
 
   @CommandHandler
   fun handle(command: RenameCourse, @InjectEntity state: State, eventAppender: EventAppender) {
-    val events = decide(command, state)
+    val events = state.decide(command)
     eventAppender.append(events)
   }
 
-  private fun decide(command: RenameCourse, state: State): List<CourseRenamed> {
-    return when (state) {
-      is State.NoCourse -> throw IllegalStateException("Course with given id does not exist")
-      is State.NamedCourse -> {
-        if (command.name == state.name) {
+  @EventSourcedEntity(
+    tagKey = FacultyTags.COURSE_ID
+  )
+  class State @EntityCreator constructor() {
+
+    var created: Boolean = false
+    var name: String = ""
+
+    @EventSourcingHandler
+    fun apply(event: CourseCreated): State {
+      this.created = true
+      this.name = event.name
+      return this
+    }
+
+    @EventSourcingHandler
+    fun apply(event: CourseRenamed): State {
+      this.name = event.name
+      return this
+    }
+
+    fun decide(command: RenameCourse): List<CourseRenamed> {
+      return if (!this.created) {
+        throw IllegalStateException("Course with given id does not exist")
+      } else {
+        if (command.name == name) {
           listOf()
         } else {
           listOf(CourseRenamed(command.courseId, command.name))
         }
       }
     }
+
   }
 
-  @EventSourcedEntity(
-    tagKey = FacultyTags.COURSE_ID,
-    entityFactoryDefinition = SealedClassEventSourcedFactoryDefinition::class,
-  )
-  sealed class State {
-
-    abstract fun evolve(event: Any): State
-
-    class NoCourse @EntityCreator constructor(): State() {
-
-      init {
-          println("Nothing to see")
-      }
-
-      @EventSourcingHandler
-      override fun evolve(event: Any): State =
-        when (event) {
-          is CourseCreated -> NamedCourse(event.name)
-          else -> throw IllegalArgumentException("Unknown event type $event for state $this")
-        }
-    }
-
-    class NamedCourse(val name: String) : State() {
-      @EventSourcingHandler
-      override fun evolve(event: Any): State =
-        when (event) {
-          is CourseRenamed -> NamedCourse(event.name)
-          else -> throw IllegalArgumentException("Unknown event type $event for state $this")
-        }
-    }
-  }
 }
+
