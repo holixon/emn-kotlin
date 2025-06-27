@@ -135,15 +135,15 @@ class EmnDocumentParser {
     timeline.elements()
       .filterNot { it.name == "sliceSet" || it.name == "laneSet" }.map { element ->
         when (element.name) {
-          "view" -> nodes.add(FlowNode.View(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-          "command" -> nodes.add(FlowNode.Command(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-          "event" -> nodes.add(FlowNode.Event(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-          "query" -> nodes.add(FlowNode.Query(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-          "error" -> nodes.add(FlowNode.Error(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-          "externalEvent" -> nodes.add(FlowNode.ExternalEvent(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-          "externalSystem" -> nodes.add(FlowNode.ExternalSystem(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-          "translation" -> nodes.add(FlowNode.Translation(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
-          "automation" -> nodes.add(FlowNode.Automation(id = element.id(), name = element.name(), typeReference = element.typeReference(typesById)))
+          "view" -> nodes.add(FlowNode.View(id = element.id(), typeReference = element.typeReference(typesById)))
+          "command" -> nodes.add(FlowNode.Command(id = element.id(), typeReference = element.typeReference(typesById)))
+          "event" -> nodes.add(FlowNode.Event(id = element.id(), typeReference = element.typeReference(typesById)))
+          "query" -> nodes.add(FlowNode.Query(id = element.id(), typeReference = element.typeReference(typesById)))
+          "error" -> nodes.add(FlowNode.Error(id = element.id(), typeReference = element.typeReference(typesById)))
+          "externalEvent" -> nodes.add(FlowNode.ExternalEvent(id = element.id(), typeReference = element.typeReference(typesById)))
+          "externalSystem" -> nodes.add(FlowNode.ExternalSystem(id = element.id(), typeReference = element.typeReference(typesById)))
+          "translation" -> nodes.add(FlowNode.Translation(id = element.id(), typeReference = element.typeReference(typesById)))
+          "automation" -> nodes.add(FlowNode.Automation(id = element.id(), typeReference = element.typeReference(typesById)))
           "messageFlow" -> messageFlows.add(
             MessageFlow(
               id = element.id(),

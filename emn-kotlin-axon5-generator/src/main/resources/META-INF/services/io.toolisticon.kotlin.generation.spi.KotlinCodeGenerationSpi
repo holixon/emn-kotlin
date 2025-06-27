@@ -1,1 +1,3 @@
-io.holixon.emn.generation.strategy.DefinitionsToFilesStrategy
+# FIXME incompatible to AvroDeclarationContext
+# io.holixon.emn.generation.strategy.DefinitionsToFilesStrategy
+# io.holixon.emn.generation.strategy.NestedCommandDataClassStrategy

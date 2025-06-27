@@ -7,20 +7,30 @@ import io.holixon.emn.model.*
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpec
+import io.toolisticon.kotlin.generation.spec.KotlinGeneratorTypeSpec
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecStrategy
-import java.util.*
-import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalKotlinPoetApi::class)
 class DefinitionsToFilesStrategy : KotlinFileSpecStrategy<EmnGenerationContext, Definitions>(
   contextType = EmnGenerationContext::class, inputType = Definitions::class
 ) {
   override fun invoke(context: EmnGenerationContext, input: Definitions): KotlinFileSpec {
-    return buildSlice(input)
+
+    val classNameFoo = ClassName(context.rootPackageName, "Commands.kt") // FIXME
+
+    val fileBuilder = fileBuilder(classNameFoo)
+
+    val commandDataClassSpecs: List<KotlinGeneratorTypeSpec<*>> = context.commandTypes.map { commandType ->
+      NestedCommandDataClassStrategy().invoke(context, commandType)
+    }
+
+    commandDataClassSpecs.forEach(fileBuilder::addType)
+
+    return fileBuilder.build()
   }
 
 
-  fun buildSlice(input: Definitions): KotlinFileSpec {
+  private fun buildSlice(input: Definitions): KotlinFileSpec {
     val timeline = input.timelines[0]
     val slice = timeline.sliceSet.first()
 
@@ -47,7 +57,7 @@ class DefinitionsToFilesStrategy : KotlinFileSpecStrategy<EmnGenerationContext, 
       .build()
   }
 
-  fun buildFoo(input: Definitions): KotlinFileSpec {
+  private fun buildFoo(input: Definitions): KotlinFileSpec {
     val classNameFoo = ClassName("io.toolisticon.kotlin.generation", "Foo")
     val fileBuilder = fileBuilder(classNameFoo)
 

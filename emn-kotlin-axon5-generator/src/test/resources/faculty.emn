@@ -45,134 +45,26 @@
       <emn:incomingType>flow1</emn:incomingType>
       <emn:outgoingType>flow2</emn:outgoingType>
       <emn:outgoingType>flow3</emn:outgoingType>
-      <emn:schema schemaFormat="avro">
-      {
-        "type": "record",
-        "name": "CreateCourse",
-        "namespace": "io.axoniq.demo.university.faculty",
-        "fields": [
-          {
-            "name": "courseId",
-            "type": {
-              "type": "record",
-              "name": "CourseId",
-              "fields": [
-                {
-                  "name": "value",
-                  "type": "string"
-                }
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "capacity",
-            "type": "int"
-          }
-        ]
-      }
-      </emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.write.CreateCourse</emn:schema>
     </emn:commandType>
     <emn:commandType id="command_type_enroll_student" name="Enroll Student In Faculty">
       <emn:incomingType>flow_type_8</emn:incomingType>
       <emn:outgoingType>flow_type_9</emn:outgoingType>
       <emn:outgoingType>flow_type_10</emn:outgoingType>
-      <emn:schema schemaFormat="avro">
-      {
-        "type": "record",
-        "name": "EnrollStudentInFaculty",
-        "namespace": "io.axoniq.demo.university.faculty",
-        "fields": [
-          {
-            "name": "studentId",
-            "type": {
-              "type": "record",
-              "name": "StudentId",
-              "fields": [
-                {
-                  "name": "identifier",
-                  "type": "string"
-                }
-              ]
-            }
-          },
-          {
-            "name": "firstName",
-            "type": "string"
-          },
-          {
-            "name": "lastName",
-            "type": "string"
-          }
-        ]
-      }
-      </emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.write.EnrollStudentInFaculty</emn:schema>
     </emn:commandType>
     <emn:commandType id="command_type_rename_course" name="Rename Course">
       <emn:incomingType>flow_type_16</emn:incomingType>
       <emn:outgoingType>flow_type_17</emn:outgoingType>
       <emn:outgoingType>flow_type_18</emn:outgoingType>
-      <emn:schema schemaFormat="avro">
-      {
-        "type": "record",
-        "name": "RenameCourse",
-        "namespace": "io.axoniq.demo.university.faculty",
-        "fields": [
-          {
-            "name": "courseId",
-            "type": {
-              "type": "record",
-              "name": "CourseId",
-              "fields": [
-                {
-                  "name": "value",
-                  "type": "string"
-                }
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "type": "string"
-          }
-        ]
-      }
-      </emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.write.RenameCourse</emn:schema>
     </emn:commandType>
     <emn:commandType id="command_type_change_course_capacity" name="Change Course Capacity">
       <emn:incomingType>flow_type_21</emn:incomingType>
       <emn:outgoingType>flow_type_22</emn:outgoingType>
       <emn:outgoingType>flow_type_24</emn:outgoingType>
       <emn:outgoingType>flow_type_26</emn:outgoingType>
-      <emn:schema schemaFormat="avro">
-      {
-        "type": "record",
-        "name": "ChangeCourseCapacity",
-        "namespace": "io.axoniq.demo.university.faculty",
-        "fields": [
-          {
-            "name": "courseId",
-            "type": {
-              "type": "record",
-              "name": "CourseId",
-              "fields": [
-                {
-                  "name": "value",
-                  "type": "string"
-                }
-              ]
-            }
-          },
-          {
-            "name": "capacity",
-            "type": "int"
-          }
-        ]
-      }
-      </emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.write.ChangeCourseCapacity</emn:schema>
     </emn:commandType>
     <emn:commandType id="command_type_subscribe_student" name="Subscribe Student To Course">
       <emn:incomingType>flow_type_30</emn:incomingType>
@@ -183,35 +75,7 @@
       <emn:incomingType>flow_type_31</emn:incomingType>
       <emn:outgoingType>flow_type_36</emn:outgoingType>
       <emn:outgoingType>flow_type_37</emn:outgoingType>
-      <emn:schema schemaFormat="avro">
-      {
-        "type": "record",
-        "name": "UnsubscribeStudentFromCourse",
-        "namespace": "io.axoniq.demo.university.faculty",
-        "fields": [
-          {
-            "name": "studentId",
-            "type": {
-              "type": "record",
-              "name": "StudentId",
-              "fields": [
-                { "name": "identifier", "type": "string" }
-              ]
-            }
-          },
-          {
-            "name": "courseId",
-            "type": {
-              "type": "record",
-              "name": "CourseId",
-              "fields": [
-                { "name": "identifier", "type": "string" }
-              ]
-            }
-          }
-        ]
-      }
-      </emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.write.UnsubscribeStudentFromCourse</emn:schema>
     </emn:commandType>
     <emn:errorType id="error_type_course_not_created" name="Course Not Created">
       <emn:incomingType>flow_type_2</emn:incomingType>
@@ -219,36 +83,7 @@
     <emn:eventType id="event_type_course_created" name="Course Created">
       <emn:incomingType>flow_type_3</emn:incomingType>
       <emn:outgoingType>flow_type_4</emn:outgoingType>
-      <emn:schema schemaFormat="avro">
-      {
-        "type": "record",
-        "name": "CourseCreated",
-        "namespace": "io.axoniq.demo.university.faculty",
-        "fields": [
-          {
-            "name": "courseId",
-            "type": {
-              "type": "record",
-              "name": "CourseId",
-              "fields": [
-                {
-                  "name": "identifier",
-                  "type": "string"
-                }
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "capacity",
-            "type": "int"
-          }
-        ]
-      }
-      </emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.event.CourseCreated</emn:schema>
     </emn:eventType>
     <emn:errorType id="error_type_student_not_enrolled" name="Student Not Enrolled To Faculty">
       <emn:incomingType>flow_type_9</emn:incomingType>
@@ -257,36 +92,7 @@
     <emn:eventType id="event_type_student_enrolled" name="Student Enrolled To Faculty">
       <emn:incomingType>flow_type_10</emn:incomingType>
       <emn:outgoingType>flow_type_12</emn:outgoingType>
-      <emn:schema schemaFormat="avro">
-      {
-        "type": "record",
-        "name": "StudentEnrolledInFaculty",
-        "namespace": "io.axoniq.demo.university.faculty",
-        "fields": [
-          {
-            "name": "studentId",
-            "type": {
-              "type": "record",
-              "name": "StudentId",
-              "fields": [
-                {
-                  "name": "identifier",
-                  "type": "string"
-                }
-              ]
-            }
-          },
-          {
-            "name": "firstName",
-            "type": "string"
-          },
-          {
-            "name": "lastName",
-            "type": "string"
-          }
-        ]
-      }
-      </emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.event.StudentEnrolledInFaculty</emn:schema>
     </emn:eventType>
     <emn:errorType id="error_type_course_not_renamed" name="Course Not Renamed">
       <emn:incomingType>flow_type_17</emn:incomingType>
@@ -296,32 +102,7 @@
       <emn:incomingType>flow_type_18</emn:incomingType>
       <emn:outgoingType>flow_type_20</emn:outgoingType>
       <emn:outgoingType>flow_type_28</emn:outgoingType>
-      <emn:schema schemaFormat="avro">
-      {
-        "type": "record",
-        "name": "CourseRenamed",
-        "namespace": "io.axoniq.demo.university.faculty",
-        "fields": [
-          {
-            "name": "courseId",
-            "type": {
-              "type": "record",
-              "name": "CourseId",
-              "fields": [
-                {
-                  "name": "identifier",
-                  "type": "string"
-                }
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "type": "string"
-          }
-        ]
-      }
-      </emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.event.CourseRenamed</emn:schema>
     </emn:eventType>
     <emn:errorType id="error_type_student_not_subscribed" name="Student Not Subscribed To Course">
       <emn:incomingType>flow_type_32</emn:incomingType>
@@ -341,35 +122,7 @@
       <emn:incomingType>flow_type_26</emn:incomingType>
       <emn:incomingType>flow_type_37</emn:incomingType>
       <emn:outgoingType>flow_type_27</emn:outgoingType>
-      <emn:schema schemaFormat="avro">
-      {
-        "type": "record",
-        "name": "StudentUnsubscribedFromCourse",
-        "namespace": "io.axoniq.demo.university.faculty",
-        "fields": [
-          {
-            "name": "studentId",
-            "type": {
-              "type": "record",
-              "name": "StudentId",
-              "fields": [
-                { "name": "identifier", "type": "string" }
-              ]
-            }
-          },
-          {
-            "name": "courseId",
-            "type": {
-              "type": "record",
-              "name": "CourseId",
-              "fields": [
-                { "name": "identifier", "type": "string" }
-              ]
-            }
-          }
-        ]
-      }
-      </emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.event.StudentUnsubscribedFromCourse</emn:schema>
     </emn:eventType>
     <emn:errorType id="error_type_student_not_unsubscribed" name="Student Not Unsubscribed">
       <emn:incomingType>flow_type_36</emn:incomingType>
