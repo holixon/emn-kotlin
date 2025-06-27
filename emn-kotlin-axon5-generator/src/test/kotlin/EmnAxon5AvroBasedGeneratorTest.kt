@@ -2,12 +2,11 @@ package io.holixon.emn.generation
 
 import _ktx.ResourceKtx.resourceUrl
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import io.holixon.emn.generation.AvroKotlinFixture.DEFAULT_GENERATOR
 import io.holixon.emn.generation.AvroKotlinFixture.DEFAULT_PROPERTIES
 import io.holixon.emn.generation.AvroKotlinFixture.DEFAULT_REGISTRY
 import io.holixon.emn.generation.AvroKotlinFixture.PARSER
 import io.holixon.emn.generation.spi.EmnAxon5GenerationSpiRegistry
-import io.holixon.emn.generation.strategy.DefinitionsToFilesStrategy
+import io.holixon.emn.generation.strategy.DefinitionsToCommandHandlerComponentStrategy
 import io.holixon.emn.model.EmnDocumentParser
 import io.toolisticon.kotlin.avro.generator.strategy.ProtocolTypesToFileStrategy
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinCodeGenerationStrategyList
@@ -19,12 +18,12 @@ class EmnAxon5AvroBasedGeneratorTest {
 
   private val registry = EmnAxon5GenerationSpiRegistry(
     strategies = KotlinCodeGenerationStrategyList(
-      DefinitionsToFilesStrategy(),
+      DefinitionsToCommandHandlerComponentStrategy(),
       ProtocolTypesToFileStrategy()
     ),
   )
 
-  private val properties = DefaultEmnAxon5GeneratorProperties("io.holixon.emn.example.faculty.write")
+  private val properties = DefaultEmnAxon5GeneratorProperties("io.holixon.emn.example.faculty")
 
   private val generator = EmnAxon5AvroBasedGenerator(
     registry,

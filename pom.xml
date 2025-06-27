@@ -29,7 +29,10 @@
 
     <module>emn-parser</module>
     <module>emn-kotlin-axon5-generator</module>
+    <!-- Currently requires SNAPSHOT -->
+    <!--
     <module>examples/university</module>
+    -->
   </modules>
 
   <!-- this is the maven root, all dependencies have to be declared in the concrete modules, using emn-kotlin-parent -->

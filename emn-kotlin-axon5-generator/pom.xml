@@ -28,6 +28,16 @@
       <artifactId>avro-kotlin-generator</artifactId>
       <version>1.12.4.3</version>
     </dependency>
+    <dependency>
+      <groupId>org.axonframework</groupId>
+      <artifactId>axon-messaging</artifactId>
+      <version>5.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.axonframework</groupId>
+      <artifactId>axon-eventsourcing</artifactId>
+      <version>5.0.0-M1</version>
+    </dependency>
 
     <!--    <dependency>-->
 <!--      <groupId>com.squareup</groupId>-->

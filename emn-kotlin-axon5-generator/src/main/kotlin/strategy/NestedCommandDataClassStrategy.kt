@@ -17,7 +17,7 @@ class NestedCommandDataClassStrategy : KotlinCodeGenerationStrategyBase<EmnGener
   override fun invoke(context: EmnGenerationContext, input: CommandType): KotlinDataClassSpec {
 
     // FIXME -> correct type name
-    val name = requireNotNull(input.name) { "Name is required" }.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+    val name = requireNotNull(input.name) { "Name is required" }
 
     val builder = dataClassBuilder(context.rootPackageName, name).apply {
 

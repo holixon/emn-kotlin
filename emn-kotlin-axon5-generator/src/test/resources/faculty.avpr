@@ -185,6 +185,40 @@
           "type": "CourseId"
         }
       ]
+    },
+    {
+      "type": "record",
+      "name": "StudentSubscribedToCourse",
+      "namespace": "io.holixon.emn.faculty",
+      "fields": [
+        {
+          "name": "studentId",
+          "namespace": "io.holixon.emn.faculty",
+          "type": "StudentId"
+        },
+        {
+          "name": "courseId",
+          "namespace": "io.holixon.emn.faculty",
+          "type": "CourseId"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "CourseCapacityChanged",
+      "namespace": "io.holixon.emn.faculty",
+      "fields": [
+        {
+          "name": "courseId",
+          "namespace": "io.holixon.emn.faculty",
+          "type": "CourseId"
+        },
+        {
+          "name": "capacity",
+          "type": "int"
+        }
+      ]
     }
+
   ]
 }

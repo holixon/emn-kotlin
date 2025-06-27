@@ -1,7 +1,8 @@
 package io.holixon.emn.generation.spi
 
+import _ktx.StringKtx.firstUppercase
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import io.holixon.emn.generation.EmnAxon5GeneratorProperties
+import io.holixon.emn.generation.*
 import io.holixon.emn.model.*
 import io.holixon.emn.model.FlowElement.FlowNode.Command
 import io.holixon.emn.model.FlowElement.FlowNode.Event
@@ -31,7 +32,18 @@ class EmnGenerationContext(
 
   val slices: List<Slice> by lazy { timelines.map { it.sliceSet }.flatten() }
 
-  val commands: List<Command> by lazy { slices.map { it.flowElements.filterIsInstance<Command>() }.flatten() }
+  val commandSlices: List<CommandSlice> by lazy {
+    slices.filter {
+      val sliceCommands = it.flowElements.commands() // contain exactly one command
+      sliceCommands.size == 1
+        && sliceCommands.first().hasAvroTypeDefinition()
+        && it.flowElements.events().containsAll(sliceCommands.first().possibleEvents()) // all events are in the slice
+    }.map {
+      CommandSlice(it, it.flowElements.commands().first())
+    }
+  }
+
+  val commands: List<Command> by lazy { slices.map { it.flowElements.commands() }.flatten() }
 
   val commandTypes: List<CommandType> by lazy { commands.map { it.typeReference as CommandType }.distinct() }
 
@@ -39,5 +51,22 @@ class EmnGenerationContext(
 
   val eventTypes: List<EventType> by lazy { commands.map { it.typeReference as EventType }.distinct() }
 
+  fun sourcedEvents(command: Command): List<Event> {
+    // FIXME -> should be build as reducer
+    val directEvents = command.views()
+      .flatMap { view -> view.queries() }
+      .map { query -> query.events() }
+      .flatten()
+    return directEvents + directEvents
+      .filterNot { directEvents.contains(it)}
+      .map { event -> event.commands().filterNot { it == command }
+        .map { sourcedEvents(it)  }.flatten()
+      }.flatten()
+  }
+
   override val contextType: KClass<EmnGenerationContext> = EmnGenerationContext::class
+
+
 }
+
+

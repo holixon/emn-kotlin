@@ -7,26 +7,22 @@ import io.holixon.emn.model.*
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpec
+import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spec.KotlinGeneratorTypeSpec
+import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecStrategy
 
 @OptIn(ExperimentalKotlinPoetApi::class)
-class DefinitionsToFilesStrategy : KotlinFileSpecStrategy<EmnGenerationContext, Definitions>(
+class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<EmnGenerationContext, Definitions>(
   contextType = EmnGenerationContext::class, inputType = Definitions::class
 ) {
-  override fun invoke(context: EmnGenerationContext, input: Definitions): KotlinFileSpec {
+  override fun invoke(context: EmnGenerationContext, input: Definitions): KotlinFileSpecList {
 
-    val classNameFoo = ClassName(context.rootPackageName, "Commands.kt") // FIXME
-
-    val fileBuilder = fileBuilder(classNameFoo)
-
-    val commandDataClassSpecs: List<KotlinGeneratorTypeSpec<*>> = context.commandTypes.map { commandType ->
-      NestedCommandDataClassStrategy().invoke(context, commandType)
+    val commandHandlerComponentFiles: List<KotlinFileSpec> = context.commandSlices.flatMap { commandSlice ->
+      CommandHandlingComponentStrategy().invoke(context, commandSlice)
     }
 
-    commandDataClassSpecs.forEach(fileBuilder::addType)
-
-    return fileBuilder.build()
+    return KotlinFileSpecList(commandHandlerComponentFiles)
   }
 
 
