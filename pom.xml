@@ -27,7 +27,7 @@
   <modules>
     <module>_build/parent</module>
 
-    <module>parser</module>
+    <module>emn-parser</module>
     <module>emn-kotlin-axon5-generator</module>
   </modules>
 
