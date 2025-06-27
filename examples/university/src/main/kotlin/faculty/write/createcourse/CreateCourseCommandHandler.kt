@@ -2,6 +2,7 @@ package io.holixon.emn.example.university.faculty.write.createcourse
 
 import io.holixon.emn.example.university.faculty.FacultyTags
 import io.holixon.emn.example.university.faculty.events.CourseCreated
+import io.holixon.emn.example.university.infrastructure.DecidingState
 import org.axonframework.commandhandling.annotation.CommandHandler
 import org.axonframework.eventhandling.gateway.EventAppender
 import org.axonframework.eventsourcing.EventSourcingHandler
@@ -13,25 +14,28 @@ class CreateCourseCommandHandler {
 
   @CommandHandler
   fun handle(command: CreateCourse, @InjectEntity(idProperty = FacultyTags.COURSE_ID) state: State, eventAppender: EventAppender) {
-    val events: List<CourseCreated> = decide(command, state)
-    eventAppender.append(events)
+    eventAppender.append(state.decide(command))
   }
 
-  private fun decide(command: CreateCourse, state: State): List<CourseCreated> {
-    if (state.created) {
-      return listOf()
+  @EventSourcedEntity(
+    tagKey = FacultyTags.COURSE_ID
+  )
+  class State @EntityCreator constructor() : DecidingState <CreateCourse> {
+
+    private var created: Boolean = false
+
+    override fun decide(command: CreateCourse): List<Any> {
+      if (created) {
+        return listOf()
+      }
+      return listOf(CourseCreated(command.courseId, command.name, command.capacity))
     }
-    return listOf(CourseCreated(command.courseId, command.name, command.capacity))
-  }
-
-  @EventSourcedEntity(tagKey = FacultyTags.COURSE_ID)
-  class State @EntityCreator constructor() {
-    internal var created: Boolean = false
 
     @EventSourcingHandler
-    private fun apply(event: CourseCreated): State {
+    fun apply(event: CourseCreated): State {
       this.created = true
       return this
     }
+
   }
 }

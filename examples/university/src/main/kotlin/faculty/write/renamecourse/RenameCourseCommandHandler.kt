@@ -3,7 +3,7 @@ package io.holixon.emn.example.university.faculty.write.renamecourse
 import io.holixon.emn.example.university.faculty.FacultyTags
 import io.holixon.emn.example.university.faculty.events.CourseCreated
 import io.holixon.emn.example.university.faculty.events.CourseRenamed
-import io.holixon.emn.example.university.infrastructure.SealedClassEventSourcedFactoryDefinition
+import io.holixon.emn.example.university.infrastructure.DecidingState
 import org.axonframework.commandhandling.annotation.CommandHandler
 import org.axonframework.eventhandling.gateway.EventAppender
 import org.axonframework.eventsourcing.EventSourcingHandler
@@ -15,17 +15,28 @@ class RenameCourseCommandHandler {
 
   @CommandHandler
   fun handle(command: RenameCourse, @InjectEntity state: State, eventAppender: EventAppender) {
-    val events = state.decide(command)
-    eventAppender.append(events)
+    eventAppender.append(state.decide(command))
   }
 
   @EventSourcedEntity(
     tagKey = FacultyTags.COURSE_ID
   )
-  class State @EntityCreator constructor() {
+  class State @EntityCreator constructor() : DecidingState<RenameCourse> {
 
-    var created: Boolean = false
-    var name: String = ""
+    private var created: Boolean = false
+    private var name: String = ""
+
+    override fun decide(command: RenameCourse): List<Any> {
+      return if (!this.created) {
+        throw IllegalStateException("Course with given id does not exist")
+      } else {
+        if (command.name == name) {
+          listOf()
+        } else {
+          listOf(CourseRenamed(command.courseId, command.name))
+        }
+      }
+    }
 
     @EventSourcingHandler
     fun apply(event: CourseCreated): State {
@@ -39,19 +50,6 @@ class RenameCourseCommandHandler {
       this.name = event.name
       return this
     }
-
-    fun decide(command: RenameCourse): List<CourseRenamed> {
-      return if (!this.created) {
-        throw IllegalStateException("Course with given id does not exist")
-      } else {
-        if (command.name == name) {
-          listOf()
-        } else {
-          listOf(CourseRenamed(command.courseId, command.name))
-        }
-      }
-    }
-
   }
 
 }
