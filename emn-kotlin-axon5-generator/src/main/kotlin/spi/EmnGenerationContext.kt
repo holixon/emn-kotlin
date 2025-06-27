@@ -33,13 +33,8 @@ class EmnGenerationContext(
   val slices: List<Slice> by lazy { timelines.map { it.sliceSet }.flatten() }
 
   val commandSlices: List<CommandSlice> by lazy {
-    slices.filter {
-      val sliceCommands = it.flowElements.commands() // contain exactly one command
-      sliceCommands.size == 1
-        && sliceCommands.first().hasAvroTypeDefinition()
-        && it.flowElements.events().containsAll(sliceCommands.first().possibleEvents()) // all events are in the slice
-    }.map {
-      CommandSlice(it, it.flowElements.commands().first())
+    slices.filter { it.isCommandSlice() }.map {
+      CommandSlice(slice = it, command = it.flowElements.commands().first())
     }
   }
 
@@ -51,18 +46,14 @@ class EmnGenerationContext(
 
   val eventTypes: List<EventType> by lazy { commands.map { it.typeReference as EventType }.distinct() }
 
-  fun sourcedEvents(command: Command): List<Event> {
-    // FIXME -> should be build as reducer
-    val directEvents = command.views()
-      .flatMap { view -> view.queries() }
-      .map { query -> query.events() }
-      .flatten()
-    return directEvents + directEvents
-      .filterNot { directEvents.contains(it)}
-      .map { event -> event.commands().filterNot { it == command }
-        .map { sourcedEvents(it)  }.flatten()
-      }.flatten()
+  fun timelines(event: Event): List<Timeline> {
+    return timelines.filter { it.flowElements.events().contains(event) }
   }
+
+  fun aggregates(event: Event): List<Lane.AggregateLane> {
+    return timelines(event).flatMap { it.laneSet.aggregateLaneSet.filter { it.flowElements.events().contains(event) } }
+  }
+
 
   override val contextType: KClass<EmnGenerationContext> = EmnGenerationContext::class
 

@@ -3,26 +3,22 @@ package io.holixon.emn.generation.strategy
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
-import io.holixon.emn.generation.events
+import com.squareup.kotlinpoet.ParameterSpec
+import io.holixon.emn.generation.idProperty
 import io.holixon.emn.generation.resolveAvroPoetType
-import io.holixon.emn.generation.schemaReference
+import io.holixon.emn.generation.sourcedEvents
 import io.holixon.emn.generation.spi.CommandSlice
 import io.holixon.emn.generation.spi.EmnGenerationContext
-import io.holixon.emn.model.FlowElementType
 import io.toolisticon.kotlin.avro.generator.api.AvroPoetType
-import io.toolisticon.kotlin.avro.generator.api.AvroPoetTypes
-import io.toolisticon.kotlin.avro.model.wrapper.AvroProtocol.TwoWayMessage
-import io.toolisticon.kotlin.avro.value.CanonicalName
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildInterface
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.classBuilder
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
-import io.toolisticon.kotlin.generation.PackageName
-import io.toolisticon.kotlin.generation.builder.KotlinInterfaceSpecBuilder
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spec.KotlinFunSpec
 import io.toolisticon.kotlin.generation.spec.KotlinInterfaceSpec
+import io.toolisticon.kotlin.generation.spec.toBuilder
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
 import org.axonframework.commandhandling.annotation.CommandHandler
 import org.axonframework.eventhandling.gateway.EventAppender
@@ -44,20 +40,30 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
     val commandHandlerTypeBuilder = classBuilder(slicePackage, handlerName).apply {
 
       val commandType = input.command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext)
-      val sourcingEvents = context.sourcedEvents(input.command).map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
+      val sourcingEvents = input.command.sourcedEvents()
+      val sourcingEventTypes = sourcingEvents.map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
 
-      val state = buildState(slicePackage = slicePackage, handlerName = handlerName, sourcingEvents = sourcingEvents)
+      val idProperty = if (sourcingEvents.isEmpty()) { // no source events
+        input.command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext).idProperty()
+      } else {
+        null
+      }
+
+      val state = buildState(
+        slicePackage = slicePackage,
+        handlerName = handlerName,
+        sourcingEventTypes = sourcingEventTypes
+      )
 
       addFunction(
         buildHandler(
           commandType = commandType,
-          stateSpec = state
+          stateSpec = state,
+          idProperty = idProperty
         )
       )
 
-      addType(
-        state
-      )
+      addType(state)
     }
 
     fileBuilder.addType(commandHandlerTypeBuilder.build())
@@ -65,7 +71,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
     return KotlinFileSpecList(fileBuilder.build())
   }
 
-  private fun buildHandler(commandType: AvroPoetType, stateSpec: KotlinInterfaceSpec): KotlinFunSpec {
+  private fun buildHandler(commandType: AvroPoetType, stateSpec: KotlinInterfaceSpec, idProperty: String?): KotlinFunSpec {
     return buildFun("handle") {
       addAnnotation(
         buildAnnotation(CommandHandler::class) {
@@ -73,15 +79,25 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
       )
       this.addParameter("command", commandType.typeName)
 
-      this.addParameter("state", stateSpec.className)
-        .addAnnotation(buildAnnotation(InjectEntity::class) {
-          // FIXME: Add idProperty
-        })
+      this.addParameter(
+        ParameterSpec
+          .builder("state", stateSpec.className)
+          .addAnnotation(
+            buildAnnotation(InjectEntity::class) {
+              if (idProperty != null) {
+                // we need an id property for creation command handler
+                addMember("idProperty = %S", idProperty)
+              }
+            }.get()
+          )
+          .build()
+      )
+
       this.addParameter("eventAppender", EventAppender::class)
     }
   }
 
-  private fun buildState(slicePackage: String, handlerName: String, sourcingEvents: List<AvroPoetType>): KotlinInterfaceSpec {
+  private fun buildState(slicePackage: String, handlerName: String, sourcingEventTypes: List<AvroPoetType>): KotlinInterfaceSpec {
     val className = ClassName(slicePackage, handlerName, "State")
     return buildInterface(className) {
       addAnnotation(
@@ -89,7 +105,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
           // FIXME: Add tag
         }
       )
-      sourcingEvents.forEach { event ->
+      sourcingEventTypes.forEach { event ->
         addFunction(buildEventSourcingHandler(event, className))
       }
     }
