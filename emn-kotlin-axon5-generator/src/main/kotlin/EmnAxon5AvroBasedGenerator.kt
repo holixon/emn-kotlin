@@ -10,6 +10,7 @@ import io.toolisticon.kotlin.avro.generator.spi.AvroCodeGenerationSpiRegistry
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.generateFiles
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
+import io.toolisticon.kotlin.generation.spi.KotlinCodeGenerationSpiRegistry
 
 @OptIn(ExperimentalKotlinPoetApi::class)
 open class EmnAxon5AvroBasedGenerator(
@@ -18,6 +19,21 @@ open class EmnAxon5AvroBasedGenerator(
   val avroRegistry: AvroCodeGenerationSpiRegistry,
   val avroProperties: AvroKotlinGeneratorProperties
 ) {
+  companion object {
+    fun create(
+      registry: KotlinCodeGenerationSpiRegistry,
+      properties: EmnAxon5GeneratorProperties,
+      avroProperties: AvroKotlinGeneratorProperties
+    ): EmnAxon5AvroBasedGenerator {
+      return EmnAxon5AvroBasedGenerator(
+        registry = registry,
+        properties = properties,
+        avroRegistry = avroRegistry,
+        avroProperties = avroProperties
+      )
+    }
+  }
+
   internal fun contextEmnContextFactory(declaration: ProtocolDeclaration, definitions: Definitions): EmnGenerationContext {
     val protocolDeclarationContext = ProtocolDeclarationContext.of(
       declaration = declaration,

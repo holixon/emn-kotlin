@@ -14,6 +14,12 @@ class EmnAxon5GenerationSpiRegistry(
     private val CONTEXT_UPPER_BOUND = EmnGenerationContext::class
   }
 
+  companion object {
+    fun create(registry: KotlinCodeGenerationSpiRegistry): EmnAxon5GenerationSpiRegistry {
+      return EmnAxon5GenerationSpiRegistry(registry)
+    }
+  }
+
 
   constructor(strategies: KotlinCodeGenerationStrategyList, processors: KotlinCodeGenerationProcessorList = KotlinCodeGenerationProcessorList()) : this(
     registry = KotlinCodeGenerationServiceRepository(CONTEXT_UPPER_BOUND, processors, strategies)
