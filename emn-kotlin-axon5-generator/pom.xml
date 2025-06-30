@@ -26,7 +26,6 @@
     <dependency>
       <groupId>io.toolisticon.kotlin.avro</groupId>
       <artifactId>avro-kotlin-generator</artifactId>
-      <version>1.12.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.axonframework</groupId>

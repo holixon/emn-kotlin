@@ -9,8 +9,9 @@ import io.toolisticon.kotlin.avro.generator.AvroKotlinGeneratorProperties
 import io.toolisticon.kotlin.avro.generator.spi.AvroCodeGenerationSpiRegistry
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.generateFiles
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.spi.load
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
-import io.toolisticon.kotlin.generation.spi.KotlinCodeGenerationSpiRegistry
+import io.toolisticon.kotlin.generation.spi.registry.KotlinCodeGenerationSpiList
 
 @OptIn(ExperimentalKotlinPoetApi::class)
 open class EmnAxon5AvroBasedGenerator(
@@ -20,15 +21,20 @@ open class EmnAxon5AvroBasedGenerator(
   val avroProperties: AvroKotlinGeneratorProperties
 ) {
   companion object {
+    val CONTEXT_UPPER_BOUND = EmnGenerationContext::class
+
+    /**
+     * Loads the default [KotlinCodeGenerationSpiList] and creates an [EmnAxon5AvroBasedGenerator] instance.
+     */
     fun create(
-      registry: KotlinCodeGenerationSpiRegistry,
+      spiList: KotlinCodeGenerationSpiList = load(),
       properties: EmnAxon5GeneratorProperties,
       avroProperties: AvroKotlinGeneratorProperties
     ): EmnAxon5AvroBasedGenerator {
       return EmnAxon5AvroBasedGenerator(
-        registry = registry,
+        registry = EmnAxon5GenerationSpiRegistry(spiList),
         properties = properties,
-        avroRegistry = avroRegistry,
+        avroRegistry = AvroCodeGenerationSpiRegistry(spiList),
         avroProperties = avroProperties
       )
     }
@@ -49,12 +55,10 @@ open class EmnAxon5AvroBasedGenerator(
   }
 
   fun generate(definitions: Definitions, declaration: ProtocolDeclaration): KotlinFileSpecList {
-
     val context = contextEmnContextFactory(declaration, definitions)
 
     val avroGeneratedFiles = generateFiles(input = declaration, context = context.protocolDeclarationContext)
     val emnGeneratedFiles = generateFiles(input = definitions, context = context)
-
 
     return avroGeneratedFiles + emnGeneratedFiles
   }

@@ -1,28 +1,19 @@
 package io.holixon.emn.generation.spi
 
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
+import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator.Companion.CONTEXT_UPPER_BOUND
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.spi.filter.hasContextType
 import io.toolisticon.kotlin.generation.spi.KotlinCodeGenerationSpiRegistry
-import io.toolisticon.kotlin.generation.spi.processor.KotlinCodeGenerationProcessorList
-import io.toolisticon.kotlin.generation.spi.registry.KotlinCodeGenerationServiceRepository
-import io.toolisticon.kotlin.generation.spi.strategy.KotlinCodeGenerationStrategyList
+import io.toolisticon.kotlin.generation.spi.registry.KotlinCodeGenerationSpiList
 
 @OptIn(ExperimentalKotlinPoetApi::class)
 class EmnAxon5GenerationSpiRegistry(
   private val registry: KotlinCodeGenerationSpiRegistry,
 ) : KotlinCodeGenerationSpiRegistry by registry {
   companion object {
-    private val CONTEXT_UPPER_BOUND = EmnGenerationContext::class
+    val hasContextType = hasContextType(CONTEXT_UPPER_BOUND)
   }
 
-  companion object {
-    fun create(registry: KotlinCodeGenerationSpiRegistry): EmnAxon5GenerationSpiRegistry {
-      return EmnAxon5GenerationSpiRegistry(registry)
-    }
-  }
-
-
-  constructor(strategies: KotlinCodeGenerationStrategyList, processors: KotlinCodeGenerationProcessorList = KotlinCodeGenerationProcessorList()) : this(
-    registry = KotlinCodeGenerationServiceRepository(CONTEXT_UPPER_BOUND, processors, strategies)
-  )
+  constructor(spiList: KotlinCodeGenerationSpiList) : this(registry = spiList.filter(hasContextType).registry())
 
 }

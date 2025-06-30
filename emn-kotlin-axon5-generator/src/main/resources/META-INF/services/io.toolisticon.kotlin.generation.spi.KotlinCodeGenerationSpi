@@ -1,4 +1,6 @@
+#
+# EMN Strategies
+#
 io.holixon.emn.generation.strategy.CommandHandlingComponentStrategy
 io.holixon.emn.generation.strategy.DefinitionsToCommandHandlerComponentStrategy
 io.holixon.emn.generation.strategy.NestedCommandDataClassStrategy
-

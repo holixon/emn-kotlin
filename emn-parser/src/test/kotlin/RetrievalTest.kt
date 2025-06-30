@@ -1,6 +1,5 @@
-package model
+package io.holixon.emn
 
-import io.holixon.emn.model.EmnDocumentParser
 import io.holixon.emn.model.FlowElement
 import io.holixon.emn.model.FlowElementType
 import org.junit.jupiter.api.Test
