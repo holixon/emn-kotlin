@@ -15,7 +15,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <kotlin-code-generation.version>0.1.4</kotlin-code-generation.version>
+    <kotlin-code-generation.version>0.2.2</kotlin-code-generation.version>
   </properties>
 
   <dependencyManagement>
