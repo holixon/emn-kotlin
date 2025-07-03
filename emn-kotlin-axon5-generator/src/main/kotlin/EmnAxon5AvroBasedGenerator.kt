@@ -34,7 +34,7 @@ open class EmnAxon5AvroBasedGenerator(
       return EmnAxon5AvroBasedGenerator(
         registry = EmnAxon5GenerationSpiRegistry(spiList),
         properties = properties,
-        avroRegistry = AvroCodeGenerationSpiRegistry(spiList),
+        avroRegistry = AvroCodeGenerationSpiRegistry(spiList.registry()),
         avroProperties = avroProperties
       )
     }
