@@ -1,8 +1,11 @@
 package io.holixon.emn.generation
 
+import io.toolisticon.kotlin.generation.PackageName
+
 interface EmnAxon5GeneratorProperties {
+  val rootPackageName: PackageName
 }
 
-object DefaultEmnAxon5GeneratorProperties : EmnAxon5GeneratorProperties {
-  
-}
+data class DefaultEmnAxon5GeneratorProperties(
+  override val rootPackageName: PackageName
+) : EmnAxon5GeneratorProperties 

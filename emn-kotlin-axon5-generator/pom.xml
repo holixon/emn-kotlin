@@ -23,6 +23,20 @@
       <groupId>io.toolisticon.kotlin.generation</groupId>
       <artifactId>kotlin-code-generation</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.toolisticon.kotlin.avro</groupId>
+      <artifactId>avro-kotlin-generator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.axonframework</groupId>
+      <artifactId>axon-messaging</artifactId>
+      <version>${axon.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.axonframework</groupId>
+      <artifactId>axon-eventsourcing</artifactId>
+      <version>${axon.version}</version>
+    </dependency>
 
     <!--    <dependency>-->
 <!--      <groupId>com.squareup</groupId>-->

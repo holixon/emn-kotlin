@@ -42,7 +42,7 @@ sealed class FlowElementType(
 
   sealed class FlowNodeType(
     override val id: String,
-    override val name: String?,
+    override val name: String,
     open val schema: Schema?,
     open val incoming: MutableList<MessageFlowType> = mutableListOf(),
     open val outgoing: MutableList<MessageFlowType> = mutableListOf(),
@@ -51,12 +51,12 @@ sealed class FlowElementType(
     class QueryType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
     class EventType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
     class ExternalEventType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
-    class ViewType(id: String, name: String?, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
-    class TranslationType(id: String, name: String?, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
-    class AutomationType(id: String, name: String?, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
-    class ExternalSystemType(id: String, name: String?, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
-    class ErrorType(id: String, name: String?, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
-    open class FlowNodeTypeReference(id: String) : FlowNodeType(id = id, name = null, schema = null)
+    class ViewType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
+    class TranslationType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
+    class AutomationType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
+    class ExternalSystemType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
+    class ErrorType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
+    open class FlowNodeTypeReference(id: String) : FlowNodeType(id = id, name = id, schema = null)
     object NoTypeReference : FlowNodeTypeReference(id = "NONE")
   }
 
@@ -120,15 +120,15 @@ sealed class FlowElement(
     open val outgoing: MutableList<MessageFlow> = mutableListOf(),
   ) : FlowElement(id = id, typeReference = typeReference) {
 
-    class Command(id: String, name: String, typeReference: CommandType) : FlowNode(id = id, typeReference = typeReference)
-    class Query(id: String, name: String, typeReference: QueryType) : FlowNode(id = id, typeReference = typeReference)
-    class Event(id: String, name: String, typeReference: EventType) : FlowNode(id = id, typeReference = typeReference)
-    class ExternalEvent(id: String, name: String, typeReference: ExternalEventType) : FlowNode(id = id, typeReference = typeReference)
-    class View(id: String, name: String?, typeReference: ViewType) : FlowNode(id = id, typeReference = typeReference)
-    class Translation(id: String, name: String?, typeReference: TranslationType) : FlowNode(id = id, typeReference = typeReference)
-    class Automation(id: String, name: String?, typeReference: AutomationType) : FlowNode(id = id, typeReference = typeReference)
-    class ExternalSystem(id: String, name: String?, typeReference: ExternalSystemType) : FlowNode(id = id, typeReference = typeReference)
-    class Error(id: String, name: String?, typeReference: ErrorType) : FlowNode(id = id, typeReference = typeReference)
+    class Command(id: String, typeReference: CommandType) : FlowNode(id = id, typeReference = typeReference)
+    class Query(id: String, typeReference: QueryType) : FlowNode(id = id, typeReference = typeReference)
+    class Event(id: String, typeReference: EventType) : FlowNode(id = id, typeReference = typeReference)
+    class ExternalEvent(id: String, typeReference: ExternalEventType) : FlowNode(id = id, typeReference = typeReference)
+    class View(id: String, typeReference: ViewType) : FlowNode(id = id, typeReference = typeReference)
+    class Translation(id: String, typeReference: TranslationType) : FlowNode(id = id, typeReference = typeReference)
+    class Automation(id: String, typeReference: AutomationType) : FlowNode(id = id, typeReference = typeReference)
+    class ExternalSystem(id: String, typeReference: ExternalSystemType) : FlowNode(id = id, typeReference = typeReference)
+    class Error(id: String, typeReference: ErrorType) : FlowNode(id = id, typeReference = typeReference)
     class FlowNodeReference(id: String) : FlowNode(id = id, typeReference = NoTypeReference)
   }
 

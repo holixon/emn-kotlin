@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project  xmlns="http://maven.apache.org/POM/4.0.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>io.toolisticon.maven.parent</groupId>
     <artifactId>maven-parent-kotlin-base</artifactId>
-    <version>2025.6.1</version>
-    <relativePath/>
+    <version>2025.7.1</version>
+    <relativePath />
   </parent>
 
   <groupId>io.holixon.emn._</groupId>
@@ -19,9 +18,9 @@
   <packaging>pom</packaging>
 
   <properties>
-    <!-- Global relevant version definitions. -->
     <mockito.version>5.4.0</mockito.version>
     <assertj.version>3.27.3</assertj.version>
+    <axon.version>5.0.0-M2</axon.version>
   </properties>
 
   <modules>
@@ -29,19 +28,20 @@
 
     <module>emn-parser</module>
     <module>emn-kotlin-axon5-generator</module>
+    <module>examples/university</module>
   </modules>
 
   <!-- this is the maven root, all dependencies have to be declared in the concrete modules, using emn-kotlin-parent -->
   <dependencyManagement />
 
   <!-- this is the maven root, all dependencies have to be declared in the concrete modules -->
-  <dependencies/>
+  <dependencies />
 
   <build>
     <defaultGoal>clean jacoco:prepare-agent package</defaultGoal>
 
     <!-- this is the maven root, all plugins have to be declared in the concrete modules -->
-    <plugins/>
+    <plugins />
   </build>
 
   <licenses>
@@ -54,7 +54,8 @@
   <scm>
     <connection>scm:git:git@github.com:holixon/emn-kotlin.git</connection>
     <url>scm:git:git@github.com:holixon/emn-kotlin.git</url>
-    <developerConnection>scm:git:git@github.com:holixon/emn-kotlin.git</developerConnection>
+    <developerConnection
+    >scm:git:git@github.com:holixon/emn-kotlin.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 

@@ -7,20 +7,26 @@ import io.holixon.emn.model.*
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpec
+import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
+import io.toolisticon.kotlin.generation.spec.KotlinGeneratorTypeSpec
+import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecStrategy
-import java.util.*
-import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalKotlinPoetApi::class)
-class DefinitionsToFilesStrategy : KotlinFileSpecStrategy<EmnGenerationContext, Definitions>(
+class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<EmnGenerationContext, Definitions>(
   contextType = EmnGenerationContext::class, inputType = Definitions::class
 ) {
-  override fun invoke(context: EmnGenerationContext, input: Definitions): KotlinFileSpec {
-    return buildSlice(input)
+  override fun invoke(context: EmnGenerationContext, input: Definitions): KotlinFileSpecList {
+
+    val commandHandlerComponentFiles: List<KotlinFileSpec> = context.commandSlices.flatMap { commandSlice ->
+      CommandHandlingComponentStrategy().invoke(context, commandSlice)
+    }
+
+    return KotlinFileSpecList(commandHandlerComponentFiles)
   }
 
 
-  fun buildSlice(input: Definitions): KotlinFileSpec {
+  private fun buildSlice(input: Definitions): KotlinFileSpec {
     val timeline = input.timelines[0]
     val slice = timeline.sliceSet.first()
 
@@ -47,7 +53,7 @@ class DefinitionsToFilesStrategy : KotlinFileSpecStrategy<EmnGenerationContext, 
       .build()
   }
 
-  fun buildFoo(input: Definitions): KotlinFileSpec {
+  private fun buildFoo(input: Definitions): KotlinFileSpec {
     val classNameFoo = ClassName("io.toolisticon.kotlin.generation", "Foo")
     val fileBuilder = fileBuilder(classNameFoo)
 

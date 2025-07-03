@@ -1,0 +1,10 @@
+package io.holixon.emn.example.university.faculty.write.renamecoursepolymorph
+
+import io.holixon.emn.example.university.faculty.type.course.CourseId
+import org.axonframework.modelling.annotation.TargetEntityId
+
+data class RenameCourse(
+  @TargetEntityId
+  val courseId: CourseId,
+  val name: String
+)

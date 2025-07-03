@@ -1,5 +1,8 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -11,11 +14,13 @@
 
   <artifactId>emn-kotlin-parent</artifactId>
   <name>pom: ${project.artifactId}</name>
-  <description>Parent for emn-kotlin summarizing used libraries and versions.</description>
+  <description
+  >Parent for emn-kotlin summarizing used libraries and versions.</description>
   <packaging>pom</packaging>
 
   <properties>
-    <kotlin-code-generation.version>0.1.4</kotlin-code-generation.version>
+    <avro-kotlin.version>1.12.5.0</avro-kotlin.version>
+    <kotlin-code-generation.version>0.2.2</kotlin-code-generation.version>
   </properties>
 
   <dependencyManagement>
@@ -25,6 +30,15 @@
         <groupId>io.toolisticon.kotlin.generation</groupId>
         <artifactId>kotlin-code-generation-bom</artifactId>
         <version>${kotlin-code-generation.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+
+      <!-- AVRO-KOTLIN -->
+      <dependency>
+        <groupId>io.toolisticon.kotlin.avro</groupId>
+        <artifactId>avro-kotlin-bom</artifactId>
+        <version>${avro-kotlin.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
