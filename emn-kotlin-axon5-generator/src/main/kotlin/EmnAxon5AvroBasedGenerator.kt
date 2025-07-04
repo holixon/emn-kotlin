@@ -18,7 +18,6 @@ open class EmnAxon5AvroBasedGenerator(
   val registry: EmnAxon5GenerationSpiRegistry,
   val properties: EmnAxon5GeneratorProperties,
   val avroRegistry: AvroCodeGenerationSpiRegistry,
-  val avroProperties: AvroKotlinGeneratorProperties
 ) {
   companion object {
     val CONTEXT_UPPER_BOUND = EmnGenerationContext::class
@@ -29,13 +28,11 @@ open class EmnAxon5AvroBasedGenerator(
     fun create(
       spiList: KotlinCodeGenerationSpiList = load(),
       properties: EmnAxon5GeneratorProperties,
-      avroProperties: AvroKotlinGeneratorProperties
     ): EmnAxon5AvroBasedGenerator {
       return EmnAxon5AvroBasedGenerator(
         registry = EmnAxon5GenerationSpiRegistry(spiList),
         properties = properties,
         avroRegistry = AvroCodeGenerationSpiRegistry(spiList.registry()),
-        avroProperties = avroProperties
       )
     }
   }
@@ -44,7 +41,7 @@ open class EmnAxon5AvroBasedGenerator(
     val protocolDeclarationContext = ProtocolDeclarationContext.of(
       declaration = declaration,
       registry = avroRegistry,
-      properties = avroProperties
+      properties = properties
     )
     return EmnGenerationContext(
       definitions = definitions,
@@ -56,6 +53,8 @@ open class EmnAxon5AvroBasedGenerator(
 
   fun generate(definitions: Definitions, declaration: ProtocolDeclaration): KotlinFileSpecList {
     val context = contextEmnContextFactory(declaration, definitions)
+
+    // validate references between protocol declaration and EMN definitions
 
     val avroGeneratedFiles = generateFiles(input = declaration, context = context.protocolDeclarationContext)
     val emnGeneratedFiles = generateFiles(input = definitions, context = context)

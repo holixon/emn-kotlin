@@ -5,16 +5,18 @@ import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.EmnDocumentParser
 import io.holixon.emn.generation.TestFixtures.AvroKotlinFixtures.AVRO_PARSER
 import org.junit.jupiter.api.Test
+import java.time.Instant
 
 @OptIn(ExperimentalKotlinPoetApi::class)
 class EmnAxon5AvroBasedGeneratorTest {
 
-  private val properties = DefaultEmnAxon5GeneratorProperties("io.holixon.emn.example.faculty")
+  private val properties = DefaultEmnAxon5GeneratorProperties(
+    rootPackageName = "io.holixon.emn.example.faculty",
+  )
 
   private val generator = EmnAxon5AvroBasedGenerator.create(
     TestFixtures.SPI_REGISTRY,
     properties,
-    TestFixtures.AvroKotlinFixtures.AVRO_DEFAULT_PROPERTIES
   )
 
   private val emnParser = EmnDocumentParser()
