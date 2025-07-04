@@ -13,8 +13,6 @@ object TestFixtures {
 
   object AvroKotlinFixtures {
 
-    val AVRO_DEFAULT_PROPERTIES = DefaultAvroKotlinGeneratorProperties(nowSupplier = Instant::now)
-
     val AVRO_PARSER = AvroParser()
 
   }

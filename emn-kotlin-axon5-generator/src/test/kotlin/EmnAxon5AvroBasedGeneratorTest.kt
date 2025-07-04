@@ -31,5 +31,6 @@ class EmnAxon5AvroBasedGeneratorTest {
     generator.generate(definitions, declaration).forEach {
       println(it.code)
     }
+
   }
 }
