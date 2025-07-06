@@ -34,30 +34,36 @@ open class EmnAxon5AvroBasedGenerator(
       return EmnAxon5AvroBasedGenerator(
         registry = EmnAxon5GenerationSpiRegistry(spiList),
         properties = properties,
-        avroRegistry = AvroCodeGenerationSpiRegistry(spiList.registry()),
+        avroRegistry = AvroCodeGenerationSpiRegistry(spiList),
         avroProperties = avroProperties
       )
     }
   }
 
   internal fun contextEmnContextFactory(declaration: ProtocolDeclaration, definitions: Definitions): EmnGenerationContext {
-    val protocolDeclarationContext = ProtocolDeclarationContext.of(
+    val emnCtx = EmnGenerationContext(
+      definitions = definitions,
+      registry = registry,
+      properties = properties
+    )
+
+    val avprContext = ProtocolDeclarationContext.of(
       declaration = declaration,
       registry = avroRegistry,
       properties = avroProperties
     )
-    return EmnGenerationContext(
-      definitions = definitions,
-      registry = registry,
-      properties = properties,
-      protocolDeclarationContext = protocolDeclarationContext
-    )
+
+    avprContext.tags[EmnGenerationContext::class] = emnCtx
+    emnCtx.tags[ProtocolDeclarationContext::class] = avprContext
+
+    return emnCtx
   }
 
   fun generate(definitions: Definitions, declaration: ProtocolDeclaration): KotlinFileSpecList {
     val context = contextEmnContextFactory(declaration, definitions)
 
     val avroGeneratedFiles = generateFiles(input = declaration, context = context.protocolDeclarationContext)
+
     val emnGeneratedFiles = generateFiles(input = definitions, context = context)
 
     return avroGeneratedFiles + emnGeneratedFiles

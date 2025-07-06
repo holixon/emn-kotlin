@@ -19,8 +19,8 @@
   <packaging>pom</packaging>
 
   <properties>
-    <avro-kotlin.version>1.12.5.0</avro-kotlin.version>
-    <kotlin-code-generation.version>0.2.2</kotlin-code-generation.version>
+    <avro-kotlin.version>1.12.5.1</avro-kotlin.version>
+    <kotlin-code-generation.version>0.2.3</kotlin-code-generation.version>
   </properties>
 
   <dependencyManagement>
