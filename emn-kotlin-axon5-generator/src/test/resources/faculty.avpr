@@ -19,7 +19,7 @@
       "namespace": "io.holixon.emn.faculty",
       "fields": [
         {
-          "name": "identifier",
+          "name": "value",
           "type": "string"
         }
       ]

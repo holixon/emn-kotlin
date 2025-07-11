@@ -11,6 +11,7 @@
 
   <groupId>io.holixon.emn.generation</groupId>
   <artifactId>emn-kotlin-axon5-generator</artifactId>
+  <name>emn-kotlin-axon5-generator</name>
   <description>Generate Axon5 Command and Eventhandler based on EMN.</description>
 
   <dependencies>
@@ -37,28 +38,6 @@
       <artifactId>axon-eventsourcing</artifactId>
       <version>${axon.version}</version>
     </dependency>
-
-    <!--    <dependency>-->
-<!--      <groupId>com.squareup</groupId>-->
-<!--      <artifactId>kotlinpoet-jvm</artifactId>-->
-<!--    </dependency>-->
-
-<!--    <dependency>-->
-<!--      <groupId>org.jetbrains.kotlinx</groupId>-->
-<!--      <artifactId>kotlinx-serialization-core-jvm</artifactId>-->
-<!--    </dependency>-->
-
-<!--    <dependency>-->
-<!--      <groupId>jakarta.annotation</groupId>-->
-<!--      <artifactId>jakarta.annotation-api</artifactId>-->
-<!--      <version>3.0.0</version>-->
-<!--    </dependency>-->
-
-<!--    <dependency>-->
-<!--      <groupId>ch.qos.logback</groupId>-->
-<!--      <artifactId>logback-classic</artifactId>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
   </dependencies>
 
   <build>

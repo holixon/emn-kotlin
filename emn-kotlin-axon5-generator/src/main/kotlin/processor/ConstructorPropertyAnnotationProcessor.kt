@@ -18,10 +18,11 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
     val emnCtx : EmnGenerationContext = context.tag()!!
     val recordType = input.memberOf
 
-    addKdoc("Constructor property for field '${input.name.value}' of record type '${recordType.name.value}'.")
-    addKdoc("Ctx: ${emnCtx.definitions} ")
-
+//    addKdoc("Constructor property for field '${input.name.value}' of record type '${recordType.name.value}'.")
+//    addKdoc("Ctx: ${emnCtx.definitions} ")
   }
 
-
+  override fun test(context: SchemaDeclarationContext, input: Any): Boolean {
+    return super.test(context, input)
+  }
 }

@@ -9,7 +9,10 @@ import org.junit.jupiter.api.Test
 @OptIn(ExperimentalKotlinPoetApi::class)
 class EmnAxon5AvroBasedGeneratorTest {
 
-  private val properties = DefaultEmnAxon5GeneratorProperties("io.holixon.emn.example.faculty")
+  private val properties = DefaultEmnAxon5GeneratorProperties(
+    emnName = "faculty",
+    rootPackageName = "io.holixon.emn.example.faculty",
+  )
 
   private val generator = EmnAxon5AvroBasedGenerator.create(
     TestFixtures.SPI_REGISTRY,
@@ -28,6 +31,5 @@ class EmnAxon5AvroBasedGeneratorTest {
     generator.generate(definitions, declaration).forEach {
       println(it.code)
     }
-
   }
 }

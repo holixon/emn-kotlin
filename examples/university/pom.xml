@@ -11,6 +11,7 @@
 
   <groupId>io.holixon.emn.example</groupId>
   <artifactId>university-example</artifactId>
+  <name>university-example</name>
   <description>University Example using DCB and Axon 5.</description>
   <properties>
     <log4j.version>2.24.3</log4j.version>

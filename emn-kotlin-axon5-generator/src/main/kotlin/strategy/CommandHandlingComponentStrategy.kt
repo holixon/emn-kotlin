@@ -3,8 +3,8 @@ package io.holixon.emn.generation.strategy
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
 import io.holixon.emn.generation.idProperty
+import io.holixon.emn.generation.injectEntityAnnotation
 import io.holixon.emn.generation.resolveAvroPoetType
 import io.holixon.emn.generation.sourcedEvents
 import io.holixon.emn.generation.spi.CommandSlice
@@ -13,12 +13,12 @@ import io.toolisticon.kotlin.avro.generator.api.AvroPoetType
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildInterface
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildParameter
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.classBuilder
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spec.KotlinFunSpec
 import io.toolisticon.kotlin.generation.spec.KotlinInterfaceSpec
-import io.toolisticon.kotlin.generation.spec.toBuilder
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
 import org.axonframework.commandhandling.annotation.CommandHandler
 import org.axonframework.eventhandling.gateway.EventAppender
@@ -80,17 +80,9 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
       this.addParameter("command", commandType.typeName)
 
       this.addParameter(
-        ParameterSpec
-          .builder("state", stateSpec.className)
-          .addAnnotation(
-            buildAnnotation(InjectEntity::class) {
-              if (idProperty != null) {
-                // we need an id property for creation command handler
-                addMember("idProperty = %S", idProperty)
-              }
-            }.get()
-          )
-          .build()
+        buildParameter("state", stateSpec.className) {
+          addAnnotation(injectEntityAnnotation(idProperty))
+        }
       )
 
       this.addParameter("eventAppender", EventAppender::class)
