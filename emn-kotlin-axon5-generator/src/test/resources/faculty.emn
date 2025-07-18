@@ -6,7 +6,7 @@
   exporter="Hand crafted"
   exporterVersion="1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ./EMN.xsd"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd"
 >
   <emn:types>
     <emn:viewType id="view_type_page_24" name="Page 24">
@@ -231,6 +231,7 @@
           <emn:flowNodeRef>error_course_capacity_not_changed</emn:flowNodeRef>
           <emn:flowNodeRef>error_course_not_created</emn:flowNodeRef>
           <emn:flowNodeRef>error_course_not_renamed</emn:flowNodeRef>
+          <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.faculty.CourseId</emn:idSchema>
         </emn:aggregateLane>
         <emn:aggregateLane id="aggregate_student" name="Student">
           <emn:flowNodeRef>event_student_enrolled</emn:flowNodeRef>
@@ -239,6 +240,7 @@
           <emn:flowNodeRef>error_student_not_enrolled</emn:flowNodeRef>
           <emn:flowNodeRef>error_student_not_subscribed</emn:flowNodeRef>
           <emn:flowNodeRef>error_student_not_unsubscribed</emn:flowNodeRef>
+          <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.faculty.StudentId</emn:idSchema>
         </emn:aggregateLane>
       </emn:aggregateLaneSet>
     </emn:laneSet>

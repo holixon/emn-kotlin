@@ -7,10 +7,10 @@ import io.holixon.emn.model.Slice
 import io.toolisticon.kotlin.generation.PackageName
 
 data class CommandSlice(
-  val slice: Slice,
-  val command: Command
+    val slice: Slice,
+    val command: Command
 ) {
-  internal fun name() = slice.name ?: slice.id
-  fun packageName(rootPackage: PackageName): PackageName = rootPackage + name().removeSpaces().lowercase()
-  fun simpleClassName(): String = name().removeSpaces().firstUppercase()
+    internal fun name() = slice.name ?: slice.id
+    fun packageName(rootPackage: PackageName): PackageName = rootPackage + name().removeSpaces().lowercase()
+    fun simpleClassName(): String = name().removeSpaces().firstUppercase()
 }

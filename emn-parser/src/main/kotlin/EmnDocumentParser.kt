@@ -1,6 +1,9 @@
 package io.holixon.emn
 
 import io.holixon.emn.model.*
+import io.holixon.emn.model.FlowElement.FlowNode.FlowNodeReference
+import io.holixon.emn.model.Lane.AggregateLane
+import io.holixon.emn.model.Lane.TriggerLane
 import org.dom4j.Document
 import org.dom4j.Element
 import org.dom4j.io.SAXReader
@@ -162,7 +165,7 @@ class EmnDocumentParser {
                     nodes = listOf(),
                     messages = listOf(),
                 ).let { timeline ->
-                    val (nodes, messages) = extractFlowElements(element, typesById, messageFlowTypesById)
+                    val (nodes, messages) = element.extractFlowElements(typesById, messageFlowTypesById)
                     timeline.copy(nodes = nodes, messages = messages)
                 }
             )
@@ -177,23 +180,27 @@ class EmnDocumentParser {
             timeline.copy(
                 sliceSet = timeline.sliceSet.map { slice ->
                     slice.copy(
-                        flowElements = slice.flowElements.filterIsInstance<FlowElement.FlowNode.FlowNodeReference>()
-                            .map { e -> nodesById.getValue(e.id) })
+                        flowElements = slice.flowElements.filterIsInstance<FlowNodeReference>()
+                            .map { e -> nodesById.getValue(e.id) }
+                    )
                 },
                 laneSet = timeline.laneSet.copy(
                     triggerLaneSet = timeline.laneSet.triggerLaneSet.map { triggerLane ->
                         triggerLane.copy(
-                            flowElements = triggerLane.flowElements.filterIsInstance<FlowElement.FlowNode.FlowNodeReference>()
-                                .map { e -> nodesById.getValue(e.id) })
+                            flowElements = triggerLane.flowElements.filterIsInstance<FlowNodeReference>()
+                                .map { e -> nodesById.getValue(e.id) }
+                        )
                     },
                     interactionLane = timeline.laneSet
                         .interactionLane.copy(
-                            flowElements = timeline.laneSet.interactionLane.flowElements.filterIsInstance<FlowElement.FlowNode.FlowNodeReference>()
-                                .map { e -> nodesById.getValue(e.id) }),
+                            flowElements = timeline.laneSet.interactionLane.flowElements.filterIsInstance<FlowNodeReference>()
+                                .map { e -> nodesById.getValue(e.id) }
+                        ),
                     aggregateLaneSet = timeline.laneSet.aggregateLaneSet.map { aggregateLane ->
                         aggregateLane.copy(
-                            flowElements = aggregateLane.flowElements.filterIsInstance<FlowElement.FlowNode.FlowNodeReference>()
-                                .map { e -> nodesById.getValue(e.id) })
+                            flowElements = aggregateLane.flowElements.filterIsInstance<FlowNodeReference>()
+                                .map { e -> nodesById.getValue(e.id) }
+                        )
                     }
                 )
             )
@@ -223,16 +230,14 @@ class EmnDocumentParser {
         )
     }
 
-    fun extractFlowElements(
-        timeline: Element,
+    fun Element.extractFlowElements(
         typesById: Map<String, FlowElementType.FlowNodeType>,
         messageFlowTypesById: Map<String, FlowElementType.MessageFlowType>
-    ):
-            Pair<List<FlowElement.FlowNode>, List<FlowElement.MessageFlow>> {
+    ): Pair<List<FlowElement.FlowNode>, List<FlowElement.MessageFlow>> {
         val nodes = mutableListOf<FlowElement.FlowNode>()
         val messageFlows = mutableListOf<FlowElement.MessageFlow>()
 
-        val allFlowElements = timeline.elements().filterNot { it.name == "sliceSet" || it.name == "laneSet" }
+        val allFlowElements = this.elements().filterNot { it.name == "sliceSet" || it.name == "laneSet" }
         nodes.addAll(allFlowElements.toFlowNodes(typesById = typesById))
         messageFlows.addAll(allFlowElements.toMessageFlows())
 
@@ -263,14 +268,15 @@ class EmnDocumentParser {
 
     fun List<Element>.toMessageFlows(): List<FlowElement.MessageFlow> {
         return this.mapNotNull { element ->
-            when(element.name) {
+            when (element.name) {
                 "messageFlow" ->
                     FlowElement.MessageFlow(
                         id = element.id(),
                         typeReference = element.untypedMessageFlowType(),
-                        source = FlowElement.FlowNode.FlowNodeReference(id = element.sourceRef()),
-                        target = FlowElement.FlowNode.FlowNodeReference(id = element.targetRef())
+                        source = FlowNodeReference(id = element.sourceRef()),
+                        target = FlowNodeReference(id = element.targetRef())
                     )
+
                 else -> null
             }
         }
@@ -351,8 +357,10 @@ class EmnDocumentParser {
         requireNotNull(attributeValue("id")) { "Element must define 'id' attribute, but $this has none." }
 
     fun Element.name(): String = attributeValue("name") ?: ""
-    fun Element.schema(): Schema? {
-        val schemaElement = this.element("schema")
+    fun Element.schema(): Schema? = constructSchema(this.element("schema"))
+    fun Element.idSchema(): Schema? = constructSchema(this.element("idSchema"))
+
+    private fun constructSchema(schemaElement: Element?): Schema? {
         return if (schemaElement != null) {
             if (schemaElement.hasContent()) {
                 // embedded schema
@@ -389,9 +397,9 @@ class EmnDocumentParser {
     fun Element.targetRef(): String =
         requireNotNull(attributeValue("targetRef")) { "Message flow must define a 'targetRef' attribute, but $this has none." }
 
-    fun Element.triggerLanes(): List<Lane.TriggerLane> {
+    fun Element.triggerLanes(): List<TriggerLane> {
         return this.element("triggerLaneSet")?.elements("triggerLane")?.map { triggerLane ->
-            Lane.TriggerLane(
+            TriggerLane(
                 id = triggerLane.id(),
                 name = triggerLane.name(),
                 flowElements = triggerLane.flowNodeReferences()
@@ -399,18 +407,19 @@ class EmnDocumentParser {
         } ?: emptyList()
     }
 
-    fun Element.aggregateLanes(): List<Lane.AggregateLane> {
+    fun Element.aggregateLanes(): List<AggregateLane> {
         return this.element("aggregateLaneSet")?.elements("aggregateLane")?.map { aggregateLane ->
-            Lane.AggregateLane(
+            AggregateLane(
                 id = aggregateLane.id(),
                 name = aggregateLane.name(),
-                flowElements = aggregateLane.flowNodeReferences()
+                flowElements = aggregateLane.flowNodeReferences(),
+                idSchema = aggregateLane.idSchema()
             )
         } ?: emptyList()
     }
 
-    fun Element.flowNodeReferences(): List<FlowElement.FlowNode.FlowNodeReference> {
-        return this.elements("flowNodeRef")?.map { ref -> FlowElement.FlowNode.FlowNodeReference(ref.textTrim) }
+    fun Element.flowNodeReferences(): List<FlowNodeReference> {
+        return this.elements("flowNodeRef")?.map { ref -> FlowNodeReference(ref.textTrim) }
             ?: emptyList()
     }
 
@@ -454,7 +463,7 @@ class EmnDocumentParser {
         }
     }
 
-    fun Element.examples(typesById: Map<String, FlowElementType.FlowNodeType>): List<FlowElement> {
+    fun Element.examples(typesById: Map<String, FlowElementType.FlowNodeType>): List<FlowElement.FlowNode> {
         return this.elements().toFlowNodes(typesById = typesById)
     }
 
@@ -468,6 +477,7 @@ class EmnDocumentParser {
             } else {
                 val resource = exampleElement.resource()
                 if (resource != null) {
+                    // external example resource
                     ExampleValue.ResourceValue(valueFormat = valueFormat, resource = resource)
                 } else {
                     return null
