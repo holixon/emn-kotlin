@@ -25,7 +25,6 @@ class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<
     return KotlinFileSpecList(commandHandlerComponentFiles)
   }
 
-
   private fun buildSlice(input: Definitions): KotlinFileSpec {
     val timeline = input.timelines[0]
     val slice = timeline.sliceSet.first()

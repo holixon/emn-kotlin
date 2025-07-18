@@ -1,13 +1,18 @@
 package io.holixon.emn.generation.spi
 
-import _ktx.StringKtx.firstUppercase
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import io.holixon.emn.generation.*
-import io.holixon.emn.model.*
+import io.holixon.emn.generation.EmnAxon5GeneratorProperties
+import io.holixon.emn.generation.commands
+import io.holixon.emn.generation.events
+import io.holixon.emn.generation.isCommandSlice
+import io.holixon.emn.model.Definitions
 import io.holixon.emn.model.FlowElement.FlowNode.Command
 import io.holixon.emn.model.FlowElement.FlowNode.Event
 import io.holixon.emn.model.FlowElementType.FlowNodeType.CommandType
 import io.holixon.emn.model.FlowElementType.FlowNodeType.EventType
+import io.holixon.emn.model.Lane
+import io.holixon.emn.model.Slice
+import io.holixon.emn.model.Timeline
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.generation.PackageName
 import io.toolisticon.kotlin.generation.spi.context.KotlinCodeGenerationContextBase
@@ -20,8 +25,8 @@ import kotlin.reflect.KClass
 class EmnGenerationContext(
   val definitions: Definitions,
   val properties: EmnAxon5GeneratorProperties,
-  val protocolDeclarationContext: ProtocolDeclarationContext,
-  registry: EmnAxon5GenerationSpiRegistry
+  registry: EmnAxon5GenerationSpiRegistry,
+  val tags: MutableMap<KClass<*>, Any?> = mutableMapOf()
 ) : KotlinCodeGenerationContextBase<EmnGenerationContext>(registry) {
 
   val timelines: List<Timeline> by lazy {
@@ -54,9 +59,12 @@ class EmnGenerationContext(
     return timelines(event).flatMap { it.laneSet.aggregateLaneSet.filter { it.flowElements.events().contains(event) } }
   }
 
-
   override val contextType: KClass<EmnGenerationContext> = EmnGenerationContext::class
 
+  @Suppress("UNCHECKED_CAST")
+  override fun <T : Any> tag(type: KClass<T>): T? = tags[type] as? T
+
+  val protocolDeclarationContext: ProtocolDeclarationContext get() = tags[ProtocolDeclarationContext::class]!! as ProtocolDeclarationContext
 
 }
 

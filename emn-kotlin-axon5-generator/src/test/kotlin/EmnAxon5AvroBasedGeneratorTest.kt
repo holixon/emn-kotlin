@@ -11,6 +11,7 @@ import java.time.Instant
 class EmnAxon5AvroBasedGeneratorTest {
 
   private val properties = DefaultEmnAxon5GeneratorProperties(
+    emnName = "faculty",
     rootPackageName = "io.holixon.emn.example.faculty",
   )
 
