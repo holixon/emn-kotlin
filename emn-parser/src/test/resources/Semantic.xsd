@@ -212,6 +212,7 @@
         <xsd:sequence>
           <xsd:element name="incoming" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
           <xsd:element name="outgoing" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="example" type="tExampleValue" minOccurs="0" />
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -534,7 +535,7 @@
     <xsd:complexContent>
       <xsd:extension base="tBaseElement">
         <xsd:sequence>
-          <xsd:element ref="example" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="flowElement" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -565,53 +566,10 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:element name="example" type="tExample"/>
-  <xsd:complexType name="tExample" abstract="true">
-    <xsd:complexContent>
-      <xsd:extension base="tBaseElement">
-        <xsd:sequence>
-          <xsd:element ref="exampleValue" minOccurs="0"/>
-        </xsd:sequence>
-        <xsd:attribute name="elementRef" type="xsd:IDREF" use="required"/>
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-
   <xsd:element name="exampleValue" type="tExampleValue"/>
   <xsd:complexType name="tExampleValue" mixed="true">
     <xsd:attribute name="valueFormat" type="xsd:string" default="application/json"/>
     <xsd:attribute name="resource" type="xsd:string"/>
-  </xsd:complexType>
-
-  <xsd:element name="commandExample" type="tCommandExample" substitutionGroup="example"/>
-  <xsd:complexType name="tCommandExample">
-    <xsd:complexContent>
-      <xsd:extension base="tExample"/>
-    </xsd:complexContent>
-  </xsd:complexType>
-
-  <xsd:element name="eventExample" type="tEventExample" substitutionGroup="example"/>
-  <xsd:complexType name="tEventExample">
-    <xsd:complexContent>
-      <xsd:extension base="tExample">
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-
-  <xsd:element name="externalEventExample" type="tExternalEventExample" substitutionGroup="example"/>
-  <xsd:complexType name="tExternalEventExample">
-    <xsd:complexContent>
-      <xsd:extension base="tExample">
-      </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-
-  <xsd:element name="errorExample" type="tErrorExample" substitutionGroup="example"/>
-  <xsd:complexType name="tErrorExample">
-    <xsd:complexContent>
-      <xsd:extension base="tExample">
-      </xsd:extension>
-    </xsd:complexContent>
   </xsd:complexType>
 
 </xsd:schema>
