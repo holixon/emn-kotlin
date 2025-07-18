@@ -17,7 +17,6 @@ class EmnAxon5AvroBasedGeneratorTest {
   private val generator = EmnAxon5AvroBasedGenerator.create(
     TestFixtures.SPI_REGISTRY,
     properties,
-    TestFixtures.AvroKotlinFixtures.AVRO_DEFAULT_PROPERTIES
   )
 
   private val emnParser = EmnDocumentParser()

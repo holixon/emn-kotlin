@@ -16,8 +16,8 @@ import io.toolisticon.kotlin.generation.spi.registry.KotlinCodeGenerationSpiList
 @OptIn(ExperimentalKotlinPoetApi::class)
 open class EmnAxon5AvroBasedGenerator(
   val registry: EmnAxon5GenerationSpiRegistry,
-  val properties: EmnAxon5GeneratorProperties,
   val avroRegistry: AvroCodeGenerationSpiRegistry,
+  val properties: EmnAxon5GeneratorProperties
 ) {
   companion object {
     val CONTEXT_UPPER_BOUND = EmnGenerationContext::class
