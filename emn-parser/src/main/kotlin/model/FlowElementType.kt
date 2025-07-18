@@ -54,6 +54,11 @@ sealed class FlowElementType(
         class ErrorType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
         open class FlowNodeTypeReference(id: String) : FlowNodeType(id = id, name = id, schema = null)
         object NoTypeReference : FlowNodeTypeReference(id = "NONE")
+
+        fun schemaReference(): String {
+            requireNotNull(this.schema) { "No schema found for $this" }
+            return (this.schema!! as Schema.EmbeddedSchema).content
+        }
     }
 
     override fun toString(): String = "${this::class.simpleName}(id=$id, name=$name)"

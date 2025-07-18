@@ -26,19 +26,42 @@ sealed class FlowElement(
     ) : FlowElement(id = id, typeReference = typeReference, example = example) {
 
         class Command(id: String, typeReference: CommandType, example: ExampleValue?) :
-            FlowNode(id = id, typeReference = typeReference, example = example)
+            FlowNode(id = id, typeReference = typeReference, example = example) {
+
+            fun sourcedEvents(): List<Event> {
+                val directEvents = this.views()
+                    .flatMap { view -> view.queries() }
+                    .map { query -> query.events() }
+                    .flatten()
+                return directEvents + directEvents
+                    .filterNot { directEvents.contains(it) }
+                    .map { event ->
+                        event.commands().filterNot { it == this }
+                            .map { it.sourcedEvents() }.flatten()
+                    }.flatten()
+            }
+
+            fun possibleEvents() = this.outgoing.map { flow -> flow.target }.events()
+            fun views() = this.incoming.map { flow -> flow.source }.views()
+        }
 
         class Query(id: String, typeReference: QueryType, example: ExampleValue?) :
-            FlowNode(id = id, typeReference = typeReference, example = example)
+            FlowNode(id = id, typeReference = typeReference, example = example) {
+            fun events() = this.incoming.map { flow -> flow.source }.events()
+        }
 
         class Event(id: String, typeReference: EventType, example: ExampleValue?) :
-            FlowNode(id = id, typeReference = typeReference, example = example)
+            FlowNode(id = id, typeReference = typeReference, example = example) {
+            fun commands() = this.incoming.map { flow -> flow.source }.commands()
+        }
 
         class ExternalEvent(id: String, typeReference: ExternalEventType, example: ExampleValue?) :
             FlowNode(id = id, typeReference = typeReference, example = example)
 
         class View(id: String, typeReference: ViewType, example: ExampleValue?) :
-            FlowNode(id = id, typeReference = typeReference, example = example)
+            FlowNode(id = id, typeReference = typeReference, example = example) {
+            fun queries() = this.incoming.map { flow -> flow.source }.queries()
+        }
 
         class Translation(id: String, typeReference: TranslationType, example: ExampleValue?) :
             FlowNode(id = id, typeReference = typeReference, example = example)

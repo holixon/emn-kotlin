@@ -1,8 +1,6 @@
 package io.holixon.emn.generation
 
 import io.holixon.emn.model.*
-import io.holixon.emn.model.FlowElement.FlowNode.Command
-import io.holixon.emn.model.FlowElement.FlowNode.Event
 import io.toolisticon.kotlin.avro.generator.api.AvroPoetType
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.value.CanonicalName
@@ -18,27 +16,9 @@ fun Slice.isCommandSlice(): Boolean {
         .containsAll(sliceCommands.first().possibleEvents()) // all events are in the slice
 }
 
-fun Command.sourcedEvents(): List<Event> {
-    val directEvents = this.views()
-        .flatMap { view -> view.queries() }
-        .map { query -> query.events() }
-        .flatten()
-    return directEvents + directEvents
-        .filterNot { directEvents.contains(it) }
-        .map { event ->
-            event.commands().filterNot { it == this }
-                .map { it.sourcedEvents() }.flatten()
-        }.flatten()
-}
-
 fun FlowElement.FlowNode.hasAvroTypeDefinition() = this.typeReference.schema != null
         && this.typeReference.schema!!.schemaFormat == "avro-type-reference"
         && this.typeReference.schema is Schema.EmbeddedSchema
-
-fun FlowElementType.FlowNodeType.schemaReference(): String {
-    requireNotNull(this.schema) { "No schema found for $this" }
-    return (this.schema!! as Schema.EmbeddedSchema).content
-}
 
 fun FlowElementType.FlowNodeType.resolveAvroPoetType(context: ProtocolDeclarationContext): AvroPoetType {
     val schemaReference = this.schemaReference()
