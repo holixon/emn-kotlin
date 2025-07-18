@@ -1,6 +1,7 @@
 package io.holixon.emn
 
 
+import io.holixon.emn.model.Definitions
 import io.holixon.emn.model.FlowElement
 import io.holixon.emn.model.FlowElementType
 import org.assertj.core.api.Assertions.assertThat
@@ -12,13 +13,37 @@ class ParserTest {
   private val parser = EmnDocumentParser()
 
   @Test
-  fun parses_emn() {
+  fun parses_guest_register() {
 
     val file = File("src/test/resources/guest-register.emn")
     val result = parser.parseDefinitions(file)
     println(result)
     assertThat(result).isNotNull
 
+    assert_all_types_and_timelines(result)
+  }
+
+  @Test
+  fun parses_faculty() {
+
+    val file = File("src/test/resources/faculty.emn")
+    val result = parser.parseDefinitions(file)
+    println(result)
+    assertThat(result).isNotNull
+
+    assert_all_types_and_timelines(result)
+    assert_specifications(result)
+  }
+
+  private fun assert_specifications(result: Definitions) {
+    assertThat(result.specifications).isNotEmpty
+    assertThat(result.specifications).hasSize(2)
+    for (specification in result.specifications) {
+      println(specification)
+    }
+  }
+
+  private fun assert_all_types_and_timelines(result: Definitions) {
     assertThat(result.nodeTypes).isNotEmpty
     for (type in result.nodeTypes) {
       println("Type: ${type.id}, incoming: ${type.incoming.map { it.id }}, outgoing: ${type.outgoing.map { it.id }}")
@@ -66,5 +91,7 @@ class ParserTest {
     for (message in result.timelines[0].messages) {
       println("Flow: ${message.id}, source: ${message.source.id}, target: ${message.target.id}, type: ${message.typeReference.id}")
     }
+
+
   }
 }
