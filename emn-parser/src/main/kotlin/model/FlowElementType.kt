@@ -57,7 +57,7 @@ sealed class FlowElementType(
 
         fun schemaReference(): String {
             requireNotNull(this.schema) { "No schema found for $this" }
-            return (this.schema!! as Schema.EmbeddedSchema).content
+            return (this.schema!! as EmbeddedSchema).content
         }
     }
 

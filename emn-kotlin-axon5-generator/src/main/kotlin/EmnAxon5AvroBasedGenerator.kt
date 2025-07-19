@@ -5,7 +5,6 @@ import io.holixon.emn.generation.spi.EmnAxon5GenerationSpiRegistry
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.model.Definitions
 import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
-import io.toolisticon.kotlin.avro.generator.AvroKotlinGeneratorProperties
 import io.toolisticon.kotlin.avro.generator.spi.AvroCodeGenerationSpiRegistry
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.generateFiles

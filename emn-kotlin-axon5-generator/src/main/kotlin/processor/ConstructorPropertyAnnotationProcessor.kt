@@ -18,6 +18,8 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
     val emnCtx : EmnGenerationContext = context.tag()!!
     val recordType = input.memberOf
 
+
+
 //    addKdoc("Constructor property for field '${input.name.value}' of record type '${recordType.name.value}'.")
 //    addKdoc("Ctx: ${emnCtx.definitions} ")
   }

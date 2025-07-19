@@ -364,12 +364,12 @@ class EmnDocumentParser {
         return if (schemaElement != null) {
             if (schemaElement.hasContent()) {
                 // embedded schema
-                Schema.EmbeddedSchema(schemaFormat = schemaElement.schemaFormat(), content = schemaElement.textTrim)
+                EmbeddedSchema(schemaFormat = schemaElement.schemaFormat(), content = schemaElement.textTrim)
             } else {
                 // resource
                 val resource = schemaElement.resource()
                 if (resource != null) {
-                    Schema.ResourceSchema(schemaFormat = schemaElement.schemaFormat(), resource = resource)
+                    ResourceSchema(schemaFormat = schemaElement.schemaFormat(), resource = resource)
                 } else {
                     null
                 }

@@ -3,7 +3,6 @@ package io.holixon.emn.generation.strategy
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.asClassName
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
@@ -13,7 +12,6 @@ import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildObject
 import io.toolisticon.kotlin.generation.poet.FormatSpecifier
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
-import io.toolisticon.kotlin.generation.support.CodeBlockArray
 
 
 @OptIn(ExperimentalKotlinPoetApi::class)

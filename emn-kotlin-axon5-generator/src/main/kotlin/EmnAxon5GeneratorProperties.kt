@@ -15,6 +15,9 @@ interface EmnAxon5GeneratorProperties : AvroKotlinGeneratorProperties {
      * Package name for generation.
      */
     val rootPackageName: PackageName
+
+  val commandSliceRootPackageName: PackageName get() = "$rootPackageName.write"
+
 }
 
 /**

@@ -9,3 +9,5 @@ io.holixon.emn.generation.strategy.EmnObjectsFromProtocolDeclarationStrategy
 # Processors
 #
 io.holixon.emn.generation.processor.ConstructorPropertyAnnotationProcessor
+io.holixon.emn.generation.processor.EntityIdDataClassProcessor
+io.holixon.emn.generation.processor.MessageDataClassProcessor

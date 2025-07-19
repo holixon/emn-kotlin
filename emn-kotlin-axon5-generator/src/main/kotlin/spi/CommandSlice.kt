@@ -1,16 +1,26 @@
 package io.holixon.emn.generation.spi
 
-import _ktx.StringKtx.firstUppercase
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
+import io.holixon.emn.generation.EmnAxon5GeneratorProperties
+import io.holixon.emn.generation.ext.StringTransformations.TO_UPPER_CAMEL_CASE
+import io.holixon.emn.generation.ext.StringTransformations.transform
 import io.holixon.emn.generation.removeSpaces
 import io.holixon.emn.model.FlowElement.FlowNode.Command
 import io.holixon.emn.model.Slice
-import io.toolisticon.kotlin.generation.PackageName
 
+@OptIn(ExperimentalKotlinPoetApi::class)
 data class CommandSlice(
-    val slice: Slice,
-    val command: Command
+  val slice: Slice,
+  val command: Command,
+  val properties: EmnAxon5GeneratorProperties
 ) {
-    internal fun name() = slice.name ?: slice.id
-    fun packageName(rootPackage: PackageName): PackageName = rootPackage + name().removeSpaces().lowercase()
-    fun simpleClassName(): String = name().removeSpaces().firstUppercase()
+  internal val name = slice.name ?: slice.id
+  val packageSuffix = name.removeSpaces().lowercase()
+
+  val packageName = "${properties.commandSliceRootPackageName}.$packageSuffix"
+  val simpleClassName = name.transform(TO_UPPER_CAMEL_CASE)
+
 }
+
+val CommandSlice.commandHandlerClassName: ClassName get() = ClassName(packageName, simpleClassName + "CommandHandler")
