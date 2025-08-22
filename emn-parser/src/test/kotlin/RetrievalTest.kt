@@ -1,7 +1,11 @@
 package io.holixon.emn
 
+import io.holixon.emn.model.Command
+import io.holixon.emn.model.CommandType
 import io.holixon.emn.model.FlowElement
 import io.holixon.emn.model.FlowElementType
+import io.holixon.emn.model.FlowNode
+import io.holixon.emn.model.View
 import org.junit.jupiter.api.Test
 import java.io.File
 
@@ -15,20 +19,20 @@ class RetrievalTest {
     val result = parser.parseDefinitions(file)
 
 
-    result.nodeTypes.filterIsInstance<FlowElementType.FlowNodeType.CommandType>().forEach { commandType ->
+    result.nodeTypes.filterIsInstance<CommandType>().forEach { commandType ->
 
       println(commandType)
       // -> generate Command class
 
       result.timelines.map { timeline ->
 
-        val commands = timeline.flowElements.filterIsInstance<FlowElement.FlowNode.Command>().filter { it.typeReference == commandType }
+        val commands = timeline.flowElements.filterIsInstance<Command>().filter { it.typeReference == commandType }
 
         commands.forEach { c ->
 
           println(c)
 
-          val views = c.incoming.map { incoming -> incoming.source }.filterIsInstance<FlowElement.FlowNode.View>()
+          val views = c.incoming.map { incoming -> incoming.source }.filterIsInstance<View>()
           views.forEach { view -> println(view) }
           val events = views.map { view -> view.incoming.map { incoming -> incoming.source } }.flatten()
 

@@ -4,9 +4,7 @@ interface WithSchema {
   val schema: Schema?
 }
 
-sealed class Schema(
-  open val schemaFormat: String,
-)
+sealed class Schema(open val schemaFormat: String)
 
 data class EmbeddedSchema(override val schemaFormat: String, val content: String) : Schema(schemaFormat = schemaFormat) {
   override fun toString(): String = "content: \'${content}\'"

@@ -3,6 +3,7 @@ package io.holixon.emn.generation.strategy
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
+import io.holixon.emn.generation.idProperty
 import io.holixon.emn.generation.injectEntityAnnotation
 import io.holixon.emn.generation.resolveAvroPoetType
 import io.holixon.emn.generation.spi.CommandSlice
@@ -40,11 +41,11 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
       val sourcingEventTypes =
         sourcingEvents.map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
 
-//        val idProperty = if (sourcingEvents.isEmpty()) { // no source events
-//          input.command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext).idProperty
-//        } else {
-//          null
-//        }
+        val idProperty = if (sourcingEvents.isEmpty()) { // no source events
+          input.command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext).idProperty()
+        } else {
+          null
+        }
 
       val state = buildState(input.commandHandlerClassName, sourcingEventTypes = sourcingEventTypes)
 
@@ -52,7 +53,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
         buildHandler(
           commandType = commandType,
           stateSpec = state,
-          idProperty = TODO()//idProperty
+          idProperty = idProperty
         )
       )
 

@@ -1,7 +1,5 @@
 package io.holixon.emn.model
 
-import io.holixon.emn.model.FlowElement.FlowNode.*
-
 fun List<FlowElement>.commands() = filterIsInstance<Command>()
 fun List<FlowElement>.events() = filterIsInstance<Event>()
 fun List<FlowElement>.views() = filterIsInstance<View>()

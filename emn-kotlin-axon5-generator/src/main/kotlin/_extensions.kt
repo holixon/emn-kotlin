@@ -17,19 +17,19 @@ fun Slice.isCommandSlice(): Boolean {
 }
 
 
-fun FlowElement.FlowNode.hasAvroTypeDefinition() = this.typeReference.hasAvroTypeDefinition()
+fun FlowNode.hasAvroTypeDefinition() = this.typeReference.hasAvroTypeDefinition()
 
-fun FlowElementType.FlowNodeType.hasAvroTypeDefinition() = this.schema != null
+fun FlowNodeType.hasAvroTypeDefinition() = this.schema != null
   && this.schema!!.schemaFormat == "avro-type-reference"
   && this.schema is EmbeddedSchema
 
 
-fun FlowElementType.FlowNodeType.schemaReference(): String {
+fun FlowNodeType.schemaReference(): String {
   requireNotNull(this.schema) { "No schema found for $this" }
   return (this.schema!! as EmbeddedSchema).content
 }
 
-fun FlowElementType.FlowNodeType.resolveAvroPoetType(context: ProtocolDeclarationContext): AvroPoetType {
+fun FlowNodeType.resolveAvroPoetType(context: ProtocolDeclarationContext): AvroPoetType {
   val schemaReference = this.schemaReference()
   val commandAvroType = requireNotNull(context.protocol.types.values.first {
     it.schema.canonicalName == CanonicalName.parse(schemaReference)

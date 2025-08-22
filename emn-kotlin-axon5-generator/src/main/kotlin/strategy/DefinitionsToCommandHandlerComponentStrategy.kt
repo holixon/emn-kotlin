@@ -63,15 +63,15 @@ class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<
   }
 }
 
-private fun Slice.commands(): List<FlowElement.FlowNode.Command> {
-  return this.flowElements.filterIsInstance<FlowElement.FlowNode.Command>()
+private fun Slice.commands(): List<Command> {
+  return this.flowElements.filterIsInstance<Command>()
 }
 
-private fun Slice.events(): List<FlowElement.FlowNode.Event> {
-  return this.flowElements.filterIsInstance<FlowElement.FlowNode.Event>()
+private fun Slice.events(): List<Event> {
+  return this.flowElements.filterIsInstance<Event>()
 }
 
-private fun Timeline.aggregatesForSlice(filter: Slice): List<Lane.AggregateLane> {
+private fun Timeline.aggregatesForSlice(filter: Slice): List<AggregateLane> {
   return this.laneSet.aggregateLaneSet.filter {
     it.flowElements.any { elementInLane -> filter.flowElements.contains(elementInLane) }
   }

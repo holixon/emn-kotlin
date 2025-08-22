@@ -2,8 +2,11 @@ package io.holixon.emn
 
 
 import io.holixon.emn.model.Definitions
+import io.holixon.emn.model.Event
 import io.holixon.emn.model.FlowElement
 import io.holixon.emn.model.FlowElementType
+import io.holixon.emn.model.FlowNodeReference
+import io.holixon.emn.model.FlowNodeTypeReference
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -47,7 +50,7 @@ class ParserTest {
     }
 
     private fun assert_events_belong_to_aggregates(result: Definitions, verbose: Boolean = false) {
-        result.getFlowElement<FlowElement.FlowNode.Event>().forEach { event ->
+        result.getFlowElement<Event>().forEach { event ->
             assertThat(result.aggregates(event)).isNotEmpty
             if (verbose) {
                 println("Event: ${event.typeReference.name}, aggregates: ${result.aggregates(event).map { it.name to it.idSchema }}")
@@ -65,7 +68,7 @@ class ParserTest {
                 }
             }
         }
-        assertThat(result.nodeTypes.filterIsInstance<FlowElementType.FlowNodeType.FlowNodeTypeReference>()).isEmpty()
+        assertThat(result.nodeTypes.filterIsInstance<FlowNodeTypeReference>()).isEmpty()
 
         assertThat(result.flowTypes).isNotEmpty
         if (verbose) {
@@ -83,18 +86,18 @@ class ParserTest {
             if (verbose) {
                 println("Trigger lane: ${lane.id}, ${lane.name}")
             }
-            assertThat(lane.flowElements.filterIsInstance<FlowElement.FlowNode.FlowNodeReference>()).isEmpty()
+            assertThat(lane.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
         }
         if (verbose) {
             println("Interaction lane: ${result.timelines[0].laneSet.interactionLane}")
         }
-        assertThat(result.timelines[0].laneSet.interactionLane.flowElements.filterIsInstance<FlowElement.FlowNode.FlowNodeReference>()).isEmpty()
+        assertThat(result.timelines[0].laneSet.interactionLane.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
 
         for (lane in result.timelines[0].laneSet.aggregateLaneSet) {
             if (verbose) {
                 println("Aggregate lane: ${lane.id}, ${lane.name}")
             }
-            assertThat(lane.flowElements.filterIsInstance<FlowElement.FlowNode.FlowNodeReference>()).isEmpty()
+            assertThat(lane.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
         }
 
         assertThat(result.timelines[0].sliceSet).isNotEmpty
@@ -102,7 +105,7 @@ class ParserTest {
             if (verbose) {
                 println("Slice: ${slice.id}")
             }
-            assertThat(slice.flowElements.filterIsInstance<FlowElement.FlowNode.FlowNodeReference>()).isEmpty()
+            assertThat(slice.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
         }
 
         assertThat(result.timelines[0].nodes).isNotEmpty
@@ -111,7 +114,7 @@ class ParserTest {
                 println("Node: ${node.id}, incoming: ${node.incoming.map { it.id }}, outgoing: ${node.outgoing.map { it.id }}, type: ${node.typeReference.id}")
             }
         }
-        assertThat(result.timelines[0].nodes.filterIsInstance<FlowElement.FlowNode.FlowNodeReference>()).isEmpty()
+        assertThat(result.timelines[0].nodes.filterIsInstance<FlowNodeReference>()).isEmpty()
 
         assertThat(result.timelines[0].messages).isNotEmpty
         for (message in result.timelines[0].messages) {

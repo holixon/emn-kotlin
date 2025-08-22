@@ -3,8 +3,8 @@ package io.holixon.emn.generation.processor
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.generation.avro.SchemaDeclarationContextExt.emnContext
 import io.holixon.emn.generation.spi.commandHandlerClassName
-import io.holixon.emn.model.FlowElementType.FlowNodeType.CommandType
-import io.holixon.emn.model.FlowElementType.FlowNodeType.EventType
+import io.holixon.emn.model.CommandType
+import io.holixon.emn.model.EventType
 import io.toolisticon.kotlin.avro.generator.processor.KotlinDataClassFromRecordTypeProcessorBase
 import io.toolisticon.kotlin.avro.generator.spi.SchemaDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordType

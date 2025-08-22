@@ -6,7 +6,7 @@ import io.holixon.emn.generation.EmnAxon5GeneratorProperties
 import io.holixon.emn.generation.ext.StringTransformations.TO_UPPER_CAMEL_CASE
 import io.holixon.emn.generation.ext.StringTransformations.transform
 import io.holixon.emn.generation.removeSpaces
-import io.holixon.emn.model.FlowElement.FlowNode.Command
+import io.holixon.emn.model.Command
 import io.holixon.emn.model.Slice
 
 @OptIn(ExperimentalKotlinPoetApi::class)

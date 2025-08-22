@@ -5,10 +5,6 @@ import io.holixon.emn.generation.EmnAxon5GeneratorProperties
 import io.holixon.emn.generation.hasAvroTypeDefinition
 import io.holixon.emn.generation.isCommandSlice
 import io.holixon.emn.model.*
-import io.holixon.emn.model.FlowElement.FlowNode
-import io.holixon.emn.model.FlowElement.FlowNode.Event
-import io.holixon.emn.model.FlowElementType.FlowNodeType.CommandType
-import io.holixon.emn.model.FlowElementType.FlowNodeType.EventType
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordType
 import io.toolisticon.kotlin.avro.value.CanonicalName
@@ -41,7 +37,7 @@ class EmnGenerationContext(
     }
   }
 
-  val commands: List<FlowNode.Command> by lazy { slices.map { it.flowElements.commands() }.flatten() }
+  val commands: List<Command> by lazy { slices.map { it.flowElements.commands() }.flatten() }
 
   val commandTypes: List<CommandType> by lazy { commands.map { it.typeReference as CommandType }.distinct() }
 
@@ -60,7 +56,7 @@ class EmnGenerationContext(
   // FIXME has to be parsed from emn definitions
   val entities: MutableList<Entity> = mutableListOf()
 
-  val avroReferenceTypes: Map<CanonicalName, FlowElementType.FlowNodeType> by lazy {
+  val avroReferenceTypes: Map<CanonicalName, FlowNodeType> by lazy {
     definitions.nodeTypes.filter { it.hasAvroTypeDefinition() }
       .associateBy { CanonicalName.parse(it.schemaReference()) }
   }
