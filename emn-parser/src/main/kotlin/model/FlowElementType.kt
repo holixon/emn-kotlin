@@ -36,6 +36,7 @@ sealed class FlowNodeType(
 
   fun schemaReference(): String {
     requireNotNull(this.schema) { "No schema found for $this" }
+    require(this.schema is EmbeddedSchema) { "Only embedded schema is currently supported, but it was ${this.schema!!::class.simpleName}" }
     return (this.schema!! as EmbeddedSchema).content
   }
 }

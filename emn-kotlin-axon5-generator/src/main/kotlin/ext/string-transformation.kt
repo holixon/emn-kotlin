@@ -54,7 +54,7 @@ data object StringTransformations {
       .uppercase()
   }
 
-  /*
+  /**
    * Converts a string to UpperCamelCase, which is a common naming convention
    * for TypeNames in programming.
    *
@@ -66,6 +66,15 @@ data object StringTransformations {
       .joinToString("") { part ->
         part.lowercase().replaceFirstChar { it.uppercase() }
       }
+  }
+
+  /**
+   * Removes spaces and converts to lower case.
+   *
+   * Example: 'Add Customer` becomes `addcustomer`
+   */
+  data object WITHOUT_SPACES_TO_LOWER : StringTransformation {
+    override fun invoke(input: String): String = input.replace(" ", "")
   }
 
   private fun stringTransformation(toString: String, inner: StringTransformation) = object : StringTransformation {

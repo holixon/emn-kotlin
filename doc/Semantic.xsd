@@ -200,6 +200,7 @@
       <xsd:extension base="tBaseElement">
         <xsd:sequence>
           <xsd:element name="categoryValueRef" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="value" type="tFlowElementValue" minOccurs="0" />
         </xsd:sequence>
         <xsd:attribute name="typeRef" type="xsd:IDREF" use="required"/>
       </xsd:extension>
@@ -213,7 +214,6 @@
         <xsd:sequence>
           <xsd:element name="incoming" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
           <xsd:element name="outgoing" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
-          <xsd:element name="example" type="tExampleValue" minOccurs="0" />
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -441,7 +441,6 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-
   <xsd:element name="artifact" type="tArtifact"/>
   <xsd:complexType name="tArtifact" abstract="true">
     <xsd:complexContent>
@@ -570,8 +569,8 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:element name="exampleValue" type="tExampleValue"/>
-  <xsd:complexType name="tExampleValue" mixed="true">
+  <xsd:element name="value" type="tFlowElementValue"/>
+  <xsd:complexType name="tFlowElementValue" mixed="true">
     <xsd:attribute name="valueFormat" type="xsd:string" default="application/json"/>
     <xsd:attribute name="resource" type="xsd:string"/>
   </xsd:complexType>

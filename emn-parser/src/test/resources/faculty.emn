@@ -463,42 +463,42 @@
   >
     <emn:given stateName="Course is not full" id="spec_1_given">
       <emn:event typeRef="event_type_course_created" id="spec_1_event_type_course_created">
-        <emn:example>
+        <emn:value>
           {
           "courseId": "4711",
           "name": "Event sourcing in practice",
           "capacity": 13
           }
-        </emn:example>
+        </emn:value>
       </emn:event>
       <emn:event typeRef="event_type_student_enrolled" id="spec_1_event_type_student_enrolled">
-        <emn:example>
+        <emn:value>
           {
           "studentId": "42",
           "firstName": "John",
           "lastName": "Doe"
           }
-        </emn:example>
+        </emn:value>
       </emn:event>
     </emn:given>
     <emn:when id="spec_1_when">
       <emn:command typeRef="command_type_subscribe_student" id="spec_1_command_type_subscribe_student">
-        <emn:example>
+        <emn:value>
           {
           "studentId": "42",
           "courseId": "4711"
           }
-        </emn:example>
+        </emn:value>
       </emn:command>
     </emn:when>
     <emn:then id="spec_1_then">
       <emn:event typeRef="event_type_student_subscribed" id="spec_1_event_type_student_subscribed">
-        <emn:example>
+        <emn:value>
           {
           "studentId": "42",
           "courseId": "4711"
           }
-        </emn:example>
+        </emn:value>
       </emn:event>
     </emn:then>
   </emn:specification>
@@ -507,40 +507,40 @@
   >
     <emn:given stateName="Course is full" id="spec_2_given">
       <emn:event typeRef="event_type_course_created" id="spec_2_event_type_course_created">
-        <emn:example>
+        <emn:value>
           {
           "courseId": "4711",
           "name": "Event sourcing in practice",
           "capacity": 2
           }
-        </emn:example>
+        </emn:value>
       </emn:event>
       <emn:event typeRef="event_type_student_enrolled" id="spec_2_event_type_student_enrolled">
-        <emn:example>
+        <emn:value>
           {
           "studentId": "42",
           "firstName": "John",
           "lastName": "Doe"
           }
-        </emn:example>
+        </emn:value>
       </emn:event>
       <emn:event typeRef="event_type_student_subscribed" id="spec_2_event_type_student_subscribed">
-        <emn:example>
+        <emn:value>
           {
           "studentId": "41",
           "courseId": "4711"
           }
-        </emn:example>
+        </emn:value>
       </emn:event>
     </emn:given>
     <emn:when id="spec_2_when">
       <emn:command typeRef="command_type_subscribe_student" id="spec_2_command_type_subscribe_student">
-        <emn:example>
+        <emn:value>
           {
           "studentId": "42",
           "courseId": "4711"
           }
-        </emn:example>
+        </emn:value>
       </emn:command>
     </emn:when>
     <emn:then id="spec_2_then">

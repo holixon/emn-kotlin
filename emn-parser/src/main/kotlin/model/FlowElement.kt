@@ -3,11 +3,11 @@ package io.holixon.emn.model
 sealed class FlowElement(
   open val id: String,
   open val typeReference: FlowElementType,
-  open val example: ExampleValue?,
+  open val value: ElementValue?,
 ) {
 
   override fun toString(): String =
-    "${this::class.simpleName}(id=$id, name=${typeReference.name}, type=${typeReference.id}, example=${example})"
+    "${this::class.simpleName}(id=$id, name=${typeReference.name}, type=${typeReference.id}, value=${value})"
 
 }
 
@@ -16,17 +16,17 @@ data class MessageFlow(
   override val typeReference: MessageFlowType,
   val source: FlowNode,
   val target: FlowNode
-) : FlowElement(id = id, typeReference = typeReference, example = null)
+) : FlowElement(id = id, typeReference = typeReference, value = null)
 
 sealed class FlowNode(
   override val id: String,
   override val typeReference: FlowNodeType,
-  override val example: ExampleValue?,
+  override val value: ElementValue?,
   open val incoming: MutableList<MessageFlow> = mutableListOf(),
   open val outgoing: MutableList<MessageFlow> = mutableListOf(),
-) : FlowElement(id = id, typeReference = typeReference, example = example)
+) : FlowElement(id = id, typeReference = typeReference, value = value)
 
-class Command(id: String, typeReference: CommandType, example: ExampleValue?) : FlowNode(id = id, typeReference = typeReference, example = example) {
+class Command(id: String, typeReference: CommandType, value: ElementValue?) : FlowNode(id = id, typeReference = typeReference, value = value) {
 
   fun sourcedEvents(): List<Event> {
     val directEvents = this.views()
@@ -45,34 +45,34 @@ class Command(id: String, typeReference: CommandType, example: ExampleValue?) : 
   fun views() = this.incoming.map { flow -> flow.source }.views()
 }
 
-class Query(id: String, typeReference: QueryType, example: ExampleValue?) :
-  FlowNode(id = id, typeReference = typeReference, example = example) {
+class Query(id: String, typeReference: QueryType, value: ElementValue?) :
+  FlowNode(id = id, typeReference = typeReference, value = value) {
   fun events() = this.incoming.map { flow -> flow.source }.events()
 }
 
-class Event(id: String, typeReference: EventType, example: ExampleValue?) :
-  FlowNode(id = id, typeReference = typeReference, example = example) {
+class Event(id: String, typeReference: EventType, value: ElementValue?) :
+  FlowNode(id = id, typeReference = typeReference, value = value) {
   fun commands() = this.incoming.map { flow -> flow.source }.commands()
 }
 
-class ExternalEvent(id: String, typeReference: ExternalEventType, example: ExampleValue?) :
-  FlowNode(id = id, typeReference = typeReference, example = example)
+class ExternalEvent(id: String, typeReference: ExternalEventType, value: ElementValue?) :
+  FlowNode(id = id, typeReference = typeReference, value = value)
 
-class View(id: String, typeReference: ViewType, example: ExampleValue?) :
-  FlowNode(id = id, typeReference = typeReference, example = example) {
+class View(id: String, typeReference: ViewType, value: ElementValue?) :
+  FlowNode(id = id, typeReference = typeReference, value = value) {
   fun queries() = this.incoming.map { flow -> flow.source }.queries()
 }
 
-class Translation(id: String, typeReference: TranslationType, example: ExampleValue?) :
-  FlowNode(id = id, typeReference = typeReference, example = example)
+class Translation(id: String, typeReference: TranslationType, value: ElementValue?) :
+  FlowNode(id = id, typeReference = typeReference, value = value)
 
-class Automation(id: String, typeReference: AutomationType, example: ExampleValue?) :
-  FlowNode(id = id, typeReference = typeReference, example = example)
+class Automation(id: String, typeReference: AutomationType, value: ElementValue?) :
+  FlowNode(id = id, typeReference = typeReference, value = value)
 
-class ExternalSystem(id: String, typeReference: ExternalSystemType, example: ExampleValue?) :
-  FlowNode(id = id, typeReference = typeReference, example = example)
+class ExternalSystem(id: String, typeReference: ExternalSystemType, value: ElementValue?) :
+  FlowNode(id = id, typeReference = typeReference, value = value)
 
-class Error(id: String, typeReference: ErrorType, example: ExampleValue?) :
-  FlowNode(id = id, typeReference = typeReference, example = example)
+class Error(id: String, typeReference: ErrorType, value: ElementValue?) :
+  FlowNode(id = id, typeReference = typeReference, value = value)
 
-class FlowNodeReference(id: String) : FlowNode(id = id, typeReference = NoTypeReference, example = null)
+class FlowNodeReference(id: String) : FlowNode(id = id, typeReference = NoTypeReference, value = null)

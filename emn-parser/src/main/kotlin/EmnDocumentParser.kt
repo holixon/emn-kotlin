@@ -286,63 +286,63 @@ class EmnDocumentParser {
           View(
             id = element.id(),
             typeReference = element.typeReference(typesById),
-            example = element.example()
+            value = element.elementValue()
           )
 
         "command" ->
           Command(
             id = element.id(),
             typeReference = element.typeReference(typesById),
-            example = element.example()
+            value = element.elementValue()
           )
 
         "event" ->
           Event(
             id = element.id(),
             typeReference = element.typeReference(typesById),
-            example = element.example()
+            value = element.elementValue()
           )
 
         "query" ->
           Query(
             id = element.id(),
             typeReference = element.typeReference(typesById),
-            example = element.example()
+            value = element.elementValue()
           )
 
         "error" ->
           Error(
             id = element.id(),
             typeReference = element.typeReference(typesById),
-            example = element.example()
+            value = element.elementValue()
           )
 
         "externalEvent" ->
           ExternalEvent(
             id = element.id(),
             typeReference = element.typeReference(typesById),
-            example = element.example()
+            value = element.elementValue()
           )
 
         "externalSystem" ->
           ExternalSystem(
             id = element.id(),
             typeReference = element.typeReference(typesById),
-            example = element.example()
+            value = element.elementValue()
           )
 
         "translation" ->
           Translation(
             id = element.id(),
             typeReference = element.typeReference(typesById),
-            example = element.example()
+            value = element.elementValue()
           )
 
         "automation" ->
           Automation(
             id = element.id(),
             typeReference = element.typeReference(typesById),
-            example = element.example()
+            value = element.elementValue()
           )
 
         else -> null
@@ -437,7 +437,7 @@ class EmnDocumentParser {
       GivenStage(
         id = givenStageElement.id(),
         stateName = givenStageElement.attributeValue("stateName"),
-        examples = givenStageElement.examples(typesById = typesById)
+        values = givenStageElement.elementValues(typesById = typesById)
       )
     }
   }
@@ -446,7 +446,7 @@ class EmnDocumentParser {
     return this.element("when")?.let { whenStageElement ->
       WhenStage(
         id = whenStageElement.id(),
-        examples = whenStageElement.examples(typesById = typesById)
+        values = whenStageElement.elementValues(typesById = typesById)
       )
     }
   }
@@ -455,24 +455,24 @@ class EmnDocumentParser {
     return this.element("then")?.let { thenStageElement ->
       ThenStage(
         id = thenStageElement.id(),
-        examples = thenStageElement.examples(typesById = typesById)
+        values = thenStageElement.elementValues(typesById = typesById)
       )
     }
   }
 
-  fun Element.examples(typesById: Map<String, FlowNodeType>): List<FlowNode> {
+  fun Element.elementValues(typesById: Map<String, FlowNodeType>): List<FlowNode> {
     return this.elements().toFlowNodes(typesById = typesById)
   }
 
-  fun Element.example(): ExampleValue? {
-    val exampleElement = this.element("example")
-    return if (exampleElement != null) {
-      val valueFormat = exampleElement.attributeValue("valueFormat") ?: "application/json"
-      if (exampleElement.hasContent()) {
+  fun Element.elementValue(): ElementValue? {
+    val valueElement = this.element("value")
+    return if (valueElement != null) {
+      val valueFormat = valueElement.attributeValue("valueFormat") ?: "application/json"
+      if (valueElement.hasContent()) {
         // embedded example
-        EmbeddedValue(valueFormat = valueFormat, content = exampleElement.textTrim)
+        EmbeddedValue(valueFormat = valueFormat, content = valueElement.textTrim)
       } else {
-        val resource = exampleElement.resource()
+        val resource = valueElement.resource()
         if (resource != null) {
           // external example resource
           ResourceValue(valueFormat = valueFormat, resource = resource)
