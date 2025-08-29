@@ -14,6 +14,10 @@
   <name>emn-kotlin-axon5-generator</name>
   <description>Generate Axon5 Command and Eventhandler based on EMN.</description>
 
+  <properties>
+  <ktfmt.version>0.58</ktfmt.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.holixon.emn</groupId>
@@ -38,6 +42,14 @@
       <artifactId>axon-eventsourcing</artifactId>
       <version>${axon.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.facebook</groupId>
+      <artifactId>ktfmt</artifactId>
+      <version>${ktfmt.version}</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>

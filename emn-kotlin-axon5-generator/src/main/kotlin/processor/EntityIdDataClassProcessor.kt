@@ -22,7 +22,7 @@ import kotlin.uuid.Uuid
 class EntityIdDataClassProcessor : KotlinDataClassFromRecordTypeProcessorBase() {
   override fun invoke(context: SchemaDeclarationContext, input: RecordType, builder: KotlinDataClassSpecBuilder): KotlinDataClassSpecBuilder {
     builder.addKdoc("I AM AN ID TYPE!")
-    val poetType = context.avroPoetTypes.get(input.hashCode)
+    val poetType = context.avroPoetTypes[input.hashCode]
     val className = poetType.typeName as ClassName
 
     val entityName = context.entityName(input)
@@ -33,13 +33,13 @@ class EntityIdDataClassProcessor : KotlinDataClassFromRecordTypeProcessorBase() 
         initializer(FormatSpecifier.STRING, entityName.transform(StringTransformations.TO_UPPER_SNAKE_CASE))
       }
       addFunction("random") {
-        addModifiers(KModifier.FUN, KModifier.OVERRIDE)
         returns(poetType.typeName)
         val uuid = UUID::class.asClassName()
         val method = MemberName(uuid, "randomUUID")
-        addStatement("return \"%M(%M:%M.toString()\")",
-          MemberName(className, "init"),
-          MemberName(poetType.typeName as ClassName, "ENTITY_ID"),
+        addStatement(
+          $$"return %T(\"${%N}:${%M()}\")",
+          className,
+          MemberName(className, "ENTITY_ID"),
           method)
       }
     })

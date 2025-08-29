@@ -1,14 +1,15 @@
 package io.holixon.emn.generation
 
+import com.facebook.ktfmt.format.Formatter
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.holixon.emn.EmnDocumentParser
 import io.toolisticon.kotlin.avro.AvroParser
-import io.toolisticon.kotlin.avro.generator.DefaultAvroKotlinGeneratorProperties
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.spi.load
-import java.time.Instant
-
-internal val logger = KotlinLogging.logger {}
+import io.toolisticon.kotlin.generation.spec.KotlinFileSpec
+import java.nio.file.Files.createDirectories
+import java.nio.file.Path
+import java.nio.file.Paths
+import kotlin.io.path.writeText
 
 @OptIn(ExperimentalKotlinPoetApi::class)
 object TestFixtures {
@@ -22,4 +23,25 @@ object TestFixtures {
   }
 
   val EMN_PARSER = EmnDocumentParser()
+
+  val KTFMT_FORMAT = Formatter.KOTLINLANG_FORMAT.copy(
+    maxWidth = 256,
+    blockIndent = 2,
+    continuationIndent = 2
+  )
+
+  fun KotlinFileSpec.writeTo(generatedSourcesDir: Path, overwrite: Boolean = false) {
+    val file = this.get().writeTo(generatedSourcesDir)
+    println("Written file to $file")
+
+//    file.writeText(Formatter.format(KTFMT_FORMAT, this.code))
+    file.writeText(this.code)
+  }
+
+  fun createGeneratedSourcesDir(): Path {
+    val moduleRoot = Paths.get(System.getProperty("user.dir")).toAbsolutePath()
+    val dir = moduleRoot.resolve("target").resolve("generated-test-sources").resolve("emn")
+    createDirectories(dir)
+    return dir
+  }
 }

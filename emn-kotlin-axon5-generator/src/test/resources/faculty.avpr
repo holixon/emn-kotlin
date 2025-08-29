@@ -1,11 +1,11 @@
 {
-  "namespace": "io.holixon.emn.faculty",
+  "namespace": "io.holixon.emn.example.faculty",
   "protocol": "FacultyProtocol",
   "types": [
     {
       "type": "record",
       "name": "CourseId",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "value",
@@ -16,7 +16,7 @@
     {
       "type": "record",
       "name": "StudentId",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "value",
@@ -27,11 +27,11 @@
     {
       "type": "record",
       "name": "CreateCourse",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "courseId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "CourseId"
         },
         {
@@ -47,12 +47,12 @@
     {
       "type": "record",
       "name": "EnrollStudentInFaculty",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "studentId",
-          "namespace": "io.holixon.emn.faculty",
-          "type": "io.holixon.emn.faculty.StudentId"
+          "namespace": "io.holixon.emn.example.faculty",
+          "type": "io.holixon.emn.example.faculty.StudentId"
         },
         {
           "name": "firstName",
@@ -67,11 +67,11 @@
     {
       "type": "record",
       "name": "RenameCourse",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "courseId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "CourseId"
         },
         {
@@ -83,11 +83,11 @@
     {
       "type": "record",
       "name": "ChangeCourseCapacity",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "courseId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "CourseId"
         },
         {
@@ -99,16 +99,16 @@
     {
       "type": "record",
       "name": "UnsubscribeStudentFromCourse",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "studentId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "StudentId"
         },
         {
           "name": "courseId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "CourseId"
         }
       ]
@@ -116,11 +116,11 @@
     {
       "type": "record",
       "name": "CourseCreated",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "courseId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "CourseId"
         },
         {
@@ -136,11 +136,11 @@
     {
       "type": "record",
       "name": "StudentEnrolledInFaculty",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "studentId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "StudentId"
         },
         {
@@ -156,11 +156,11 @@
     {
       "type": "record",
       "name": "CourseRenamed",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "courseId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "CourseId"
         },
         {
@@ -172,16 +172,16 @@
     {
       "type": "record",
       "name": "StudentUnsubscribedFromCourse",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "studentId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "StudentId"
         },
         {
           "name": "courseId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "CourseId"
         }
       ]
@@ -189,16 +189,16 @@
     {
       "type": "record",
       "name": "StudentSubscribedToCourse",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "studentId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "StudentId"
         },
         {
           "name": "courseId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "CourseId"
         }
       ]
@@ -206,11 +206,11 @@
     {
       "type": "record",
       "name": "CourseCapacityChanged",
-      "namespace": "io.holixon.emn.faculty",
+      "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
           "name": "courseId",
-          "namespace": "io.holixon.emn.faculty",
+          "namespace": "io.holixon.emn.example.faculty",
           "type": "CourseId"
         },
         {

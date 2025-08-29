@@ -74,7 +74,7 @@ data object StringTransformations {
    * Example: 'Add Customer` becomes `addcustomer`
    */
   data object WITHOUT_SPACES_TO_LOWER : StringTransformation {
-    override fun invoke(input: String): String = input.replace(" ", "")
+    override fun invoke(input: String): String = input.replace(" ", "").lowercase()
   }
 
   private fun stringTransformation(toString: String, inner: StringTransformation) = object : StringTransformation {

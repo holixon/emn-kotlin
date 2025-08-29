@@ -3,7 +3,9 @@ package io.holixon.emn.generation
 import _ktx.ResourceKtx.resourceUrl
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.EmnDocumentParser
+import io.holixon.emn.example.faculty.CourseId
 import io.holixon.emn.generation.TestFixtures.AvroKotlinFixtures.AVRO_PARSER
+import io.holixon.emn.generation.TestFixtures.writeTo
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
@@ -23,23 +25,24 @@ class EmnAxon5AvroBasedGeneratorTest {
   private val emnParser = EmnDocumentParser()
   private val avprParser = AVRO_PARSER
 
+  private val targetDir = TestFixtures.createGeneratedSourcesDir()
+
   @Test
   fun `generate dummy`() {
     val definitions = emnParser.parseDefinitions(resourceUrl("faculty.emn"))
     val declaration = avprParser.parseProtocol(resourceUrl("faculty.avpr"))
 
-    generator.generate(definitions, declaration).forEach {
-      println(it.code)
-    }
+    val files = generator.generate(definitions, declaration)
 
+    files.forEach { fileSpec -> println(fileSpec) }
+
+    files.forEach { fileSpec -> fileSpec.writeTo(targetDir, true) }
   }
 
   @Test
   fun `parse faculty`() {
     val definitions = emnParser.parseDefinitions(resourceUrl("faculty.emn"))
 
-    logger.info { "definitions: $definitions " }
-
-
   }
+
 }
