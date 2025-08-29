@@ -23,13 +23,19 @@ class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<
     return KotlinFileSpecList(commandHandlerComponentFiles)
   }
 
+  // UNUSED
+  /*
   private fun buildSlice(input: Definitions): KotlinFileSpec {
     val timeline = input.timelines[0]
+
+
     val slice = timeline.sliceSet.first()
 
     val sliceName = slice.name?.replace(" ", "") ?: "slice1"
+    // FIXME
     val packageName = "io.holixon.emn.example.faculty." + sliceName.lowercase()
     val commandHandlerClassName = sliceName.replaceFirstChar { if (it.isLowerCase()) it.uppercase() else it.toString() } + "CommandHandler"
+
     val sliceClassName = ClassName(packageName, commandHandlerClassName)
     val sliceFileBuilder = fileBuilder(sliceClassName)
     val sliceRoot = KotlinCodeGeneration.builder.interfaceBuilder(sliceClassName)
@@ -50,6 +56,9 @@ class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<
       .build()
   }
 
+   */
+
+  /*
   private fun buildFoo(input: Definitions): KotlinFileSpec {
     val classNameFoo = ClassName("io.toolisticon.kotlin.generation", "Foo")
     val fileBuilder = fileBuilder(classNameFoo)
@@ -61,4 +70,6 @@ class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<
       .addType(root)
       .build()
   }
+
+   */
 }

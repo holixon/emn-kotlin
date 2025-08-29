@@ -225,8 +225,8 @@
       </emn:interactionLane>
       <emn:aggregateLaneSet>
         <emn:aggregateLane id="aggregate_course" name="Course">
-          <emn:flowNodeRef>event_course_capacity_changed</emn:flowNodeRef>
           <emn:flowNodeRef>event_course_created</emn:flowNodeRef>
+          <emn:flowNodeRef>event_course_capacity_changed</emn:flowNodeRef>
           <emn:flowNodeRef>event_course_renamed</emn:flowNodeRef>
           <emn:flowNodeRef>error_course_capacity_not_changed</emn:flowNodeRef>
           <emn:flowNodeRef>error_course_not_created</emn:flowNodeRef>

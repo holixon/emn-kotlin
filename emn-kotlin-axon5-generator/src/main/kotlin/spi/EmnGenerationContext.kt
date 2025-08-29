@@ -1,13 +1,18 @@
 package io.holixon.emn.generation.spi
 
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
+import com.squareup.kotlinpoet.MemberName
 import io.holixon.emn.generation.EmnAxon5GeneratorProperties
+import io.holixon.emn.generation.ext.StringTransformations
+import io.holixon.emn.generation.ext.StringTransformations.TO_UPPER_SNAKE_CASE
 import io.holixon.emn.generation.hasAvroTypeDefinitionRef
 import io.holixon.emn.generation.isCommandSliceWithAvroTypeDefinitionRef
 import io.holixon.emn.model.*
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordType
 import io.toolisticon.kotlin.avro.value.CanonicalName
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.PackageName
 import io.toolisticon.kotlin.generation.spi.context.KotlinCodeGenerationContextBase
 import kotlin.reflect.KClass
@@ -73,16 +78,33 @@ class EmnGenerationContext(
    * @return true, if the provided record is generated from EMN command type.
    */
   fun isCommandType(recordType: RecordType): Boolean = getEmnType(recordType) is CommandType
+
   /**
    * Checks if the provided record reflects an EMN Event type.
    * @return true, if the provided record is generated from EMN event type.
    */
   fun isEventType(recordType: RecordType): Boolean = getEmnType(recordType) is EventType
+
   /**
    * Checks if the provided record reflects an EMN Query type.
    * @return true, if the provided record is generated from EMN query type.
    */
   fun isQueryType(recordType: RecordType): Boolean = getEmnType(recordType) is QueryType
+
+  fun resolveAggregateTagName(aggregateLane: AggregateLane): MemberName {
+    val aggregateName = requireNotNull(aggregateLane.name) { "Aggregate name must not be blank" }
+    return MemberName(getTagClassName(), TO_UPPER_SNAKE_CASE(aggregateName))
+  }
+
+  /**
+   * Retrieve class name for Tags class.
+   */
+  fun getTagClassName(): ClassName {
+    return KotlinCodeGeneration.className(
+      packageName = properties.rootPackageName,
+      simpleName = StringTransformations.TO_UPPER_CAMEL_CASE(properties.emnName + "Tags")
+    )
+  }
 }
 
 

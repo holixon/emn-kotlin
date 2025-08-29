@@ -1,6 +1,5 @@
 package io.holixon.emn.generation.strategy
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
 import io.holixon.emn.generation.ext.StringTransformations.TO_LOWER_CAMEL_CASE
@@ -25,10 +24,7 @@ class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDe
   ): KotlinFileSpecList {
     val emnContext = context.tag(EmnGenerationContext::class)!!
 
-    val tagClassName = KotlinCodeGeneration.className(
-      packageName = emnContext.properties.rootPackageName,
-      simpleName = PropertyNamingStrategies.UpperCamelCaseStrategy().translate(emnContext.properties.emnName + "Tags")
-    )
+    val tagClassName = emnContext.getTagClassName()
 
     val tagFile = KotlinCodeGeneration.buildFile(tagClassName) {
       addType(buildObject(tagClassName) {

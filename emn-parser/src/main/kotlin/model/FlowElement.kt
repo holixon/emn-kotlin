@@ -28,7 +28,7 @@ sealed class FlowNode(
 
 class Command(id: String, typeReference: CommandType, value: ElementValue?) : FlowNode(id = id, typeReference = typeReference, value = value) {
 
-  fun sourcedEvents(): List<Event> {
+  fun sourcingEvents(): List<Event> {
     val directEvents = this.views()
       .flatMap { view -> view.queries() }
       .map { query -> query.events() }
@@ -37,7 +37,7 @@ class Command(id: String, typeReference: CommandType, value: ElementValue?) : Fl
       .filterNot { directEvents.contains(it) }
       .map { event ->
         event.commands().filterNot { it == this }
-          .map { it.sourcedEvents() }.flatten()
+          .map { it.sourcingEvents() }.flatten()
       }.flatten()
   }
 

@@ -3,9 +3,9 @@ package io.holixon.emn.generation.processor
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.MemberName
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.holixon.emn.generation.EventTagAnnotation
+import io.holixon.emn.generation.TargetEntityIdAnnotation
 import io.holixon.emn.generation.conflictingAggregatesFound
-import io.holixon.emn.generation.ext.StringTransformations
-import io.holixon.emn.generation.ext.StringTransformations.TO_UPPER_SNAKE_CASE
 import io.holixon.emn.generation.getAvroTypeDefinitionRef
 import io.holixon.emn.generation.noAggregateFoundLogger
 import io.holixon.emn.generation.spi.EmnGenerationContext
@@ -16,7 +16,6 @@ import io.toolisticon.kotlin.avro.generator.processor.ConstructorPropertyFromRec
 import io.toolisticon.kotlin.avro.generator.spi.SchemaDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordField
 import io.toolisticon.kotlin.avro.value.CanonicalName
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.builder.KotlinConstructorPropertySpecBuilder
 import io.toolisticon.kotlin.generation.spec.KotlinAnnotationSpec
@@ -35,15 +34,15 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
     builder: KotlinConstructorPropertySpecBuilder
   ): KotlinConstructorPropertySpecBuilder = builder.apply {
 
-    val emnCtx: EmnGenerationContext = context.tag()!!
+    val emnContext: EmnGenerationContext = context.tag()!!
     val recordType = input.memberOf
-    val emnElementType = emnCtx.getEmnType(recordType)
+    val emnElementType = emnContext.getEmnType(recordType)
 
 
 
     when (emnElementType) {
       is EventType -> {
-        val aggregateLanes = emnCtx.definitions.aggregates(emnElementType).distinct()
+        val aggregateLanes = emnContext.definitions.aggregates(emnElementType).distinct()
         aggregateLanes.applyIfExactlyOne(
           logger.noAggregateFoundLogger(emnElementType),
           logger.conflictingAggregatesFound(emnElementType)
@@ -51,20 +50,15 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
           var aggregateIdCanonicalName = aggregateLane.idSchema.getAvroTypeDefinitionRef()?.content?.let {
             CanonicalName.parse(it)
           }
-          val aggregateName = aggregateLane.name
-          if (input.schema.canonicalName == aggregateIdCanonicalName && aggregateName != null) {
-            val tagClassName = KotlinCodeGeneration.className(
-              packageName = emnCtx.properties.rootPackageName,
-              simpleName = StringTransformations.TO_UPPER_CAMEL_CASE(emnCtx.properties.emnName + "Tags")
-            )
-            val tagMember = MemberName(tagClassName, TO_UPPER_SNAKE_CASE(aggregateName))
+          if (input.schema.canonicalName == aggregateIdCanonicalName && aggregateLane.name != null) {
+            val tagMember = emnContext.resolveAggregateTagName(aggregateLane)
             addAnnotation(EventTagAnnotation(key = tagMember))
           }
         }
       }
 
       is CommandType -> {
-        val aggregateLanes = emnCtx.definitions.aggregates(emnElementType).distinct()
+        val aggregateLanes = emnContext.definitions.aggregates(emnElementType).distinct()
         aggregateLanes.applyIfExactlyOne(
           logger.noAggregateFoundLogger(emnElementType),
           logger.conflictingAggregatesFound(emnElementType)
@@ -74,7 +68,7 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
           }
           val aggregateName = aggregateLane.name
           if (input.schema.canonicalName == aggregateIdCanonicalName && aggregateName != null) {
-            addAnnotation(buildAnnotation(TargetEntityId::class))
+            addAnnotation(TargetEntityIdAnnotation)
           }
         }
       }
@@ -91,10 +85,4 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
     return super.test(context, input)
   }
 
-  @OptIn(ExperimentalKotlinPoetApi::class)
-  data class EventTagAnnotation(val key: MemberName) : KotlinAnnotationSpecSupplier {
-    override fun spec(): KotlinAnnotationSpec = buildAnnotation(EventTag::class) {
-      addMember("key = %M", key)
-    }
-  }
 }

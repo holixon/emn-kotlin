@@ -20,7 +20,6 @@ data class CommandSlice(
 
   val packageName = "${properties.commandSliceRootPackageName}.$packageSuffix"
   val simpleClassName = name.transform(TO_UPPER_CAMEL_CASE)
-
 }
 
 val CommandSlice.commandHandlerClassName: ClassName get() = ClassName(packageName, simpleClassName + "CommandHandler")
