@@ -9,4 +9,11 @@ data class Timeline(
   val flowElements: List<FlowElement> by lazy {
     nodes + messages
   }
+
+  fun aggregatesForSlice(filter: Slice): List<AggregateLane> {
+    return this.laneSet.aggregateLaneSet.filter {
+      it.flowElements.any { elementInLane -> filter.flowElements.contains(elementInLane) }
+    }
+  }
+
 }

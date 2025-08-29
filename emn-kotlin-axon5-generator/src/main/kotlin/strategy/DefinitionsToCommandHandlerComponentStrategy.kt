@@ -3,7 +3,7 @@ package io.holixon.emn.generation.strategy
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.generation.spi.EmnGenerationContext
-import io.holixon.emn.model.*
+import io.holixon.emn.model.Definitions
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpec
@@ -60,19 +60,5 @@ class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<
     return fileBuilder
       .addType(root)
       .build()
-  }
-}
-
-private fun Slice.commands(): List<Command> {
-  return this.flowElements.filterIsInstance<Command>()
-}
-
-private fun Slice.events(): List<Event> {
-  return this.flowElements.filterIsInstance<Event>()
-}
-
-private fun Timeline.aggregatesForSlice(filter: Slice): List<AggregateLane> {
-  return this.laneSet.aggregateLaneSet.filter {
-    it.flowElements.any { elementInLane -> filter.flowElements.contains(elementInLane) }
   }
 }

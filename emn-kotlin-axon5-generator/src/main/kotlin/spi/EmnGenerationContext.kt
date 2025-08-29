@@ -2,8 +2,8 @@ package io.holixon.emn.generation.spi
 
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.generation.EmnAxon5GeneratorProperties
-import io.holixon.emn.generation.hasAvroTypeDefinition
-import io.holixon.emn.generation.isCommandSlice
+import io.holixon.emn.generation.hasAvroTypeDefinitionRef
+import io.holixon.emn.generation.isCommandSliceWithAvroTypeDefinitionRef
 import io.holixon.emn.model.*
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordType
@@ -32,7 +32,7 @@ class EmnGenerationContext(
   val slices: List<Slice> by lazy { timelines.map { it.sliceSet }.flatten() }
 
   val commandSlices: List<CommandSlice> by lazy {
-    slices.filter { it.isCommandSlice() }.map {
+    slices.filter { it.isCommandSliceWithAvroTypeDefinitionRef() }.map {
       CommandSlice(slice = it, command = it.flowElements.commands().first(), properties = properties)
     }
   }
@@ -57,12 +57,32 @@ class EmnGenerationContext(
   val entities: MutableList<Entity> = mutableListOf()
 
   val avroReferenceTypes: Map<CanonicalName, FlowNodeType> by lazy {
-    definitions.nodeTypes.filter { it.hasAvroTypeDefinition() }
+    definitions.nodeTypes.filter { it.hasAvroTypeDefinitionRef() }
       .associateBy { CanonicalName.parse(it.schemaReference()) }
   }
 
-  fun isCommandType(recordType: RecordType): Boolean = avroReferenceTypes[recordType.canonicalName] is CommandType
-  fun isEventType(recordType: RecordType): Boolean = avroReferenceTypes[recordType.canonicalName] is EventType
+  /**
+   * Retrieves an EMN type for given record type.
+   * @param recordType Avro Record Type
+   * @return Flow Node Type, if defined.
+   */
+  fun getEmnType(recordType: RecordType): FlowNodeType? = avroReferenceTypes[recordType.canonicalName]
+
+  /**
+   * Checks if the provided record reflects an EMN Command type.
+   * @return true, if the provided record is generated from EMN command type.
+   */
+  fun isCommandType(recordType: RecordType): Boolean = getEmnType(recordType) is CommandType
+  /**
+   * Checks if the provided record reflects an EMN Event type.
+   * @return true, if the provided record is generated from EMN event type.
+   */
+  fun isEventType(recordType: RecordType): Boolean = getEmnType(recordType) is EventType
+  /**
+   * Checks if the provided record reflects an EMN Query type.
+   * @return true, if the provided record is generated from EMN query type.
+   */
+  fun isQueryType(recordType: RecordType): Boolean = getEmnType(recordType) is QueryType
 }
 
 

@@ -8,7 +8,7 @@ class EmnDeclaration(
 ) {
 
   val avroReferenceTypes: Map<CanonicalName, FlowNodeType> by lazy {
-    definitions.nodeTypes.filter { it.hasAvroTypeDefinition() }
+    definitions.nodeTypes.filter { it.hasAvroTypeDefinitionRef() }
       .associateBy { CanonicalName.parse(it.schemaReference()) }
   }
 
@@ -25,9 +25,4 @@ class EmnDeclaration(
         it.value as EventType
       }
   }
-
-  val timelines: List<Timeline> by lazy {
-    definitions.timelines
-  }
-
 }
