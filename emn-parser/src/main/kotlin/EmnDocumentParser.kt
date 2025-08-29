@@ -5,6 +5,7 @@ import org.dom4j.Document
 import org.dom4j.Element
 import org.dom4j.io.SAXReader
 import java.io.File
+import java.lang.reflect.Type
 import java.net.URL
 
 class EmnDocumentParser {
@@ -138,6 +139,7 @@ class EmnDocumentParser {
       sourceElement.outgoing.add(patchedMessageFlowType)
       targetElement.incoming.add(patchedMessageFlowType)
       patchedMessageFlowType
+
     }
 
     /*
