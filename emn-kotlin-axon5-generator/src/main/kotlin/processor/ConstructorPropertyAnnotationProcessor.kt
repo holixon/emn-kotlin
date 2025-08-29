@@ -3,13 +3,14 @@ package io.holixon.emn.generation.processor
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.MemberName
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.holixon.emn.generation.conflictingAggregatesFound
 import io.holixon.emn.generation.ext.StringTransformations
 import io.holixon.emn.generation.ext.StringTransformations.TO_UPPER_SNAKE_CASE
 import io.holixon.emn.generation.getAvroTypeDefinitionRef
+import io.holixon.emn.generation.noAggregateFoundLogger
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.model.CommandType
 import io.holixon.emn.model.EventType
-import io.holixon.emn.model.FlowElementType
 import io.holixon.emn.model.applyIfExactlyOne
 import io.toolisticon.kotlin.avro.generator.processor.ConstructorPropertyFromRecordFieldProcessorBase
 import io.toolisticon.kotlin.avro.generator.spi.SchemaDeclarationContext
@@ -44,10 +45,9 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
       is EventType -> {
         val aggregateLanes = emnCtx.definitions.aggregates(emnElementType).distinct()
         aggregateLanes.applyIfExactlyOne(
-          this@ConstructorPropertyAnnotationProcessor.noAggregateFoundLogger(emnElementType),
-          this@ConstructorPropertyAnnotationProcessor.conflictingAggregatesFound(emnElementType)
-        ) {
-          val aggregateLane = aggregateLanes.first()
+          logger.noAggregateFoundLogger(emnElementType),
+          logger.conflictingAggregatesFound(emnElementType)
+        ) { aggregateLane ->
           var aggregateIdCanonicalName = aggregateLane.idSchema.getAvroTypeDefinitionRef()?.content?.let {
             CanonicalName.parse(it)
           }
@@ -66,10 +66,9 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
       is CommandType -> {
         val aggregateLanes = emnCtx.definitions.aggregates(emnElementType).distinct()
         aggregateLanes.applyIfExactlyOne(
-          this@ConstructorPropertyAnnotationProcessor.noAggregateFoundLogger(emnElementType),
-          this@ConstructorPropertyAnnotationProcessor.conflictingAggregatesFound(emnElementType)
-        ) {
-          val aggregateLane = aggregateLanes.first()
+          logger.noAggregateFoundLogger(emnElementType),
+          logger.conflictingAggregatesFound(emnElementType)
+        ) { aggregateLane ->
           var aggregateIdCanonicalName = aggregateLane.idSchema.getAvroTypeDefinitionRef()?.content?.let {
             CanonicalName.parse(it)
           }
@@ -87,15 +86,6 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
 
     addKdoc("Constructor property for field '${input.name.value}' of record type '${recordType.name.value}'.")
   }
-
-  fun noAggregateFoundLogger(emnElementType: FlowElementType) = {
-    logger.info { "No aggregate found for ${emnElementType.name}" }
-  }
-
-  fun conflictingAggregatesFound(emnElementType: FlowElementType) = {
-    logger.warn { "Found conflicting EMN declaration, elements of type ${emnElementType.name} belong to different aggregate lanes." }
-  }
-
 
   override fun test(context: SchemaDeclarationContext, input: Any): Boolean {
     return super.test(context, input)

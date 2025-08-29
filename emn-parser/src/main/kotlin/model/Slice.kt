@@ -13,4 +13,5 @@ data class Slice(
     return this.flowElements.filterIsInstance<Event>()
   }
 
+  fun containsFlowElement(element: FlowElement): Boolean = this.flowElements.contains(element)
 }

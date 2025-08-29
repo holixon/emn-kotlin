@@ -1,5 +1,6 @@
 package io.holixon.emn.generation
 
+import io.github.oshai.kotlinlogging.KLogger
 import io.holixon.emn.model.*
 import io.toolisticon.kotlin.avro.generator.api.AvroPoetType
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
@@ -34,5 +35,13 @@ fun FlowNodeType.resolveAvroPoetType(context: ProtocolDeclarationContext): AvroP
     it.schema.canonicalName == CanonicalName.parse(schemaReference)
   }) { "Referenced unknown type $schemaReference" }
   return context.avroPoetTypes[commandAvroType.hashCode]
+}
+
+fun KLogger.noAggregateFoundLogger(emnElementType: FlowElementType) = {
+  this.info { "No aggregate found for ${emnElementType.name}" }
+}
+
+fun KLogger.conflictingAggregatesFound(emnElementType: FlowElementType) = {
+  this.warn { "Found conflicting EMN declaration, elements of type ${emnElementType.name} belong to different aggregate lanes." }
 }
 
