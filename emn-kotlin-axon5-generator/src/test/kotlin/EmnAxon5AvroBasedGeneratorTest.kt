@@ -3,7 +3,6 @@ package io.holixon.emn.generation
 import _ktx.ResourceKtx.resourceUrl
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.EmnDocumentParser
-import io.holixon.emn.example.faculty.CourseId
 import io.holixon.emn.generation.TestFixtures.AvroKotlinFixtures.AVRO_PARSER
 import io.holixon.emn.generation.TestFixtures.writeTo
 import org.junit.jupiter.api.Test

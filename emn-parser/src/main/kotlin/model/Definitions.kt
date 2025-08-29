@@ -30,6 +30,12 @@ data class Definitions(
         return timelines.filter { it.flowElements.events().contains(event) }
     }
 
+    fun aggregates(): List<AggregateLane> {
+      return timelines.flatMap {
+        it.laneSet.aggregateLaneSet
+      }
+    }
+
     fun aggregates(event: Event): List<AggregateLane> {
         return timelines(event).flatMap { t ->
             t.laneSet.aggregateLaneSet.filter { a ->

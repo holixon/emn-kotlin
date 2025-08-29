@@ -1,9 +1,6 @@
 // copied from kotlin-gists
 package io.holixon.emn.generation.ext
 
-import kotlin.text.replace
-import kotlin.text.split
-
 /**
  * A transformation function for strings, which can be used to apply various transformations to a string.
  */
@@ -49,8 +46,16 @@ data object StringTransformations {
    * Example: `fooBarHelloWorld` becomes `FOO_BAR_HELLO_WORLD`.
    */
   data object TO_UPPER_SNAKE_CASE : StringTransformation {
-    override fun invoke(input: String): String = input.replace(Regex("([a-z])([A-Z])"), "$1_$2")
+    override fun invoke(input: String): String = input
+      .trim()
+      // Replace any sequence of non-alphanumeric characters (including whitespace) with underscore
+      .replace(Regex("[^A-Za-z0-9]+"), "_")
+      // Insert underscores between lower->upper camelCase boundaries
+      .replace(Regex("([a-z])([A-Z])"), "$1_$2")
+      // Collapse multiple underscores
       .replace(Regex("_+"), "_")
+      // Remove leading/trailing underscores
+      .trim('_')
       .uppercase()
   }
 
@@ -66,6 +71,10 @@ data object StringTransformations {
       .joinToString("") { part ->
         part.lowercase().replaceFirstChar { it.uppercase() }
       }
+  }
+
+  data object TO_LOWER_CAMEL_CASE : StringTransformation {
+    override fun invoke(input: String): String = TO_UPPER_CAMEL_CASE(input).replaceFirstChar { it.lowercase() }
   }
 
   /**

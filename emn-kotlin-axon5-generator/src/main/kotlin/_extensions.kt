@@ -13,6 +13,17 @@ fun Slice.isCommandSlice(): Boolean {
     .containsAll(sliceCommands.first().possibleEvents()) // all events are in the slice
 }
 
+fun Schema?.embeddedAvroSchema(): EmbeddedSchema? {
+  return if (this != null
+          && this.schemaFormat == "avro-type-reference"
+          && this is EmbeddedSchema
+    ) {
+    this
+  } else {
+    null
+  }
+}
+
 
 fun FlowNode.hasAvroTypeDefinition() = this.typeReference.hasAvroTypeDefinition()
 
