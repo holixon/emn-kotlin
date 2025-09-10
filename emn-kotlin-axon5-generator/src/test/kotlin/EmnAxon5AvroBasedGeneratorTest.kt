@@ -6,7 +6,6 @@ import io.holixon.emn.EmnDocumentParser
 import io.holixon.emn.generation.TestFixtures.AvroKotlinFixtures.AVRO_PARSER
 import io.holixon.emn.generation.TestFixtures.writeTo
 import org.junit.jupiter.api.Test
-import java.time.Instant
 
 @OptIn(ExperimentalKotlinPoetApi::class)
 class EmnAxon5AvroBasedGeneratorTest {
