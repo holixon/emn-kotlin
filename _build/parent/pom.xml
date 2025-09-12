@@ -48,6 +48,12 @@
         <artifactId>emn-parser</artifactId>
         <version>${project.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>io.holixon.emn.generation</groupId>
+        <artifactId>emn-kotlin-axon5-generator</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
