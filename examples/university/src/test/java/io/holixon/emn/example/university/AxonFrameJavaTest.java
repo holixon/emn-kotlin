@@ -4,6 +4,7 @@ import io.holixon.emn.example.university.faculty.type.course.CourseId;
 import io.holixon.emn.example.university.faculty.write.renamecoursepolymorph.RenameCoursePolymorphCommandHandler;
 import org.assertj.core.api.SoftAssertions;
 import org.axonframework.eventsourcing.annotation.EventCriteriaBuilder;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled("see https://github.com/AxonFramework/AxonFramework/issues/3680")
 public class AxonFrameJavaTest {
 
   /**
