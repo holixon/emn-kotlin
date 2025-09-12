@@ -2,15 +2,15 @@ package io.holixon.emn.example.university.infrastructure
 
 import jakarta.annotation.Nonnull
 import org.axonframework.configuration.Configuration
+import org.axonframework.eventhandling.conversion.EventConverter
 import org.axonframework.eventsourcing.EventSourcedEntityFactory
 import org.axonframework.eventsourcing.annotation.EventSourcedEntityFactoryDefinition
 import org.axonframework.eventsourcing.annotation.reflection.AnnotationBasedEventSourcedEntityFactory
 import org.axonframework.messaging.MessageTypeResolver
 import org.axonframework.messaging.annotation.ParameterResolverFactory
-import org.axonframework.serialization.Converter
 
 class SealedClassEventSourcedFactoryDefinition<ENTITY, ID> : EventSourcedEntityFactoryDefinition<ENTITY, ID> {
-  
+
   override fun createFactory(
     @Nonnull entityType: Class<ENTITY>,
     @Nonnull entitySubTypes: Set<Class<out ENTITY>>,
@@ -31,7 +31,7 @@ class SealedClassEventSourcedFactoryDefinition<ENTITY, ID> : EventSourcedEntityF
       subTypes,
       configuration.getComponent(ParameterResolverFactory::class.java),
       configuration.getComponent(MessageTypeResolver::class.java),
-      configuration.getComponent(Converter::class.java),
+      configuration.getComponent(EventConverter::class.java),
     )
   }
 

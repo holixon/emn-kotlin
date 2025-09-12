@@ -1,9 +1,10 @@
 package io.holixon.emn.example.university.faculty.write.createcourse
 
 import io.holixon.emn.example.university.faculty.type.course.CourseId
+import org.axonframework.commandhandling.configuration.CommandHandlingModule
 import org.axonframework.eventsourcing.configuration.EventSourcedEntityModule
 import org.axonframework.eventsourcing.configuration.EventSourcingConfigurer
-import org.axonframework.modelling.configuration.StatefulCommandHandlingModule
+
 
 fun EventSourcingConfigurer.configureCreateCourse(): EventSourcingConfigurer {
   val stateEntity =
@@ -13,12 +14,11 @@ fun EventSourcingConfigurer.configureCreateCourse(): EventSourcingConfigurer {
         CreateCourseCommandHandler.State::class.java
       )
 
-  val commandHandlingModule = StatefulCommandHandlingModule
+  val commandHandlingModule = CommandHandlingModule
     .named("CreateCourse")
-    .entities()
-    .entity(stateEntity)
     .commandHandlers()
     .annotatedCommandHandlingComponent { CreateCourseCommandHandler() }
 
-  return this.registerStatefulCommandHandlingModule(commandHandlingModule)
+  return this.registerEntity(stateEntity)
+    .registerCommandHandlingModule(commandHandlingModule)
 }

@@ -6,8 +6,10 @@ import io.holixon.emn.example.university.faculty.events.CourseRenamed
 import io.holixon.emn.example.university.faculty.type.course.CourseId
 import org.axonframework.test.fixture.AxonTestFixture
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
+@Disabled("see https://github.com/AxonFramework/AxonFramework/issues/3680")
 internal class RenameCoursePolymorphCommandHandlerTest {
 
   private lateinit var fixture: AxonTestFixture

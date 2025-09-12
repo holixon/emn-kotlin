@@ -2,9 +2,9 @@ package io.holixon.emn.example.university.faculty.write.renamecoursepolymorph
 
 import io.holixon.emn.example.university.faculty.type.course.CourseId
 import io.holixon.emn.example.university.faculty.write.renamecoursepolymorph.RenameCoursePolymorphCommandHandler.State
+import org.axonframework.commandhandling.configuration.CommandHandlingModule
 import org.axonframework.eventsourcing.configuration.EventSourcedEntityModule
 import org.axonframework.eventsourcing.configuration.EventSourcingConfigurer
-import org.axonframework.modelling.configuration.StatefulCommandHandlingModule
 
 
 fun EventSourcingConfigurer.configureRenameCoursePolymorph(): EventSourcingConfigurer {
@@ -27,15 +27,14 @@ fun EventSourcingConfigurer.configureRenameCoursePolymorph(): EventSourcingConfi
       )
 
 
-  val commandHandlingModule = StatefulCommandHandlingModule
+  val commandHandlingModule = CommandHandlingModule
     .named("RenameCoursePolymorph")
-    .entities()
-    .entity(stateEntity)
     .commandHandlers()
     .annotatedCommandHandlingComponent { RenameCoursePolymorphCommandHandler() }
 
   //.commandHandlingComponent(
   //    handlingComponentBuilder
   //  )
-  return this.registerStatefulCommandHandlingModule(commandHandlingModule)
+  return this.registerEntity(stateEntity)
+    .registerCommandHandlingModule(commandHandlingModule)
 }

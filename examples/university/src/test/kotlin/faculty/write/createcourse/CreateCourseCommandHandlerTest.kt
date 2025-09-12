@@ -7,7 +7,6 @@ import org.axonframework.test.fixture.AxonTestFixture
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-
 internal class CreateCourseCommandHandlerTest {
   private lateinit var fixture: AxonTestFixture
 

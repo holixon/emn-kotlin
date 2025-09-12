@@ -9,5 +9,5 @@ fun EventSourcingConfigurer.configureFacultyModule(): EventSourcingConfigurer {
   return this
     .configureCreateCourse()
     .configureRenameCourse()
-    .configureRenameCoursePolymorph()
+    // FIXME see https://github.com/AxonFramework/AxonFramework/issues/3680 -- .configureRenameCoursePolymorph()
 }
