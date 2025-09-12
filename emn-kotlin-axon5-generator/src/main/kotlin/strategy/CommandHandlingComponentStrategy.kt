@@ -5,6 +5,7 @@ import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asClassName
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.holixon.emn.generation.*
@@ -13,6 +14,7 @@ import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.generation.spi.commandHandlerClassName
 import io.holixon.emn.model.applyIfExactlyOne
 import io.toolisticon.kotlin.avro.generator.api.AvroPoetType
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildInterface
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildParameter
@@ -110,8 +112,9 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
   ): KotlinInterfaceSpec {
 
     val stateClassName = ClassName(handlerClassName.packageName, handlerClassName.simpleName, "State")
+    val stateImplClassName = ClassName(handlerClassName.packageName, "${commandType.typeName.simpleName()}State")
     return buildInterface(stateClassName) {
-      addAnnotation(EventSourcedEntityAnnotation(tagMember))
+      addAnnotation(EventSourcedEntityAnnotation(tagMember, listOf(stateImplClassName)))
       sourcingEventTypes.forEach { event ->
         addFunction(buildEventSourcingHandler(event, stateClassName))
       }

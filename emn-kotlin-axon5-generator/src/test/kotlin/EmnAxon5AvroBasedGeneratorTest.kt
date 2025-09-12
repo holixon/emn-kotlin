@@ -32,9 +32,8 @@ class EmnAxon5AvroBasedGeneratorTest {
 
     val files = generator.generate(definitions, declaration)
 
-    files.forEach { fileSpec -> println(fileSpec) }
 
-    files.forEach { fileSpec -> fileSpec.writeTo(targetDir, true) }
+    //files.forEach { fileSpec -> fileSpec.writeTo(targetDir, true) }
   }
 
   @Test

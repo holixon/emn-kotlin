@@ -2,8 +2,11 @@ package io.holixon.emn.example.faculty.write.createcourse
 
 import io.holixon.emn.example.faculty.CourseCreated
 import io.holixon.emn.example.faculty.CreateCourse
+import io.holixon.emn.example.faculty.FacultyTags.COURSE
+import org.axonframework.eventsourcing.annotation.EventSourcedEntity
 import org.axonframework.eventsourcing.annotation.reflection.EntityCreator
 
+@EventSourcedEntity(tagKey = COURSE)
 class CreateCourseState @EntityCreator constructor() : CreateCourseCommandHandler.State {
   private var created: Boolean = false
 
