@@ -4,6 +4,8 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.asClassName
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.holixon.emn.generation.*
 import io.holixon.emn.generation.spi.CommandSlice
@@ -35,7 +37,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
     val commandHandlerTypeBuilder = classBuilder(input.commandHandlerClassName).apply {
 
       val command = input.command
-      val commandPoetTypeType = command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext)
+      val commandPoetType = command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext)
       val eventsToHandle = (command.sourcingEvents() + command.possibleEvents()).distinct()
       val eventTypesToHandle = eventsToHandle
         .map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
@@ -61,11 +63,12 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
           val state = buildSingleTagState(
             handlerClassName = input.commandHandlerClassName,
             sourcingEventTypes = eventTypesToHandle,
+            commandType = commandPoetType,
             tagMember = tagMember
           )
           addFunction(
             buildHandler(
-              commandType = commandPoetTypeType,
+              commandType = commandPoetType,
               stateSpec = state,
               idProperty = idProperty
             )
@@ -94,12 +97,15 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
       )
 
       this.addParameter("eventAppender", EventAppender::class)
+
+      addStatement("eventAppender.append(state.decide(command))")
     }
   }
 
   private fun buildSingleTagState(
     handlerClassName: ClassName,
     sourcingEventTypes: List<AvroPoetType>,
+    commandType: AvroPoetType,
     tagMember: MemberName
   ): KotlinInterfaceSpec {
 
@@ -109,7 +115,17 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
       sourcingEventTypes.forEach { event ->
         addFunction(buildEventSourcingHandler(event, stateClassName))
       }
+      addFunction(buildCommandDecider(commandType))
     }
+  }
+
+  private fun buildCommandDecider(commandType: AvroPoetType) : KotlinFunSpec {
+    return buildFun("decide") {
+      addModifiers(KModifier.ABSTRACT)
+      this.addParameter("command", commandType.typeName)
+      this.returns(List::class.asClassName().parameterizedBy(Any::class.asClassName()))
+    }
+
   }
 
   private fun buildEventSourcingHandler(eventType: AvroPoetType, stateClassName: ClassName): KotlinFunSpec {
