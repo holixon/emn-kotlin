@@ -1,11 +1,12 @@
 package io.holixon.emn.example.faculty.write.renamecourse
 
-import io.holixon.emn.example.faculty.*
+import io.holixon.emn.example.faculty.CourseCreated
+import io.holixon.emn.example.faculty.CourseId
+import io.holixon.emn.example.faculty.CourseRenamed
+import io.holixon.emn.example.faculty.RenameCourse
 import org.axonframework.test.fixture.AxonTestFixture
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(AxonTestFixtureParameterResolver::class)
 internal class RenameCourseCommandHandlerManualTest(val fixture: AxonTestFixture) {
 
   @Test
