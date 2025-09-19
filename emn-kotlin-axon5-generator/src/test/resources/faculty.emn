@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<emn:definitions
-  xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
-  xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI"
-  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-  id="Definitions_1p59kc5"
-  targetNamespace="https://holixon.io/schema/emn"
-  exporter="Hand crafted"
-  exporterVersion="1.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd
-  https://holixon.io/spec/EMN/20241231/DI ../../../../doc/EMNDI.xsd"
->
+<emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL" xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1p59kc5" targetNamespace="https://holixon.io/schema/emn" exporter="Hand crafted" exporterVersion="1.0.0" xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd https://holixon.io/spec/EMN/20241231/DI ../../../../doc/EMNDI.xsd">
   <emn:types>
     <emn:viewType id="ViewType_page_24" name="Page 24">
       <emn:outgoing>MessageFlowType_16lrebs</emn:outgoing>
@@ -35,14 +23,15 @@
       <emn:incoming>MessageFlowType_0h7ooc6</emn:incoming>
       <emn:incoming>MessageFlowType_059omg6</emn:incoming>
       <emn:outgoing>MessageFlowType_1eq7typ</emn:outgoing>
+      <emn:outgoing>MessageFlowType_171i7uq</emn:outgoing>
       <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.Courses</emn:schema>
     </emn:queryType>
     <emn:messageFlowType id="MessageFlowType_0h7ooc6" name="MessageFlow" sourceRef="EventType_02v07ad" targetRef="QueryType_courses" />
     <emn:viewType id="ViewType_page_27" name="Page 27">
       <emn:incoming>MessageFlowType_1eq7typ</emn:incoming>
     </emn:viewType>
-    <emn:messageFlowType id="MessageFlowType_1eq7typ" name="MessageFlow" sourceRef="QueryType_courses" targetRef="ViewType_page_27" />
     <emn:messageFlowType id="MessageFlowType_059omg6" name="MessageFlow" sourceRef="EventType_course_created" targetRef="QueryType_courses" />
+    <emn:messageFlowType id="MessageFlowType_1eq7typ" name="MessageFlow" sourceRef="QueryType_courses" targetRef="ViewType_page_27" />
     <emn:viewType id="ViewType_page_25" name="Page 25">
       <emn:outgoing>MessageFlowType_147td8q</emn:outgoing>
     </emn:viewType>
@@ -75,6 +64,7 @@
     <emn:messageFlowType id="MessageFlowType_18gqizi" name="MessageFlow" sourceRef="QueryType_students" targetRef="ViewType_page_28" />
     <emn:errorType id="ErrorType_duplicate_course" name="Duplicate course" />
     <emn:viewType id="ViewType_1yybliu" name="Page 26">
+      <emn:incoming>MessageFlowType_171i7uq</emn:incoming>
       <emn:outgoing>MessageFlowType_0a31qig</emn:outgoing>
     </emn:viewType>
     <emn:commandType id="CommandType_rename_course" name="Rename Course">
@@ -88,8 +78,7 @@
     </emn:eventType>
     <emn:messageFlowType id="MessageFlowType_06zmu93" name="MessageFlow" sourceRef="CommandType_rename_course" targetRef="EventType_course_renamed" />
     <emn:messageFlowType id="MessageFlowType_0a31qig" name="MessageFlow" sourceRef="ViewType_1yybliu" targetRef="CommandType_rename_course" />
-    <emn:eventType id="EventType_0svp8d5" name="Event" />
-    <emn:commandType id="CommandType_0ovcpe9" name="Command" />
+    <emn:messageFlowType id="MessageFlowType_171i7uq" name="MessageFlow" sourceRef="QueryType_courses" targetRef="ViewType_1yybliu" />
   </emn:types>
   <emn:timeline id="timeline_1" name="Timeline">
     <emn:laneSet id="lanes_1">
@@ -98,9 +87,9 @@
           <emn:flowNodeRef>View_page_24</emn:flowNodeRef>
           <emn:flowNodeRef>View_page_28</emn:flowNodeRef>
           <emn:flowNodeRef>View_page_26</emn:flowNodeRef>
+          <emn:flowNodeRef>View_page27_1</emn:flowNodeRef>
         </emn:triggerLane>
         <emn:triggerLane id="trigger_student" name="Student">
-          <emn:flowNodeRef>View_page27_1</emn:flowNodeRef>
           <emn:flowNodeRef>View_page_25</emn:flowNodeRef>
         </emn:triggerLane>
       </emn:triggerLaneSet>
@@ -114,11 +103,11 @@
       <emn:aggregateLaneSet>
         <emn:aggregateLane id="aggregateLane_student" name="Student">
           <emn:flowNodeRef>Event_student_enrolled</emn:flowNodeRef>
-          <emn:flowNodeRef>Event_course_renamed</emn:flowNodeRef>
           <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.StudentId</emn:idSchema>
         </emn:aggregateLane>
         <emn:aggregateLane id="aggregateLane_course" name="Course">
           <emn:flowNodeRef>Event_course_created</emn:flowNodeRef>
+          <emn:flowNodeRef>Event_course_renamed</emn:flowNodeRef>
           <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseId</emn:idSchema>
         </emn:aggregateLane>
       </emn:aggregateLaneSet>
@@ -173,6 +162,7 @@
     <emn:messageFlow id="Flow_0mufuw6" typeRef="MessageFlowType_0a31qig" sourceRef="View_page_26" targetRef="Command_rename_course" />
     <emn:event id="Event_course_renamed" typeRef="EventType_course_renamed" />
     <emn:messageFlow id="Flow_1xr2kq6" typeRef="MessageFlowType_06zmu93" sourceRef="Command_rename_course" targetRef="Event_course_renamed" />
+    <emn:messageFlow id="Flow_1gi8c1f" typeRef="MessageFlowType_171i7uq" sourceRef="Query_courses_1" targetRef="View_page_26" />
   </emn:timeline>
   <emn:specification id="Specification_create_course_success" name="Create course" scenario="As an admin I want to create course" sliceRef="Slice_0toflhc">
     <emn:given id="Specification_18vdxuw_given" stateName="No course exists" />
@@ -307,13 +297,16 @@
           }</emn:value>
       </emn:command>
     </emn:when>
-    <emn:then id="Then_1dezz9r">
-    </emn:then>
+    <emn:then id="Then_1dezz9r" />
   </emn:specification>
   <emndi:EMNDiagram id="EMNDiagram_1">
     <emndi:EMNPlane id="EMNPlane_1" emnElement="timeline_1">
       <emndi:EMNShape id="AggregateLane_1w15s4u_di" emnElement="aggregateLane_course" isHorizontal="true">
         <dc:Bounds x="200" y="600" width="2470" height="160" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_course_renamed_di" emnElement="Event_course_renamed">
+        <dc:Bounds x="2170" y="620" width="100" height="100" />
         <emndi:EMNLabel />
       </emndi:EMNShape>
       <emndi:EMNShape id="aggregateLane_1_di" emnElement="aggregateLane_student" isHorizontal="true">
@@ -324,7 +317,7 @@
         <dc:Bounds x="200" y="280" width="2470" height="160" />
       </emndi:EMNShape>
       <emndi:EMNShape id="Slice_0xnxibu_di" emnElement="Slice_0xnxibu">
-        <dc:Bounds x="1940" y="-120" width="360" height="747" />
+        <dc:Bounds x="1940" y="-120" width="360" height="890" />
       </emndi:EMNShape>
       <emndi:EMNShape id="Slice_0xkmauv_di" emnElement="Slice_0xkmauv">
         <dc:Bounds x="1340" y="-120" width="500" height="720" />
@@ -347,6 +340,72 @@
       </emndi:EMNShape>
       <emndi:EMNShape id="triggerLane_1_di" emnElement="triggerLane_admin" isHorizontal="true">
         <dc:Bounds x="200" y="105" width="2470" height="175" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_1eft2am_di" emnElement="View_page27_1">
+        <dc:Bounds x="810" y="140" width="100" height="80" />
+        <emndi:EMNLabel>
+          <dc:Bounds x="840" y="115" width="41" height="14" />
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_2ote18y_di" emnElement="Specification_0wjemf5">
+        <dc:Bounds x="2470" y="860" width="500" height="550" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Given_2uun07f_di" emnElement="Given_0z7eshb">
+        <dc:Bounds x="2480" y="900" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="When_2wrpria_di" emnElement="When_0t6n42q">
+        <dc:Bounds x="2480" y="1070" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_24u3bw3_di" emnElement="Command_18yqilx">
+        <dc:Bounds x="2540" y="1100" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Then_1tkg7df_di" emnElement="Then_1dezz9r">
+        <dc:Bounds x="2480" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1ote18y_di" emnElement="Specification_1ote18y">
+        <dc:Bounds x="1930" y="860" width="500" height="550" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Given_0uun07f_di" emnElement="Given_0uun07f">
+        <dc:Bounds x="1940" y="900" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_0ge116t_di" emnElement="Event_0ge116t">
+        <dc:Bounds x="2000" y="930" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="When_0wrpria_di" emnElement="When_0wrpria">
+        <dc:Bounds x="1940" y="1070" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_04u3bw3_di" emnElement="Command_04u3bw3">
+        <dc:Bounds x="2000" y="1100" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Then_2tkg7df_di" emnElement="Then_1tkg7df">
+        <dc:Bounds x="1940" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1gtvjcl_di" emnElement="Specification_1gtvjcl">
+        <dc:Bounds x="1400" y="860" width="500" height="550" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1gtvjcl_given_di" emnElement="Specification_1gtvjcl_given">
+        <dc:Bounds x="1410" y="900" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_1oza6ao_di" emnElement="Event_1oza6ao">
+        <dc:Bounds x="1470" y="930" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1gtvjcl_when_di" emnElement="Specification_1gtvjcl_when">
+        <dc:Bounds x="1410" y="1070" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_1tlkgbx_di" emnElement="Command_1tlkgbx">
+        <dc:Bounds x="1470" y="1100" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1gtvjcl_then_di" emnElement="Specification_1gtvjcl_then">
+        <dc:Bounds x="1410" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_1tuemla_di" emnElement="Event_1tuemla">
+        <dc:Bounds x="1470" y="1260" width="100" height="100" />
         <emndi:EMNLabel />
       </emndi:EMNShape>
       <emndi:EMNShape id="Specification_1quqjt0_di" emnElement="Specification_create_course_error">
@@ -408,10 +467,6 @@
         <dc:Bounds x="700" y="310" width="100" height="100" />
         <emndi:EMNLabel />
       </emndi:EMNShape>
-      <emndi:EMNShape id="View_1eft2am_di" emnElement="View_page27_1">
-        <dc:Bounds x="810" y="-15" width="100" height="80" />
-        <emndi:EMNLabel />
-      </emndi:EMNShape>
       <emndi:EMNShape id="View_0sbv8ib_di" emnElement="View_page_25">
         <dc:Bounds x="1080" y="-15" width="100" height="80" />
         <emndi:EMNLabel>
@@ -446,70 +501,6 @@
         <dc:Bounds x="2070" y="310" width="100" height="100" />
         <emndi:EMNLabel />
       </emndi:EMNShape>
-      <emndi:EMNShape id="Event_course_renamed_di" emnElement="Event_course_renamed">
-        <dc:Bounds x="2170" y="470" width="100" height="100" />
-        <emndi:EMNLabel />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Specification_1gtvjcl_di" emnElement="Specification_1gtvjcl">
-        <dc:Bounds x="1400" y="860" width="500" height="550" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Specification_1gtvjcl_given_di" emnElement="Specification_1gtvjcl_given">
-        <dc:Bounds x="1410" y="900" width="480" height="160" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Event_1oza6ao_di" emnElement="Event_1oza6ao">
-        <dc:Bounds x="1470" y="930" width="100" height="100" />
-        <emndi:EMNLabel />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Specification_1gtvjcl_when_di" emnElement="Specification_1gtvjcl_when">
-        <dc:Bounds x="1410" y="1070" width="480" height="160" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Command_1tlkgbx_di" emnElement="Command_1tlkgbx">
-        <dc:Bounds x="1470" y="1100" width="100" height="100" />
-        <emndi:EMNLabel />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Specification_1gtvjcl_then_di" emnElement="Specification_1gtvjcl_then">
-        <dc:Bounds x="1410" y="1240" width="480" height="160" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Event_1tuemla_di" emnElement="Event_1tuemla">
-        <dc:Bounds x="1470" y="1260" width="100" height="100" />
-        <emndi:EMNLabel />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Specification_1ote18y_di" emnElement="Specification_1ote18y">
-        <dc:Bounds x="1930" y="860" width="500" height="550" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Given_0uun07f_di" emnElement="Given_0uun07f">
-        <dc:Bounds x="1940" y="900" width="480" height="160" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Event_0ge116t_di" emnElement="Event_0ge116t">
-        <dc:Bounds x="2000" y="930" width="100" height="100" />
-        <emndi:EMNLabel />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="When_0wrpria_di" emnElement="When_0wrpria">
-        <dc:Bounds x="1940" y="1070" width="480" height="160" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Command_04u3bw3_di" emnElement="Command_04u3bw3">
-        <dc:Bounds x="2000" y="1100" width="100" height="100" />
-        <emndi:EMNLabel />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Then_2tkg7df_di" emnElement="Then_1tkg7df">
-        <dc:Bounds x="1940" y="1240" width="480" height="160" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Specification_2ote18y_di" emnElement="Specification_0wjemf5">
-        <dc:Bounds x="2470" y="860" width="500" height="550" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Given_2uun07f_di" emnElement="Given_0z7eshb">
-        <dc:Bounds x="2480" y="900" width="480" height="160" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="When_2wrpria_di" emnElement="When_0t6n42q">
-        <dc:Bounds x="2480" y="1070" width="480" height="160" />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Command_24u3bw3_di" emnElement="Command_18yqilx">
-        <dc:Bounds x="2540" y="1100" width="100" height="100" />
-        <emndi:EMNLabel />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Then_1tkg7df_di" emnElement="Then_1dezz9r">
-        <dc:Bounds x="2480" y="1240" width="480" height="160" />
-      </emndi:EMNShape>
       <emndi:EMNEdge id="Flow_0ytn02p_di" emnElement="Flow_0ytn02p">
         <di:waypoint x="330" y="230" />
         <di:waypoint x="330" y="290" />
@@ -523,9 +514,9 @@
       </emndi:EMNEdge>
       <emndi:EMNEdge id="Flow_1b9v137_di" emnElement="Flow_1b9v137">
         <di:waypoint x="750" y="310" />
-        <di:waypoint x="750" y="190" />
-        <di:waypoint x="860" y="190" />
-        <di:waypoint x="860" y="65" />
+        <di:waypoint x="750" y="265" />
+        <di:waypoint x="860" y="265" />
+        <di:waypoint x="860" y="220" />
       </emndi:EMNEdge>
       <emndi:EMNEdge id="Flow_1etqwcf_di" emnElement="Flow_1etqwcf">
         <di:waypoint x="580" y="620" />
@@ -567,7 +558,13 @@
         <di:waypoint x="2120" y="410" />
         <di:waypoint x="2120" y="440" />
         <di:waypoint x="2220" y="440" />
-        <di:waypoint x="2220" y="470" />
+        <di:waypoint x="2220" y="620" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1gi8c1f_di" emnElement="Flow_1gi8c1f">
+        <di:waypoint x="750" y="310" />
+        <di:waypoint x="750" y="270" />
+        <di:waypoint x="2020" y="270" />
+        <di:waypoint x="2020" y="230" />
       </emndi:EMNEdge>
     </emndi:EMNPlane>
   </emndi:EMNDiagram>
