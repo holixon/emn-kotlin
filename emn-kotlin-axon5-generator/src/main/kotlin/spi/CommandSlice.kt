@@ -23,3 +23,4 @@ data class CommandSlice(
 }
 
 val CommandSlice.commandHandlerClassName: ClassName get() = ClassName(packageName, simpleClassName + "CommandHandler")
+val CommandSlice.commandHandlerFixtureTestClassName: ClassName get() = ClassName(packageName, simpleClassName + "CommandHandlerTest")

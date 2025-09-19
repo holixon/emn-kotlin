@@ -1,11 +1,8 @@
 package io.holixon.emn.generation.strategy
 
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.model.Definitions
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpec
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
@@ -20,7 +17,14 @@ class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<
       CommandHandlingComponentStrategy().invoke(context, commandSlice)
     }
 
-    return KotlinFileSpecList(commandHandlerComponentFiles)
+    val commandHandlerComponentTestFixtureFiles: List<KotlinFileSpec> = context.commandSlices.flatMap { commandSlice ->
+      CommandHandlingComponentTestFixtureStrategy().invoke(context, commandSlice)
+    }
+
+    return KotlinFileSpecList(
+      commandHandlerComponentFiles
+      + commandHandlerComponentTestFixtureFiles
+    )
   }
 
   // UNUSED

@@ -202,32 +202,6 @@
       </emn:error>
     </emn:then>
   </emn:specification>
-  <emn:specification id="Specification_2gtvjcl" name="Rename course" scenario="If I rename a course, the course will get a new name" sliceRef="Slice_0xnxibu">
-    <emn:given id="Specification_2gtvjcl_given">
-      <emn:event id="Event_2oza6ao" typeRef="EventType_course_created">
-        <emn:value>{
-          "courseId": 4711,
-          "name": "Physics I"
-          }</emn:value>
-      </emn:event>
-    </emn:given>
-    <emn:when id="Specification_2gtvjcl_when">
-      <emn:command id="Command_2tlkgbx" typeRef="CommandType_rename_course">
-        <emn:value>{
-          "courseId": 4711,
-          "name": "Physics II"
-          }</emn:value>
-      </emn:command>
-    </emn:when>
-    <emn:then id="Specification_2gtvjcl_then">
-      <emn:event id="Event_2tuemla" typeRef="EventType_course_created">
-        <emn:value>{
-          "courseId": 4711,
-          "name": "Physics II"
-          }</emn:value>
-      </emn:event>
-    </emn:then>
-  </emn:specification>
   <emn:specification id="Specification_1gtvjcl" name="Rename course" scenario="If I rename a course, the course will get a new name" sliceRef="Slice_0xnxibu">
     <emn:given id="Specification_1gtvjcl_given">
       <emn:event id="Event_1oza6ao" typeRef="EventType_course_created">
