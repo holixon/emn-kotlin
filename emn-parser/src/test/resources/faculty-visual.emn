@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emn:definitions
+  xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
+  xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_1p59kc5"
+  targetNamespace="https://holixon.io/schema/emn"
+  exporter="Hand crafted"
+  exporterVersion="1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd
+  https://holixon.io/spec/EMN/20241231/DI ../../../../doc/EMNDI.xsd"
+>
+  <emn:types>
+    <emn:viewType id="ViewType_05cftck" name="Related View">
+      <emn:outgoing>MessageFlowType_14xd2bp</emn:outgoing>
+    </emn:viewType>
+    <emn:commandType id="CommandType_1rrzcyz" name="New Command">
+      <emn:incoming>MessageFlowType_14xd2bp</emn:incoming>
+      <emn:outgoing>MessageFlowType_1d6x5jq</emn:outgoing>
+    </emn:commandType>
+    <emn:messageFlowType id="MessageFlowType_14xd2bp" name="MessageFlow" sourceRef="ViewType_05cftck" targetRef="CommandType_1rrzcyz" />
+    <emn:eventType id="EventType_107kz5t" name="Result Event">
+      <emn:incoming>MessageFlowType_1d6x5jq</emn:incoming>
+    </emn:eventType>
+    <emn:messageFlowType id="MessageFlowType_1d6x5jq" name="MessageFlow" sourceRef="CommandType_1rrzcyz" targetRef="EventType_107kz5t" />
+  </emn:types>
+  <emn:timeline id="timeline_1" name="Timeline">
+    <emn:laneSet id="lanes_1">
+      <emn:triggerLaneSet>
+        <emn:triggerLane id="triggerLane_1" name="Trigger">
+          <emn:flowNodeRef>View_07761x7</emn:flowNodeRef>
+        </emn:triggerLane>
+      </emn:triggerLaneSet>
+      <emn:interactionLane id="interaction_1" name="Interaction">
+        <emn:flowNodeRef>Command_1f3xmub</emn:flowNodeRef>
+      </emn:interactionLane>
+      <emn:aggregateLaneSet>
+        <emn:aggregateLane id="aggregateLane_1" name="Aggregate">
+          <emn:flowNodeRef>Event_1077zjs</emn:flowNodeRef>
+        </emn:aggregateLane>
+      </emn:aggregateLaneSet>
+    </emn:laneSet>
+    <emn:sliceSet id="SliceSet_0744zhr">
+      <emn:slice id="Slice_09tey9y" name="Command Slice">
+        <emn:flowNodeRef>View_07761x7</emn:flowNodeRef>
+        <emn:flowNodeRef>Command_1f3xmub</emn:flowNodeRef>
+        <emn:flowNodeRef>Event_1077zjs</emn:flowNodeRef>
+      </emn:slice>
+    </emn:sliceSet>
+    <emn:view id="View_07761x7" typeRef="ViewType_05cftck" />
+    <emn:command id="Command_1f3xmub" typeRef="CommandType_1rrzcyz" />
+    <emn:messageFlow id="Flow_10lmo9r" typeRef="MessageFlowType_14xd2bp" sourceRef="View_07761x7" targetRef="Command_1f3xmub" />
+    <emn:event id="Event_1077zjs" typeRef="EventType_107kz5t" />
+    <emn:messageFlow id="Flow_0xohyp4" typeRef="MessageFlowType_1d6x5jq" sourceRef="Command_1f3xmub" targetRef="Event_1077zjs" />
+  </emn:timeline>
+  <emn:specification name="My spec">
+    <emn:given stateName="name">
+    </emn:given>
+  </emn:specification>
+  <emndi:EMNDiagram id="EMNDiagram_1">
+    <emndi:EMNPlane id="EMNPlane_1" emnElement="timeline_1">
+      <emndi:EMNShape id="aggregateLane_1_di" emnElement="aggregateLane_1" isHorizontal="true">
+        <dc:Bounds x="200" y="440" width="900" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="interaction_1_di" emnElement="interaction_1" isHorizontal="true">
+        <dc:Bounds x="200" y="280" width="900" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="triggerLane_1_di" emnElement="triggerLane_1" isHorizontal="true">
+        <dc:Bounds x="200" y="105" width="900" height="175" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_09tey9y_di" emnElement="Slice_09tey9y">
+        <dc:Bounds x="250" y="72" width="360" height="555" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_07761x7_di" emnElement="View_07761x7">
+        <dc:Bounds x="280" y="153" width="100" height="80" />
+        <emndi:EMNLabel>
+          <dc:Bounds x="298" y="135" width="65" height="14" />
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_1f3xmub_di" emnElement="Command_1f3xmub">
+        <dc:Bounds x="380" y="310" width="100" height="100" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_1077zjs_di" emnElement="Event_1077zjs">
+        <dc:Bounds x="480" y="470" width="100" height="100" />
+      </emndi:EMNShape>
+      <emndi:EMNEdge id="Flow_10lmo9r_di" emnElement="Flow_10lmo9r">
+        <di:waypoint x="330" y="233" />
+        <di:waypoint x="330" y="270" />
+        <di:waypoint x="430" y="270" />
+        <di:waypoint x="430" y="310" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_0xohyp4_di" emnElement="Flow_0xohyp4">
+        <di:waypoint x="430" y="410" />
+        <di:waypoint x="430" y="440" />
+        <di:waypoint x="530" y="440" />
+        <di:waypoint x="530" y="470" />
+      </emndi:EMNEdge>
+    </emndi:EMNPlane>
+  </emndi:EMNDiagram>
+</emn:definitions>

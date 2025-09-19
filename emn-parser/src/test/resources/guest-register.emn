@@ -14,35 +14,35 @@
 >
   <emn:types>
     <emn:viewType id="viewType_register">
-      <emn:outgoingType>FlowType_0dqki78</emn:outgoingType>
+      <emn:outgoing>FlowType_0dqki78</emn:outgoing>
       <emn:schema schemaFormat="json">
         [ "key": "value" ]
       </emn:schema>
     </emn:viewType>
     <emn:commandType id="commandType_register" name="Register">
-      <emn:incomingType>FlowType_0dqki78</emn:incomingType>
-      <emn:outgoingType>FlowType_1wvxgnj</emn:outgoingType>
+      <emn:incoming>FlowType_0dqki78</emn:incoming>
+      <emn:outgoing>FlowType_1wvxgnj</emn:outgoing>
     </emn:commandType>
     <emn:eventType id="eventType_registered" name="Registered">
-      <emn:incomingType>FlowType_1wvxgnj</emn:incomingType>
+      <emn:incoming>FlowType_1wvxgnj</emn:incoming>
     </emn:eventType>
     <emn:viewType id="viewType_add_room">
-      <emn:outgoingType>FlowType_0jb9b1k</emn:outgoingType>
+      <emn:outgoing>FlowType_0jb9b1k</emn:outgoing>
     </emn:viewType>
     <emn:commandType id="commandType_add_room" name="Add room">
-      <emn:incomingType>FlowType_0jb9b1k</emn:incomingType>
-      <emn:outgoingType>FlowType_057t34b</emn:outgoingType>
+      <emn:incoming>FlowType_0jb9b1k</emn:incoming>
+      <emn:outgoing>FlowType_057t34b</emn:outgoing>
     </emn:commandType>
     <emn:eventType id="eventType_room_added" name="Room added">
-      <emn:incomingType>FlowType_057t34b</emn:incomingType>
-      <emn:outgoingType>FlowType_012j3jp</emn:outgoingType>
+      <emn:incoming>FlowType_057t34b</emn:incoming>
+      <emn:outgoing>FlowType_012j3jp</emn:outgoing>
     </emn:eventType>
     <emn:queryType id="queryType_room_availability" name="Room availability">
-      <emn:incomingType>FlowType_012j3jp</emn:incomingType>
-      <emn:outgoingType>FlowType_0iyhsxq</emn:outgoingType>
+      <emn:incoming>FlowType_012j3jp</emn:incoming>
+      <emn:outgoing>FlowType_0iyhsxq</emn:outgoing>
     </emn:queryType>
     <emn:viewType id="viewType_room_overview">
-      <emn:incomingType>FlowType_0iyhsxq</emn:incomingType>
+      <emn:incoming>FlowType_0iyhsxq</emn:incoming>
     </emn:viewType>
     <emn:messageFlowType id="FlowType_0dqki78" sourceRef="viewType_register" targetRef="commandType_register"/>
     <emn:messageFlowType id="FlowType_1wvxgnj" sourceRef="commandType_register" targetRef="eventType_registered"/>
