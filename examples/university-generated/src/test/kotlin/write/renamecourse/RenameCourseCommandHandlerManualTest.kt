@@ -2,18 +2,11 @@ package io.holixon.emn.example.faculty.write.renamecourse
 
 import io.holixon.emn.example.faculty.*
 import org.axonframework.test.fixture.AxonTestFixture
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
-
-class RenameCourseCommandHandlerTest {
-  private lateinit var fixture: AxonTestFixture
-
-  @BeforeEach
-  fun beforeEach() {
-    fixture = AxonTestFixture.with(UniversityAxonGeneratedApplication().configurer())
-  }
-
+@ExtendWith(AxonTestFixtureParameterResolver::class)
+internal class RenameCourseCommandHandlerManualTest(val fixture: AxonTestFixture) {
 
   @Test
   fun givenNotExistingCourse_WhenRenameCourse_ThenException() {

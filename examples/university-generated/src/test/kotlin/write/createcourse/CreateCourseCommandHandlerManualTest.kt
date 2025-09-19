@@ -1,21 +1,15 @@
 package io.holixon.emn.example.faculty.write.createcourse
 
+import io.holixon.emn.example.faculty.AxonTestFixtureParameterResolver
 import io.holixon.emn.example.faculty.CourseCreated
 import io.holixon.emn.example.faculty.CourseId
 import io.holixon.emn.example.faculty.CreateCourse
-import io.holixon.emn.example.faculty.UniversityAxonGeneratedApplication
 import org.axonframework.test.fixture.AxonTestFixture
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
-
-internal class CreateCourseCommandHandlerTest {
-  private lateinit var fixture: AxonTestFixture
-
-  @BeforeEach
-  fun beforeEach() {
-    fixture = AxonTestFixture.with(UniversityAxonGeneratedApplication().configurer())
-  }
+@ExtendWith(AxonTestFixtureParameterResolver::class)
+internal class CreateCourseCommandHandlerManualTest(val fixture: AxonTestFixture) {
 
   @Test
   fun givenNotExistingCourse_WhenCreateCourse_ThenSuccess() {
