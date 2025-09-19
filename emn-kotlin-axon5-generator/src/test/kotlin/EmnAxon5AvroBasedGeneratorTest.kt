@@ -33,12 +33,12 @@ class EmnAxon5AvroBasedGeneratorTest {
     val files = generator.generate(definitions, declaration)
 
 
-    //files.forEach { fileSpec -> fileSpec.writeTo(targetDir, true) }
+    files.forEach { fileSpec -> fileSpec.writeTo(targetDir, true) }
   }
 
   @Test
   fun `parse faculty`() {
-    val definitions = emnParser.parseDefinitions(resourceUrl("faculty-manual.emn"))
+    //val definitions = emnParser.parseDefinitions(resourceUrl("faculty.emn"))
 
   }
 

@@ -16,7 +16,9 @@ class RenameCourseState @EntityCreator constructor() : RenameCourseCommandHandle
       if (command.name == name) {
         listOf()
       } else {
-        listOf(CourseRenamed(command.courseId, command.name))
+        listOf(
+          CourseRenamed(command.courseId, command.name)
+        )
       }
     }
   }

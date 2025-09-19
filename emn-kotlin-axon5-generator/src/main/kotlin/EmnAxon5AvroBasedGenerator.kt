@@ -18,6 +18,11 @@ open class EmnAxon5AvroBasedGenerator(
   val avroRegistry: AvroCodeGenerationSpiRegistry,
   val properties: EmnAxon5GeneratorProperties
 ) {
+
+  object Tags {
+    object TestFileSpec
+  }
+
   companion object {
     val CONTEXT_UPPER_BOUND = EmnGenerationContext::class
 

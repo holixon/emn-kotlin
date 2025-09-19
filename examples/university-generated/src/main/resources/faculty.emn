@@ -63,6 +63,7 @@
     <emn:messageFlowType id="MessageFlowType_1siqqvn" name="MessageFlow" sourceRef="EventType_student_enrolled" targetRef="QueryType_students" />
     <emn:messageFlowType id="MessageFlowType_18gqizi" name="MessageFlow" sourceRef="QueryType_students" targetRef="ViewType_page_28" />
     <emn:errorType id="ErrorType_duplicate_course" name="Duplicate course" />
+    <emn:errorType id="ErrorType_course_not_exists" name="Error course does not exist" />
     <emn:viewType id="ViewType_1yybliu" name="Page 26">
       <emn:incoming>MessageFlowType_171i7uq</emn:incoming>
       <emn:outgoing>MessageFlowType_0a31qig</emn:outgoing>
@@ -168,14 +169,14 @@
     <emn:given id="Specification_18vdxuw_given" stateName="No course exists" />
     <emn:when id="Specification_18vdxuw_when">
       <emn:command id="Command_04yfs5h" typeRef="CommandType_create_course">
-        <emn:value>{ "courseId": 4711,
+        <emn:value>{ "courseId": "4711", "capacity": 25,
           "name": "Physics I" }</emn:value>
       </emn:command>
     </emn:when>
     <emn:then id="Specification_18vdxuw_then">
       <emn:event id="Event_0wny2nt" typeRef="EventType_course_created">
         <emn:value>{
-          "courseId":4711,
+          "courseId": "4711", "capacity": 25,
           "name":"Physics I"
           }</emn:value>
       </emn:event>
@@ -185,14 +186,14 @@
     <emn:given id="Specification_1quqjt0_given" stateName="Course exists">
       <emn:event id="Event_1hq514a" typeRef="EventType_course_created">
         <emn:value>{
-          "courseId": "4711",
+          "courseId": "4711", "capacity": 25,
           "name": "Physics I"
           }</emn:value>
       </emn:event>
     </emn:given>
     <emn:when id="Specification_1quqjt0_when">
       <emn:command id="Command_04gsa49" typeRef="CommandType_create_course">
-        <emn:value>{ "courseId": 4711,
+        <emn:value>{ "courseId": "4711", "capacity": 25,
           "name": "Physics I" }</emn:value>
       </emn:command>
     </emn:when>
@@ -206,7 +207,8 @@
     <emn:given id="Specification_1gtvjcl_given">
       <emn:event id="Event_1oza6ao" typeRef="EventType_course_created">
         <emn:value>{
-          "courseId": 4711,
+          "courseId": "4711",
+          "capacity": 25,
           "name": "Physics I"
           }</emn:value>
       </emn:event>
@@ -214,15 +216,15 @@
     <emn:when id="Specification_1gtvjcl_when">
       <emn:command id="Command_1tlkgbx" typeRef="CommandType_rename_course">
         <emn:value>{
-          "courseId": 4711,
+          "courseId": "4711",
           "name": "Physics II"
           }</emn:value>
       </emn:command>
     </emn:when>
     <emn:then id="Specification_1gtvjcl_then">
-      <emn:event id="Event_1tuemla" typeRef="EventType_course_created">
+      <emn:event id="Event_1tuemla" typeRef="EventType_course_renamed">
         <emn:value>{
-          "courseId": 4711,
+          "courseId": "4711",
           "name": "Physics II"
           }</emn:value>
       </emn:event>
@@ -232,7 +234,8 @@
     <emn:given id="Given_0uun07f">
       <emn:event id="Event_0ge116t" typeRef="EventType_course_created">
         <emn:value>{
-          "courseId": 4711,
+          "courseId": "4711",
+          "capacity": 25,
           "name": "Physics I"
           }</emn:value>
       </emn:event>
@@ -240,38 +243,27 @@
     <emn:when id="When_0wrpria">
       <emn:command id="Command_04u3bw3" typeRef="CommandType_rename_course">
         <emn:value>{
-          "courseId": 4711,
+          "courseId": "4711",
           "name": "Physics I"
           }</emn:value>
       </emn:command>
     </emn:when>
-    <emn:then id="Then_1tkg7df">
-      <emn:event id="Event_1dr1q5c" typeRef="EventType_course_created">
-        <emn:value>{
-          "courseId": 4711,
-          "name": "Physics II"
-          }</emn:value>
-      </emn:event>
-    </emn:then>
+    <emn:then id="Then_1tkg7df" />
   </emn:specification>
   <emn:specification id="Specification_0wjemf5" name="Rename non-existing course" scenario="If I rename a course that does not exists, an error is thrown" sliceRef="Slice_0xnxibu">
     <emn:given id="Given_0z7eshb">
-      <emn:event id="Event_0bdjzct" typeRef="EventType_course_created">
-        <emn:value>{
-          "courseId": 4711,
-          "name": "Physics I"
-          }</emn:value>
-      </emn:event>
     </emn:given>
     <emn:when id="When_0t6n42q">
       <emn:command id="Command_18yqilx" typeRef="CommandType_rename_course">
         <emn:value>{
-          "courseId": 4711,
+          "courseId": "4711",
           "name": "Physics I"
           }</emn:value>
       </emn:command>
     </emn:when>
-    <emn:then id="Then_1dezz9r" />
+    <emn:then id="Then_1dezz9r">
+      <emn:error id="Error_12sdfg" typeRef="ErrorType_course_not_exists" />
+    </emn:then>
   </emn:specification>
   <emndi:EMNDiagram id="EMNDiagram_1">
     <emndi:EMNPlane id="EMNPlane_1" emnElement="timeline_1">

@@ -8,6 +8,7 @@ import io.holixon.emn.generation.maven.EmnKotlinAxon5MavenPlugin.writeToFormatte
 import io.holixon.emn.generation.maven.GenerateMojo.Companion.GOAL
 import io.toolisticon.kotlin.avro.AvroParser
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.spi.load
+import io.toolisticon.kotlin.generation.spec.KotlinFileSpec
 import io.toolisticon.maven.fn.FileExt.createIfNotExists
 import io.toolisticon.maven.mojo.AbstractContextAwareMojo
 import org.apache.maven.plugins.annotations.LifecyclePhase
@@ -43,12 +44,22 @@ class GenerateMojo : AbstractContextAwareMojo() {
   )
   private lateinit var outputDirectory: File
 
+  @Parameter(
+    property = "testOutputDirectory",
+    required = true,
+    defaultValue = EmnKotlinAxon5MavenPlugin.DEFAULT_GENERATED_TEST_SOURCES
+  )
+  private lateinit var testOutputDirectory: File
+
   private val SPI_REGISTRY = load()
 
   override fun execute() {
 
     outputDirectory.createIfNotExists()
     mojoContext.mavenProject?.addCompileSourceRoot(outputDirectory.absolutePath)
+
+    testOutputDirectory.createIfNotExists()
+    mojoContext.mavenProject?.addTestCompileSourceRoot(testOutputDirectory.absolutePath)
 
     val includes = arrayOf("**/*.emn")
 
@@ -94,10 +105,16 @@ class GenerateMojo : AbstractContextAwareMojo() {
       generator.generate(definition, declaration)
     }
 
-    // FIXME: separate main and test targets
-    fileSpecs.forEach {
+    fileSpecs.filter { it.isMain }.forEach {
       val file = it.writeToFormatted(outputDirectory)
       log.info("Generating: $file")
     }
+    fileSpecs.filter { it.isTest }.forEach {
+      val file = it.writeToFormatted(testOutputDirectory)
+      log.info("Generating Tests: $file")
+    }
   }
+
+  val KotlinFileSpec.isMain: Boolean get() = this.tag(EmnAxon5AvroBasedGenerator.Tags.TestFileSpec::class) == null
+  val KotlinFileSpec.isTest: Boolean get() = this.tag(EmnAxon5AvroBasedGenerator.Tags.TestFileSpec::class) != null
 }
