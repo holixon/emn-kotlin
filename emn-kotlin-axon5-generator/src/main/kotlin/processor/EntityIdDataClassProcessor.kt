@@ -7,12 +7,12 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.asClassName
 import io.holixon.emn.generation.avro.SchemaDeclarationContextExt.entityName
 import io.holixon.emn.generation.avro.SchemaDeclarationContextExt.isEntityId
-import io.holixon.emn.generation.ext.StringTransformations
-import io.holixon.emn.generation.ext.StringTransformations.transform
 import io.toolisticon.kotlin.avro.generator.processor.KotlinDataClassFromRecordTypeProcessorBase
 import io.toolisticon.kotlin.avro.generator.spi.SchemaDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordType
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildCompanionObject
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.constantName
 import io.toolisticon.kotlin.generation.builder.KotlinDataClassSpecBuilder
 import io.toolisticon.kotlin.generation.poet.FormatSpecifier
 import java.util.UUID
@@ -30,7 +30,7 @@ class EntityIdDataClassProcessor : KotlinDataClassFromRecordTypeProcessorBase() 
     builder.addType(buildCompanionObject {
       addProperty("ENTITY_ID", String::class) {
         addModifiers(KModifier.CONST)
-        initializer(FormatSpecifier.STRING, entityName.transform(StringTransformations.TO_UPPER_SNAKE_CASE))
+        initializer(FormatSpecifier.STRING, constantName(entityName))
       }
       addFunction("random") {
         returns(poetType.typeName)

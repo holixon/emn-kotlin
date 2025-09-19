@@ -4,15 +4,15 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.MemberName
 import io.holixon.emn.generation.EmnAxon5GeneratorProperties
-import io.holixon.emn.generation.ext.StringTransformations
-import io.holixon.emn.generation.ext.StringTransformations.TO_UPPER_SNAKE_CASE
 import io.holixon.emn.generation.hasAvroTypeDefinitionRef
 import io.holixon.emn.generation.isCommandSliceWithAvroTypeDefinitionRef
 import io.holixon.emn.model.*
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordType
 import io.toolisticon.kotlin.avro.value.CanonicalName
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.className
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.constantName
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.simpleName
 import io.toolisticon.kotlin.generation.PackageName
 import io.toolisticon.kotlin.generation.spi.context.KotlinCodeGenerationContextBase
 import kotlin.reflect.KClass
@@ -93,16 +93,16 @@ class EmnGenerationContext(
 
   fun resolveAggregateTagName(aggregateLane: AggregateLane): MemberName {
     val aggregateName = requireNotNull(aggregateLane.name) { "Aggregate name must not be blank" }
-    return MemberName(getTagClassName(), TO_UPPER_SNAKE_CASE(aggregateName))
+    return MemberName(getTagClassName(), constantName(aggregateName))
   }
 
   /**
    * Retrieve class name for Tags class.
    */
   fun getTagClassName(): ClassName {
-    return KotlinCodeGeneration.className(
+    return className(
       packageName = properties.rootPackageName,
-      simpleName = StringTransformations.TO_UPPER_CAMEL_CASE(properties.emnName + "Tags")
+      simpleName = simpleName(properties.emnName + "Tags")
     )
   }
 }

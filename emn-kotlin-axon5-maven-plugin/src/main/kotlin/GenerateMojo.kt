@@ -1,13 +1,11 @@
 package io.holixon.emn.generation.maven
 
-import _ktx.ResourceKtx.resourceUrl
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.EmnDocumentParser
 import io.holixon.emn.generation.DefaultEmnAxon5GeneratorProperties
 import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator
 import io.holixon.emn.generation.maven.EmnKotlinAxon5MavenPlugin.writeToFormatted
 import io.holixon.emn.generation.maven.GenerateMojo.Companion.GOAL
-import io.toolisticon.kotlin.avro.AvroKotlin
 import io.toolisticon.kotlin.avro.AvroParser
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.spi.load
 import io.toolisticon.maven.fn.FileExt.createIfNotExists
@@ -52,13 +50,29 @@ class GenerateMojo : AbstractContextAwareMojo() {
     outputDirectory.createIfNotExists()
     mojoContext.mavenProject?.addCompileSourceRoot(outputDirectory.absolutePath)
 
-    val includes = arrayOf("**/*.avpr")
+    val includes = arrayOf("**/*.emn")
 
     if (!resourceDirectory.exists()) {
       log.warn("Skip non existing resource directory $resourceDirectory.")
       return
     }
 
+    // list of simple file names, eg faculty.emn
+    val emnFileNames = EmnKotlinAxon5MavenPlugin.findIncludedFiles(
+      absPath = resourceDirectory.absolutePath,
+      includes = includes,
+    )
+    log.info("Found EMN files ${emnFileNames.size} file(s) in ${resourceDirectory}.")
+
+    val filePairs = emnFileNames.map { emnFileName ->
+      val emnFile = File(resourceDirectory, emnFileName)
+      check(emnFile.exists()) { "File $emnFile does not exist." }
+      val avprFile = File(resourceDirectory, emnFileName.replaceAfterLast(".", "avpr"))
+      check(avprFile.exists()) { "Missing AVRO protocol '$avprFile' for EMN '$emnFile'." }
+      emnFile to avprFile
+    }
+
+    // FIXME configurable per filePair
     val properties = DefaultEmnAxon5GeneratorProperties(
       emnName = "faculty",
       rootPackageName = "io.holixon.emn.example.faculty",
@@ -72,13 +86,15 @@ class GenerateMojo : AbstractContextAwareMojo() {
     val emnParser = EmnDocumentParser()
     val avprParser = AvroParser()
 
-    val emnFile = File(resourceDirectory, "faculty.emn")
-    val avprFile = File(resourceDirectory, "faculty.avpr")
+    val declarationPairs = filePairs.map { filePair ->
+      emnParser.parseDefinitions(filePair.first) to avprParser.parseProtocol(filePair.second)
+    }
 
-    val definitions = emnParser.parseDefinitions(emnFile)
-    val declaration = avprParser.parseProtocol(avprFile)
+    val fileSpecs = declarationPairs.flatMap { (definition, declaration) ->
+      generator.generate(definition, declaration)
+    }
 
-    val fileSpecs = generator.generate(definitions, declaration)
+    // FIXME: separate main and test targets
     fileSpecs.forEach {
       val file = it.writeToFormatted(outputDirectory)
       log.info("Generating: $file")

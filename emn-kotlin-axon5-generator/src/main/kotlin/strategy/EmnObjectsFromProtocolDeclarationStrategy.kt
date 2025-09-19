@@ -2,21 +2,19 @@ package io.holixon.emn.generation.strategy
 
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
-import io.holixon.emn.generation.ext.StringTransformations.TO_LOWER_CAMEL_CASE
-import io.holixon.emn.generation.ext.StringTransformations.TO_UPPER_SNAKE_CASE
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.generator.strategy.AvroFileSpecListFromProtocolDeclarationStrategy
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildObject
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.constantName
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.propertyName
 import io.toolisticon.kotlin.generation.poet.FormatSpecifier
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 
-
 @OptIn(ExperimentalKotlinPoetApi::class)
 class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDeclarationStrategy() {
-
 
   override fun invoke(
     context: ProtocolDeclarationContext,
@@ -30,9 +28,9 @@ class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDe
       addType(buildObject(tagClassName) {
         emnContext.definitions.aggregates().mapNotNull { it.name }
           .distinct().forEach { name ->
-            this.addProperty(TO_UPPER_SNAKE_CASE(name), String::class) {
+            this.addProperty(constantName(name), String::class) {
               addModifiers(KModifier.CONST)
-              initializer(FormatSpecifier.STRING, TO_LOWER_CAMEL_CASE(name))
+              initializer(FormatSpecifier.STRING, propertyName(name))
             }
           }
       })

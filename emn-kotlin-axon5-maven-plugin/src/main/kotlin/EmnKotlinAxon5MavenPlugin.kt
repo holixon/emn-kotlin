@@ -51,7 +51,6 @@ object EmnKotlinAxon5MavenPlugin {
     return file
   }
 
-
   fun findIncludedFiles(absPath: String, excludes: Array<String> = emptyArray(), includes: Array<String>): List<String> {
     val fileSetManager = FileSetManager()
     val fs = FileSet().apply {

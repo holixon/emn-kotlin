@@ -1,25 +1,20 @@
 package io.holixon.emn.generation.strategy
 
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.asClassName
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.holixon.emn.generation.*
 import io.holixon.emn.generation.spi.CommandSlice
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.generation.spi.commandHandlerClassName
 import io.holixon.emn.model.applyIfExactlyOne
-import io.toolisticon.kotlin.avro.generator.api.AvroPoetType
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration
+import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildInterface
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildParameter
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.classBuilder
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.simpleName
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spec.KotlinFunSpec
 import io.toolisticon.kotlin.generation.spec.KotlinInterfaceSpec
@@ -112,7 +107,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
   ): KotlinInterfaceSpec {
 
     val stateClassName = ClassName(handlerClassName.packageName, handlerClassName.simpleName, "State")
-    val stateImplClassName = ClassName(handlerClassName.packageName, "${commandType.typeName.simpleName()}State")
+    val stateImplClassName = ClassName(handlerClassName.packageName, "${commandType.typeName.simpleName}State")
     return buildInterface(stateClassName) {
       addAnnotation(EventSourcedEntityAnnotation(tagMember, listOf(stateImplClassName)))
       sourcingEventTypes.forEach { event ->

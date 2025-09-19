@@ -2,7 +2,7 @@ package io.holixon.emn.generation
 
 import io.github.oshai.kotlinlogging.KLogger
 import io.holixon.emn.model.*
-import io.toolisticon.kotlin.avro.generator.api.AvroPoetType
+import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.value.CanonicalName
 
