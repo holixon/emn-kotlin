@@ -28,8 +28,7 @@ class RenameCourseState @EntityCreator constructor(): RenameCourseCommandHandler
     }
   }
 
-  @EventSourcingHandler
-  fun apply(event: CourseCreated): RenameCourseCommandHandler.State {
+  override fun apply(event: CourseCreated): RenameCourseCommandHandler.State {
     this.created = true
     this.name = event.name
     return this
