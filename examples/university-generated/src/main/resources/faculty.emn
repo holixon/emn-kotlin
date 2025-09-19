@@ -9,8 +9,8 @@
   exporter="Hand crafted"
   exporterVersion="1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd
-  https://holixon.io/spec/EMN/20241231/DI ../../../../doc/EMNDI.xsd"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../../doc/EMN.xsd
+  https://holixon.io/spec/EMN/20241231/DI ../../../../../doc/EMNDI.xsd"
 >
   <emn:types>
     <emn:viewType id="ViewType_page_24" name="Page 24">
@@ -114,11 +114,11 @@
       <emn:aggregateLaneSet>
         <emn:aggregateLane id="aggregateLane_student" name="Student">
           <emn:flowNodeRef>Event_student_enrolled</emn:flowNodeRef>
-          <emn:flowNodeRef>Event_course_renamed</emn:flowNodeRef>
           <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.StudentId</emn:idSchema>
         </emn:aggregateLane>
         <emn:aggregateLane id="aggregateLane_course" name="Course">
           <emn:flowNodeRef>Event_course_created</emn:flowNodeRef>
+          <emn:flowNodeRef>Event_course_renamed</emn:flowNodeRef>
           <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseId</emn:idSchema>
         </emn:aggregateLane>
       </emn:aggregateLaneSet>
