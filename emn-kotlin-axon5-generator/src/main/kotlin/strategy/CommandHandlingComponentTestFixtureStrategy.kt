@@ -109,7 +109,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
                 addStatement(")\n")
               }
             } else {
-              // FIXME -> error
+              addStatement(".exception(%T::class.java)", IllegalStateException::class.java) // FIXME -> generate custom error types first
             }
           })
         }
