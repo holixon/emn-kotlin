@@ -27,6 +27,14 @@ private val logger = KotlinLogging.logger {}
 class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGenerationContext, CommandSlice>(
   contextType = EmnGenerationContext::class, inputType = CommandSlice::class
 ) {
+
+  data class EventTypesToHandle(val sourcingEventTypes: List<AvroPoetType>, val possibleEventTypes: List<AvroPoetType>) :
+    Iterable<Pair<AvroPoetType, Boolean>> {
+    override fun iterator(): Iterator<Pair<AvroPoetType, Boolean>> = (sourcingEventTypes + possibleEventTypes).distinct().map {
+      it to !possibleEventTypes.contains(it)
+    }.iterator()
+  }
+
   override fun invoke(context: EmnGenerationContext, input: CommandSlice): KotlinFileSpecList {
 
     val fileBuilder = fileBuilder(input.commandHandlerClassName)
@@ -35,17 +43,24 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
 
       val command = input.command
       val commandPoetType = command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext)
-      val eventsToHandle = (command.sourcingEvents() + command.possibleEvents()).distinct()
-      val eventTypesToHandle = eventsToHandle
-        .map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
-        .distinct()
+
+      val sourcingEvents = command.sourcingEvents().distinct()
+      val possibleEvents = command.possibleEvents().distinct()
+
+      val eventTypesToHandle = EventTypesToHandle(
+        sourcingEventTypes = sourcingEvents
+          .map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
+          .distinct(),
+        possibleEventTypes = possibleEvents
+          .map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
+          .distinct())
 
       // FIXME -> this is wrong, we should resolve it the same way, it is resolved for generation of the
       // @TargetEntityId in the command
       val idProperty = input.command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext).idProperty()
 
       // gather aggregates for all events relevant to this command included in the slice
-      val aggregateLanes = eventsToHandle
+      val aggregateLanes = (sourcingEvents + possibleEvents).distinct()
         .filter { e -> input.slice.containsFlowElement(e) }
         .flatMap { e -> context.definitions.aggregates(e) }
         .distinct() // only once
@@ -59,7 +74,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
 
           val state = buildSingleTagState(
             handlerClassName = input.commandHandlerClassName,
-            sourcingEventTypes = eventTypesToHandle,
+            eventTypesToHandle = eventTypesToHandle,
             commandType = commandPoetType,
             tagMember = tagMember
           )
@@ -101,37 +116,39 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
 
   private fun buildSingleTagState(
     handlerClassName: ClassName,
-    sourcingEventTypes: List<AvroPoetType>,
+    eventTypesToHandle: EventTypesToHandle,
     commandType: AvroPoetType,
     tagMember: MemberName
   ): KotlinInterfaceSpec {
 
     val stateClassName = ClassName(handlerClassName.packageName, handlerClassName.simpleName, "State")
     val stateImplClassName = ClassName(handlerClassName.packageName, "${commandType.typeName.simpleName}State")
-    return buildInterface(stateClassName) {
-      addAnnotation(EventSourcedEntityAnnotation(tagMember, listOf(stateImplClassName)))
-      sourcingEventTypes.forEach { event ->
-        addFunction(buildEventSourcingHandler(event, stateClassName))
-      }
-      addFunction(buildCommandDecider(commandType))
-    }
-  }
 
-  private fun buildCommandDecider(commandType: AvroPoetType) : KotlinFunSpec {
-    return buildFun("decide") {
+    fun evolve(eventType: AvroPoetType, noop: Boolean): KotlinFunSpec = buildFun("evolve") {
+      addParameter("event", eventType.typeName)
+      addAnnotation(EventSourcingHandlerAnnotation)
+      returns(stateClassName)
+      if (noop) {
+        addStatement("return this")
+      } else {
+        addModifiers(KModifier.ABSTRACT)
+      }
+    }
+
+    fun decide(commandType: AvroPoetType): KotlinFunSpec = buildFun("decide") {
       addModifiers(KModifier.ABSTRACT)
       this.addParameter("command", commandType.typeName)
       this.returns(List::class.asClassName().parameterizedBy(Any::class.asClassName()))
     }
 
-  }
+    return buildInterface(stateClassName) {
+      addAnnotation(EventSourcedEntityAnnotation(tagMember, listOf(stateImplClassName)))
 
-  private fun buildEventSourcingHandler(eventType: AvroPoetType, stateClassName: ClassName): KotlinFunSpec {
-    return buildFun("apply") {
-      addModifiers(KModifier.ABSTRACT)
-      this.addParameter("event", eventType.typeName)
-      this.addAnnotation(EventSourcingHandlerAnnotation)
-      this.returns(stateClassName)
+      addFunction(decide(commandType))
+
+      eventTypesToHandle.forEach { (event, noop) ->
+        addFunction(evolve(event, noop))
+      }
     }
   }
 }

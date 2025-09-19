@@ -16,5 +16,5 @@ class CreateCourseState @EntityCreator constructor() : CreateCourseCommandHandle
     return listOf(CourseCreated(command.courseId, command.name, command.capacity))
   }
 
-  override fun apply(event: CourseCreated): CreateCourseCommandHandler.State = apply { created = true }
+  override fun evolve(event: CourseCreated): CreateCourseCommandHandler.State = apply { created = true }
 }

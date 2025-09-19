@@ -5,7 +5,7 @@ import io.holixon.emn.example.faculty.StudentEnrolledInFaculty
 import io.holixon.emn.example.faculty.write.enrollstudent.EnrollStudentCommandHandler
 
 class EnrollStudentInFacultyState : EnrollStudentCommandHandler.State {
-  override fun apply(event: StudentEnrolledInFaculty): EnrollStudentCommandHandler.State {
+  override fun evolve(event: StudentEnrolledInFaculty): EnrollStudentCommandHandler.State {
     TODO("Not yet implemented")
   }
 

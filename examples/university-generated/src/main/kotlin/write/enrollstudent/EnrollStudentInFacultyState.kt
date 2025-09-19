@@ -5,7 +5,7 @@ import io.holixon.emn.example.faculty.StudentEnrolledInFaculty
 import org.axonframework.eventsourcing.annotation.reflection.EntityCreator
 
 class EnrollStudentInFacultyState @EntityCreator constructor() : EnrollStudentCommandHandler.State {
-  override fun apply(event: StudentEnrolledInFaculty): EnrollStudentCommandHandler.State {
+  override fun evolve(event: StudentEnrolledInFaculty): EnrollStudentCommandHandler.State {
     TODO("Not yet implemented")
   }
 
