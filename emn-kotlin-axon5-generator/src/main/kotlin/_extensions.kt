@@ -31,7 +31,7 @@ fun Schema?.getAvroTypeDefinitionRef(): EmbeddedSchema? {
 
 fun FlowNodeType.resolveAvroPoetType(context: ProtocolDeclarationContext): AvroPoetType {
   val schemaReference = this.schemaReference()
-  val commandAvroType = requireNotNull(context.protocol.types.values.first {
+  val commandAvroType = requireNotNull(context.protocol.types.values.firstOrNull {
     it.schema.canonicalName == CanonicalName.parse(schemaReference)
   }) { "Referenced unknown type $schemaReference" }
   return context.avroPoetTypes[commandAvroType.hashCode]

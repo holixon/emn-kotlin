@@ -12,12 +12,12 @@
     <emn:commandType id="CommandType_create_course" name="Create Course">
       <emn:incoming>MessageFlowType_16lrebs</emn:incoming>
       <emn:outgoing>MessageFlowType_15lrebs</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.CreateCourse</emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CreateCourse</emn:schema>
     </emn:commandType>
     <emn:eventType id="EventType_course_created" name="Course Created">
       <emn:incoming>MessageFlowType_15lrebs</emn:incoming>
       <emn:outgoing>MessageFlowType_059omg6</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.CourseCreated</emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseCreated</emn:schema>
     </emn:eventType>
     <emn:messageFlowType id="MessageFlowType_15lrebs" name="MessageFlow" sourceRef="CommandType_create_course" targetRef="EventType_course_created" />
     <emn:messageFlowType id="MessageFlowType_16lrebs" name="MessageFlow" sourceRef="ViewType_page_24" targetRef="CommandType_create_course" />
@@ -28,7 +28,7 @@
       <emn:incoming>MessageFlowType_0h7ooc6</emn:incoming>
       <emn:incoming>MessageFlowType_059omg6</emn:incoming>
       <emn:outgoing>MessageFlowType_1eq7typ</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.Courses</emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.Courses</emn:schema>
     </emn:queryType>
     <emn:messageFlowType id="MessageFlowType_0h7ooc6" name="MessageFlow" sourceRef="EventType_02v07ad" targetRef="QueryType_courses" />
     <emn:viewType id="ViewType_page_27" name="Page 27">
@@ -42,13 +42,13 @@
     <emn:commandType id="CommandType_enroll_student" name="Enroll Student">
       <emn:incoming>MessageFlowType_147td8q</emn:incoming>
       <emn:outgoing>MessageFlowType_098lr75</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.EnrollStudent</emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.EnrollStudent</emn:schema>
     </emn:commandType>
     <emn:messageFlowType id="MessageFlowType_147td8q" name="MessageFlow" sourceRef="ViewType_page_25" targetRef="CommandType_enroll_student" />
     <emn:eventType id="EventType_student_enrolled" name="Student Enrolled">
       <emn:incoming>MessageFlowType_098lr75</emn:incoming>
       <emn:outgoing>MessageFlowType_1siqqvn</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.StudentEnrolled</emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.StudentEnrolled</emn:schema>
     </emn:eventType>
     <emn:messageFlowType id="MessageFlowType_098lr75" name="MessageFlow" sourceRef="CommandType_enroll_student" targetRef="EventType_student_enrolled" />
     <emn:eventType id="EventType_02lce3c" name="Initial Event">
@@ -58,7 +58,7 @@
       <emn:incoming>MessageFlowType_0mqywd0</emn:incoming>
       <emn:incoming>MessageFlowType_1siqqvn</emn:incoming>
       <emn:outgoing>MessageFlowType_18gqizi</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.faculty.Students</emn:schema>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.Students</emn:schema>
     </emn:queryType>
     <emn:messageFlowType id="MessageFlowType_0mqywd0" name="MessageFlow" sourceRef="EventType_02lce3c" targetRef="QueryType_students" />
     <emn:viewType id="ViewType_page_28" name="Page 28">
@@ -89,11 +89,11 @@
       <emn:aggregateLaneSet>
         <emn:aggregateLane id="aggregateLane_student" name="Student">
           <emn:flowNodeRef>Event_student_enrolled</emn:flowNodeRef>
-          <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.faculty.StudentId</emn:idSchema>
+          <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.StudentId</emn:idSchema>
         </emn:aggregateLane>
         <emn:aggregateLane id="aggregateLane_course" name="Course">
           <emn:flowNodeRef>Event_0mielbt</emn:flowNodeRef>
-          <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.faculty.CourseId</emn:idSchema>
+          <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseId</emn:idSchema>
         </emn:aggregateLane>
       </emn:aggregateLaneSet>
     </emn:laneSet>

@@ -39,7 +39,7 @@ class EmnAxon5AvroBasedGeneratorTest {
 
   @Test
   fun `parse faculty`() {
-    val definitions = emnParser.parseDefinitions(resourceUrl("faculty.emn"))
+    val definitions = emnParser.parseDefinitions(resourceUrl("faculty-manual.emn"))
 
   }
 

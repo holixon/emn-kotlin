@@ -1,460 +1,350 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<emn:definitions
-  xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
-  id="Definitions_1p59kc5"
-  targetNamespace="https://holixon.io/schema/emn"
-  exporter="Hand crafted"
-  exporterVersion="1.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd"
->
+<emn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
+                 xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                 xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="simple" name="Simple"
+                 targetNamespace="https://holixon.io/schema/emn"
+                 xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd
+  https://holixon.io/spec/EMN/20241231/DI ../../../../doc/EMNDI.xsd">
   <emn:types>
-    <emn:viewType id="view_type_page_24" name="Page 24">
-      <emn:outgoing>flow1</emn:outgoing>
+    <emn:viewType id="ViewType_page_24" name="Page 24">
+      <emn:outgoing>MessageFlowType_16lrebs</emn:outgoing>
     </emn:viewType>
-    <emn:viewType id="view_type_page_25" name="Page 25">
-      <emn:outgoing>flow_type_8</emn:outgoing>
-    </emn:viewType>
-    <emn:viewType id="view_type_page_26" name="Page 26">
-      <emn:incoming>flow_type_6</emn:incoming>
-      <emn:outgoing>flow_type_16</emn:outgoing>
-    </emn:viewType>
-    <emn:viewType id="view_type_page_27" name="Page 27">
-      <emn:incoming>flow_type_5</emn:incoming>
-      <emn:outgoing>flow_type_16</emn:outgoing>
-    </emn:viewType>
-    <emn:viewType id="view_type_page_28" name="Page 28">
-      <emn:incoming>flow_type_14</emn:incoming>
-    </emn:viewType>
-    <emn:viewType id="view_type_page_29" name="Page 29">
-      <emn:incoming>flow_type_15</emn:incoming>
-    </emn:viewType>
-    <emn:viewType id="view_type_page_30" name="Page 30">
-      <emn:incoming>flow_type_7</emn:incoming>
-      <emn:outgoing>flow_type_21</emn:outgoing>
-    </emn:viewType>
-    <emn:viewType id="view_type_page_31" name="Page 31">
-      <emn:incoming>flow_type_29</emn:incoming>
-      <emn:outgoing>flow_type_30</emn:outgoing>
-      <emn:outgoing>flow_type_31</emn:outgoing>
-    </emn:viewType>
-    <emn:viewType id="view_type_page_33" name="Page 33">
-      <emn:incoming>flow_type_38</emn:incoming>
-    </emn:viewType>
-    <emn:commandType id="command_type_create_course" name="Create Course">
-      <emn:incoming>flow1</emn:incoming>
-      <emn:outgoing>flow2</emn:outgoing>
-      <emn:outgoing>flow3</emn:outgoing>
+    <emn:commandType id="CommandType_create_course" name="Create Course">
+      <emn:incoming>MessageFlowType_16lrebs</emn:incoming>
+      <emn:outgoing>MessageFlowType_15lrebs</emn:outgoing>
       <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CreateCourse</emn:schema>
     </emn:commandType>
-    <emn:commandType id="command_type_enroll_student" name="Enroll Student In Faculty">
-      <emn:incoming>flow_type_8</emn:incoming>
-      <emn:outgoing>flow_type_9</emn:outgoing>
-      <emn:outgoing>flow_type_10</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.EnrollStudentInFaculty</emn:schema>
-    </emn:commandType>
-    <emn:commandType id="command_type_rename_course" name="Rename Course">
-      <emn:incoming>flow_type_16</emn:incoming>
-      <emn:outgoing>flow_type_17</emn:outgoing>
-      <emn:outgoing>flow_type_18</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.RenameCourse</emn:schema>
-    </emn:commandType>
-    <emn:commandType id="command_type_change_course_capacity" name="Change Course Capacity">
-      <emn:incoming>flow_type_21</emn:incoming>
-      <emn:outgoing>flow_type_22</emn:outgoing>
-      <emn:outgoing>flow_type_24</emn:outgoing>
-      <emn:outgoing>flow_type_26</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.ChangeCourseCapacity</emn:schema>
-    </emn:commandType>
-    <emn:commandType id="command_type_subscribe_student" name="Subscribe Student To Course">
-      <emn:incoming>flow_type_30</emn:incoming>
-      <emn:outgoing>flow_type_32</emn:outgoing>
-      <emn:outgoing>flow_type_33</emn:outgoing>
-    </emn:commandType>
-    <emn:commandType id="command_type_unsubscribe_student" name="Unsubscribe Student From Course">
-      <emn:incoming>flow_type_31</emn:incoming>
-      <emn:outgoing>flow_type_36</emn:outgoing>
-      <emn:outgoing>flow_type_37</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.UnsubscribeStudentFromCourse</emn:schema>
-    </emn:commandType>
-    <emn:errorType id="error_type_course_not_created" name="Course Not Created">
-      <emn:incoming>flow_type_2</emn:incoming>
-    </emn:errorType>
-    <emn:eventType id="event_type_course_created" name="Course Created">
-      <emn:incoming>flow_type_3</emn:incoming>
-      <emn:outgoing>flow_type_4</emn:outgoing>
+    <emn:eventType id="EventType_course_created" name="Course Created">
+      <emn:incoming>MessageFlowType_15lrebs</emn:incoming>
+      <emn:outgoing>MessageFlowType_059omg6</emn:outgoing>
       <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseCreated</emn:schema>
     </emn:eventType>
-    <emn:errorType id="error_type_student_not_enrolled" name="Student Not Enrolled To Faculty">
-      <emn:incoming>flow_type_9</emn:incoming>
-      <emn:outgoing>flow_type_11</emn:outgoing>
-    </emn:errorType>
-    <emn:eventType id="event_type_student_enrolled" name="Student Enrolled To Faculty">
-      <emn:incoming>flow_type_10</emn:incoming>
-      <emn:outgoing>flow_type_12</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.StudentEnrolledInFaculty</emn:schema>
+    <emn:messageFlowType id="MessageFlowType_15lrebs" name="MessageFlow" sourceRef="CommandType_create_course" targetRef="EventType_course_created" />
+    <emn:messageFlowType id="MessageFlowType_16lrebs" name="MessageFlow" sourceRef="ViewType_page_24" targetRef="CommandType_create_course" />
+    <emn:eventType id="EventType_02v07ad" name="Initial Event">
+      <emn:outgoing>MessageFlowType_0h7ooc6</emn:outgoing>
     </emn:eventType>
-    <emn:errorType id="error_type_course_not_renamed" name="Course Not Renamed">
-      <emn:incoming>flow_type_17</emn:incoming>
-      <emn:outgoing>flow_type_19</emn:outgoing>
-    </emn:errorType>
-    <emn:eventType id="event_type_course_renamed" name="Course Renamed">
-      <emn:incoming>flow_type_18</emn:incoming>
-      <emn:outgoing>flow_type_20</emn:outgoing>
-      <emn:outgoing>flow_type_28</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseRenamed</emn:schema>
-    </emn:eventType>
-    <emn:errorType id="error_type_student_not_subscribed" name="Student Not Subscribed To Course">
-      <emn:incoming>flow_type_32</emn:incoming>
-    </emn:errorType>
-    <emn:eventType id="event_type_student_subscribed" name="Student Subscribed To Course">
-      <emn:incoming>flow_type_33</emn:incoming>
-      <emn:outgoing>flow_type_34</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.StudentSubscribedToCourse</emn:schema>
-    </emn:eventType>
-    <emn:errorType id="error_type_course_capacity_not_changed" name="Course Capacity Not Changed">
-      <emn:incoming>flow_type_22</emn:incoming>
-      <emn:outgoing>flow_type_23</emn:outgoing>
-    </emn:errorType>
-    <emn:eventType id="event_type_course_capacity_changed" name="Course Capacity Changed">
-      <emn:incoming>flow_type_24</emn:incoming>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseCapacityChanged</emn:schema>
-    </emn:eventType>
-    <emn:eventType id="event_type_student_unsubscribed" name="Student Unsubscribed From Course">
-      <emn:incoming>flow_type_26</emn:incoming>
-      <emn:incoming>flow_type_37</emn:incoming>
-      <emn:outgoing>flow_type_27</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.StudentUnsubscribedFromCourse</emn:schema>
-    </emn:eventType>
-    <emn:errorType id="error_type_student_not_unsubscribed" name="Student Not Unsubscribed">
-      <emn:incoming>flow_type_36</emn:incoming>
-    </emn:errorType>
-    <emn:queryType id="query_type_courses" name="Courses">
-      <emn:incoming>flow_type_4</emn:incoming>
-      <emn:incoming>flow_type_19</emn:incoming>
-      <emn:incoming>flow_type_20</emn:incoming>
-      <emn:incoming>flow_type_23</emn:incoming>
-      <emn:incoming>flow_type_24</emn:incoming>
-      <emn:incoming>flow_type_35</emn:incoming>
-      <emn:outgoing>flow_type_5</emn:outgoing>
-      <emn:outgoing>flow_type_6</emn:outgoing>
-      <emn:outgoing>flow_type_7</emn:outgoing>
+    <emn:queryType id="QueryType_courses" name="Courses">
+      <emn:incoming>MessageFlowType_0h7ooc6</emn:incoming>
+      <emn:incoming>MessageFlowType_059omg6</emn:incoming>
+      <emn:outgoing>MessageFlowType_1eq7typ</emn:outgoing>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.Courses</emn:schema>
     </emn:queryType>
-    <emn:queryType id="query_type_students" name="Students">
-      <emn:incoming>flow_type_12</emn:incoming>
-      <emn:outgoing>flow_type_14</emn:outgoing>
+    <emn:messageFlowType id="MessageFlowType_0h7ooc6" name="MessageFlow" sourceRef="EventType_02v07ad" targetRef="QueryType_courses" />
+    <emn:viewType id="ViewType_page_27" name="Page 27">
+      <emn:incoming>MessageFlowType_1eq7typ</emn:incoming>
+    </emn:viewType>
+    <emn:messageFlowType id="MessageFlowType_1eq7typ" name="MessageFlow" sourceRef="QueryType_courses" targetRef="ViewType_page_27" />
+    <emn:messageFlowType id="MessageFlowType_059omg6" name="MessageFlow" sourceRef="EventType_course_created" targetRef="QueryType_courses" />
+    <emn:viewType id="ViewType_page_25" name="Page 25">
+      <emn:outgoing>MessageFlowType_147td8q</emn:outgoing>
+    </emn:viewType>
+    <emn:commandType id="CommandType_enroll_student" name="Enroll Student">
+      <emn:incoming>MessageFlowType_147td8q</emn:incoming>
+      <emn:outgoing>MessageFlowType_098lr75</emn:outgoing>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.EnrollStudent</emn:schema>
+    </emn:commandType>
+    <emn:messageFlowType id="MessageFlowType_147td8q" name="MessageFlow" sourceRef="ViewType_page_25" targetRef="CommandType_enroll_student" />
+    <emn:eventType id="EventType_student_enrolled" name="Student Enrolled">
+      <emn:incoming>MessageFlowType_098lr75</emn:incoming>
+      <emn:outgoing>MessageFlowType_1siqqvn</emn:outgoing>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.StudentEnrolled</emn:schema>
+    </emn:eventType>
+    <emn:messageFlowType id="MessageFlowType_098lr75" name="MessageFlow" sourceRef="CommandType_enroll_student" targetRef="EventType_student_enrolled" />
+    <emn:eventType id="EventType_02lce3c" name="Initial Event">
+      <emn:outgoing>MessageFlowType_0mqywd0</emn:outgoing>
+    </emn:eventType>
+    <emn:queryType id="QueryType_students" name="Students">
+      <emn:incoming>MessageFlowType_0mqywd0</emn:incoming>
+      <emn:incoming>MessageFlowType_1siqqvn</emn:incoming>
+      <emn:outgoing>MessageFlowType_18gqizi</emn:outgoing>
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.Students</emn:schema>
     </emn:queryType>
-    <emn:queryType id="query_type_student_details" name="Student Details">
-      <emn:incoming>flow_type_11</emn:incoming>
-      <emn:incoming>flow_type_13</emn:incoming>
-      <emn:incoming>flow_type_27</emn:incoming>
-      <emn:incoming>flow_type_28</emn:incoming>
-      <emn:incoming>flow_type_34</emn:incoming>
-      <emn:outgoing>flow_type_15</emn:outgoing>
-      <emn:outgoing>flow_type_29</emn:outgoing>
-      <emn:outgoing>flow_type_38</emn:outgoing>
-    </emn:queryType>
-    <emn:messageFlowType id="flow_type_1" sourceRef="view_type_page_24" targetRef="command_type_create_course"/>
-    <emn:messageFlowType id="flow_type_2" sourceRef="command_type_create_course" targetRef="error_type_course_not_created"/>
-    <emn:messageFlowType id="flow_type_3" sourceRef="command_type_create_course" targetRef="event_type_course_created"/>
-    <emn:messageFlowType id="flow_type_4" sourceRef="event_type_course_created" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_5" sourceRef="query_type_courses" targetRef="view_type_page_27"/>
-    <emn:messageFlowType id="flow_type_6" sourceRef="query_type_courses" targetRef="view_type_page_26"/>
-    <emn:messageFlowType id="flow_type_7" sourceRef="query_type_courses" targetRef="view_type_page_30"/>
-    <emn:messageFlowType id="flow_type_8" sourceRef="view_type_page_25" targetRef="command_type_enroll_student"/>
-    <emn:messageFlowType id="flow_type_9" sourceRef="command_type_enroll_student" targetRef="error_type_student_not_enrolled"/>
-    <emn:messageFlowType id="flow_type_10" sourceRef="command_type_enroll_student" targetRef="event_type_student_enrolled"/>
-    <emn:messageFlowType id="flow_type_11" sourceRef="error_type_student_not_enrolled" targetRef="query_type_student_details"/>
-    <emn:messageFlowType id="flow_type_12" sourceRef="event_type_student_enrolled" targetRef="query_type_students"/>
-    <emn:messageFlowType id="flow_type_13" sourceRef="event_type_student_enrolled" targetRef="query_type_student_details"/>
-    <emn:messageFlowType id="flow_type_14" sourceRef="query_type_students" targetRef="view_type_page_28"/>
-    <emn:messageFlowType id="flow_type_15" sourceRef="query_type_student_details" targetRef="view_type_page_29"/>
-    <emn:messageFlowType id="flow_type_16" sourceRef="view_type_page_26" targetRef="command_type_rename_course"/>
-    <emn:messageFlowType id="flow_type_17" sourceRef="command_type_rename_course" targetRef="error_type_course_not_renamed"/>
-    <emn:messageFlowType id="flow_type_18" sourceRef="command_type_rename_course" targetRef="event_type_course_renamed"/>
-    <emn:messageFlowType id="flow_type_19" sourceRef="error_type_course_not_renamed" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_20" sourceRef="event_type_course_renamed" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_28" sourceRef="event_type_course_renamed" targetRef="query_type_student_details"/>
-    <emn:messageFlowType id="flow_type_21" sourceRef="view_type_page_30" targetRef="command_type_change_course_capacity"/>
-    <emn:messageFlowType id="flow_type_22" sourceRef="command_type_change_course_capacity" targetRef="error_type_course_capacity_not_changed"/>
-    <emn:messageFlowType id="flow_type_23" sourceRef="error_type_course_capacity_not_changed" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_24" sourceRef="command_type_change_course_capacity" targetRef="event_type_course_capacity_changed"/>
-    <emn:messageFlowType id="flow_type_25" sourceRef="event_type_course_capacity_changed" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_26" sourceRef="command_type_change_course_capacity" targetRef="event_type_student_unsubscribed"/>
-    <emn:messageFlowType id="flow_type_27" sourceRef="event_type_student_unsubscribed" targetRef="query_type_student_details"/>
-    <emn:messageFlowType id="flow_type_29" sourceRef="query_type_student_details" targetRef="view_type_page_31"/>
-    <emn:messageFlowType id="flow_type_30" sourceRef="view_type_page_31" targetRef="command_type_subscribe_student"/>
-    <emn:messageFlowType id="flow_type_31" sourceRef="view_type_page_31" targetRef="command_type_unsubscribe_student"/>
-    <emn:messageFlowType id="flow_type_32" sourceRef="command_type_subscribe_student" targetRef="error_type_student_not_subscribed"/>
-    <emn:messageFlowType id="flow_type_33" sourceRef="command_type_subscribe_student" targetRef="event_type_student_subscribed"/>
-    <emn:messageFlowType id="flow_type_34" sourceRef="event_type_student_subscribed" targetRef="query_type_student_details"/>
-    <emn:messageFlowType id="flow_type_35" sourceRef="event_type_student_subscribed" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_36" sourceRef="command_type_unsubscribe_student" targetRef="error_type_student_not_unsubscribed"/>
-    <emn:messageFlowType id="flow_type_37" sourceRef="command_type_unsubscribe_student" targetRef="event_type_student_unsubscribed"/>
-    <emn:messageFlowType id="flow_type_38" sourceRef="query_type_student_details" targetRef="view_type_page_33"/>
-
+    <emn:messageFlowType id="MessageFlowType_0mqywd0" name="MessageFlow" sourceRef="EventType_02lce3c" targetRef="QueryType_students" />
+    <emn:viewType id="ViewType_page_28" name="Page 28">
+      <emn:incoming>MessageFlowType_18gqizi</emn:incoming>
+    </emn:viewType>
+    <emn:messageFlowType id="MessageFlowType_1siqqvn" name="MessageFlow" sourceRef="EventType_student_enrolled" targetRef="QueryType_students" />
+    <emn:messageFlowType id="MessageFlowType_18gqizi" name="MessageFlow" sourceRef="QueryType_students" targetRef="ViewType_page_28" />
+    <emn:errorType id="ErrorType_duplicate_course" name="Duplicate course" />
   </emn:types>
-
-  <emn:timeline>
-    <emn:laneSet id="lane_set_1">
+  <emn:timeline id="timeline_1" name="Timeline">
+    <emn:laneSet id="lanes_1">
       <emn:triggerLaneSet>
-        <emn:triggerLane id="trigger_student" name="Student">
-          <emn:flowNodeRef>view_page_25</emn:flowNodeRef>
-          <emn:flowNodeRef>view_page_29</emn:flowNodeRef>
-          <emn:flowNodeRef>view_page_31</emn:flowNodeRef>
-          <emn:flowNodeRef>view_page_33</emn:flowNodeRef>
+        <emn:triggerLane id="triggerLane_admin" name="Admin">
+          <emn:flowNodeRef>View_page_24</emn:flowNodeRef>
+          <emn:flowNodeRef>View_page_28</emn:flowNodeRef>
         </emn:triggerLane>
-        <emn:triggerLane id="trigger_admin" name="Admin">
-          <emn:flowNodeRef>view_page_24</emn:flowNodeRef>
-          <emn:flowNodeRef>view_page_26</emn:flowNodeRef>
-          <emn:flowNodeRef>view_page_27</emn:flowNodeRef>
-          <emn:flowNodeRef>view_page_28</emn:flowNodeRef>
-          <emn:flowNodeRef>view_page_30</emn:flowNodeRef>
+        <emn:triggerLane id="trigger_student" name="Student">
+          <emn:flowNodeRef>View_page27_1</emn:flowNodeRef>
+          <emn:flowNodeRef>View_page_25</emn:flowNodeRef>
         </emn:triggerLane>
       </emn:triggerLaneSet>
-      <emn:interactionLane id="interaction">
-        <emn:flowNodeRef>command_create_course</emn:flowNodeRef>
-        <emn:flowNodeRef>command_rename_course</emn:flowNodeRef>
-        <emn:flowNodeRef>command_change_course_capacity</emn:flowNodeRef>
-        <emn:flowNodeRef>command_enroll_student</emn:flowNodeRef>
-        <emn:flowNodeRef>command_subscribe_student</emn:flowNodeRef>
-        <emn:flowNodeRef>command_unsubscribe_student</emn:flowNodeRef>
-        <emn:flowNodeRef>query_courses</emn:flowNodeRef>
-        <emn:flowNodeRef>query_students</emn:flowNodeRef>
-        <emn:flowNodeRef>query_student_details</emn:flowNodeRef>
+      <emn:interactionLane id="interaction_1" name="Interaction">
+        <emn:flowNodeRef>Command_enroll_student</emn:flowNodeRef>
+        <emn:flowNodeRef>Command_create_course_1</emn:flowNodeRef>
+        <emn:flowNodeRef>Query_courses_1</emn:flowNodeRef>
+        <emn:flowNodeRef>Query_students</emn:flowNodeRef>
       </emn:interactionLane>
       <emn:aggregateLaneSet>
-        <emn:aggregateLane id="aggregate_course" name="Course">
-          <emn:flowNodeRef>event_course_created</emn:flowNodeRef>
-          <emn:flowNodeRef>event_course_capacity_changed</emn:flowNodeRef>
-          <emn:flowNodeRef>event_course_renamed</emn:flowNodeRef>
-          <emn:flowNodeRef>error_course_capacity_not_changed</emn:flowNodeRef>
-          <emn:flowNodeRef>error_course_not_created</emn:flowNodeRef>
-          <emn:flowNodeRef>error_course_not_renamed</emn:flowNodeRef>
-          <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseId</emn:idSchema>
-        </emn:aggregateLane>
-        <emn:aggregateLane id="aggregate_student" name="Student">
-          <emn:flowNodeRef>event_student_enrolled</emn:flowNodeRef>
-          <emn:flowNodeRef>event_student_subscribed</emn:flowNodeRef>
-          <emn:flowNodeRef>event_student_unsubscribed</emn:flowNodeRef>
-          <emn:flowNodeRef>error_student_not_enrolled</emn:flowNodeRef>
-          <emn:flowNodeRef>error_student_not_subscribed</emn:flowNodeRef>
-          <emn:flowNodeRef>error_student_not_unsubscribed</emn:flowNodeRef>
+        <emn:aggregateLane id="aggregateLane_student" name="Student">
+          <emn:flowNodeRef>Event_student_enrolled</emn:flowNodeRef>
           <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.StudentId</emn:idSchema>
+        </emn:aggregateLane>
+        <emn:aggregateLane id="aggregateLane_course" name="Course">
+          <emn:flowNodeRef>Event_0mielbt</emn:flowNodeRef>
+          <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseId</emn:idSchema>
         </emn:aggregateLane>
       </emn:aggregateLaneSet>
     </emn:laneSet>
-
-    <emn:sliceSet>
-      <emn:slice name="Create Course" id="slice_create_course">
-        <emn:documentation>
-          Creates a course with a unique name and given capacity, so enrolled students can subscribe to it.
-        </emn:documentation>
-        <emn:flowNodeRef>view_page_24</emn:flowNodeRef>
-        <emn:flowNodeRef>command_create_course</emn:flowNodeRef>
-        <emn:flowNodeRef>event_course_created</emn:flowNodeRef>
-        <emn:flowNodeRef>error_course_not_created</emn:flowNodeRef>
-        <emn:flowNodeRef>query_courses</emn:flowNodeRef>
-        <emn:flowNodeRef>view_page_27</emn:flowNodeRef>
+    <emn:sliceSet id="SliceSet_04hjrft">
+      <emn:slice id="Slice_0toflhc" name="Create Course">
+        <emn:flowNodeRef>View_page_24</emn:flowNodeRef>
+        <emn:flowNodeRef>Command_create_course_1</emn:flowNodeRef>
+        <emn:flowNodeRef>Event_0mielbt</emn:flowNodeRef>
       </emn:slice>
-      <emn:slice name="Rename Course" id="slice_rename_course">
-        <emn:documentation>
-          Rename existing course.
-        </emn:documentation>
-        <emn:flowNodeRef>view_page_26</emn:flowNodeRef>
-        <emn:flowNodeRef>command_rename_course</emn:flowNodeRef>
-        <emn:flowNodeRef>event_course_renamed</emn:flowNodeRef>
-        <emn:flowNodeRef>error_course_not_renamed</emn:flowNodeRef>
-        <emn:flowNodeRef>query_courses</emn:flowNodeRef>
-        <emn:flowNodeRef>view_page_30</emn:flowNodeRef>
+      <emn:slice id="Slice_11op9nr" name="Display Courses">
+        <emn:flowNodeRef>Event_0mielbt</emn:flowNodeRef>
+        <emn:flowNodeRef>Query_courses_1</emn:flowNodeRef>
+        <emn:flowNodeRef>View_page27_1</emn:flowNodeRef>
       </emn:slice>
-
-      <emn:slice name="Enroll Student" id="slice_enroll_student">
-        <emn:documentation>
-          Enrolls a student to faculty, so he/she can later subscribe to courses.
-        </emn:documentation>
-        <emn:flowNodeRef>view_page_25</emn:flowNodeRef>
-        <emn:flowNodeRef>command_enroll_student</emn:flowNodeRef>
-        <emn:flowNodeRef>error_student_not_enrolled</emn:flowNodeRef>
-        <emn:flowNodeRef>event_student_enrolled</emn:flowNodeRef>
-        <emn:flowNodeRef>query_student_details</emn:flowNodeRef>
-        <emn:flowNodeRef>view_page_29</emn:flowNodeRef>
+      <emn:slice id="Slice_1thdbc8" name="Enroll Student">
+        <emn:flowNodeRef>Command_enroll_student</emn:flowNodeRef>
+        <emn:flowNodeRef>View_page_25</emn:flowNodeRef>
       </emn:slice>
-
+      <emn:slice id="Slice_0xkmauv" name="View Slice">
+        <emn:flowNodeRef>Query_students</emn:flowNodeRef>
+        <emn:flowNodeRef>View_page_28</emn:flowNodeRef>
+      </emn:slice>
     </emn:sliceSet>
-
-    <emn:view typeRef="view_type_page_24" id="view_page_24">
-      <emn:outgoing>flow1</emn:outgoing>
+    <emn:view id="View_page_24" typeRef="ViewType_page_24">
     </emn:view>
-    <emn:view typeRef="view_type_page_25" id="view_page_25">
-      <emn:outgoing>flow_8</emn:outgoing>
-    </emn:view>
-    <emn:view typeRef="view_type_page_26" id="view_page_26">
-      <emn:incoming>flow_6</emn:incoming>
-      <emn:outgoing>flow_16</emn:outgoing>
-    </emn:view>
-    <emn:view typeRef="view_type_page_27" id="view_page_27">
-      <emn:incoming>flow_5</emn:incoming>
-      <emn:outgoing>flow_16</emn:outgoing>
-    </emn:view>
-    <emn:view typeRef="view_type_page_28" id="view_page_28">
-      <emn:incoming>flow_14</emn:incoming>
-    </emn:view>
-    <emn:view typeRef="view_type_page_29" id="view_page_29">
-      <emn:incoming>flow_15</emn:incoming>
-    </emn:view>
-    <emn:view typeRef="view_type_page_30" id="view_page_30">
-      <emn:incoming>flow_7</emn:incoming>
-      <emn:outgoing>flow_21</emn:outgoing>
-    </emn:view>
-    <emn:view typeRef="view_type_page_31" id="view_page_31">
-      <emn:incoming>flow_29</emn:incoming>
-      <emn:outgoing>flow_30</emn:outgoing>
-      <emn:outgoing>flow_31</emn:outgoing>
-    </emn:view>
-    <emn:view typeRef="view_type_page_33" id="view_page_33">
-      <emn:incoming>flow_38</emn:incoming>
-    </emn:view>
-    <emn:command typeRef="command_type_create_course" id="command_create_course">
-      <emn:incoming>flow1</emn:incoming>
-      <emn:outgoing>flow2</emn:outgoing>
-      <emn:outgoing>flow3</emn:outgoing>
-    </emn:command>
-    <emn:command typeRef="command_type_enroll_student" id="command_enroll_student">
-      <emn:incoming>flow_8</emn:incoming>
-      <emn:outgoing>flow_9</emn:outgoing>
-      <emn:outgoing>flow_10</emn:outgoing>
-    </emn:command>
-    <emn:command typeRef="command_type_rename_course" id="command_rename_course">
-      <emn:incoming>flow_16</emn:incoming>
-      <emn:outgoing>flow_17</emn:outgoing>
-      <emn:outgoing>flow_18</emn:outgoing>
-    </emn:command>
-    <emn:command typeRef="command_type_change_course_capacity" id="command_change_course_capacity">
-      <emn:incoming>flow_21</emn:incoming>
-      <emn:outgoing>flow_22</emn:outgoing>
-      <emn:outgoing>flow_24</emn:outgoing>
-      <emn:outgoing>flow_26</emn:outgoing>
-    </emn:command>
-    <emn:command typeRef="command_type_subscribe_student" id="command_subscribe_student">
-      <emn:incoming>flow_30</emn:incoming>
-      <emn:outgoing>flow_32</emn:outgoing>
-      <emn:outgoing>flow_33</emn:outgoing>
-    </emn:command>
-    <emn:command typeRef="command_type_unsubscribe_student" id="command_unsubscribe_student">
-      <emn:incoming>flow_31</emn:incoming>
-      <emn:outgoing>flow_36</emn:outgoing>
-      <emn:outgoing>flow_37</emn:outgoing>
-    </emn:command>
-    <emn:error typeRef="error_type_course_not_created" id="error_course_not_created">
-      <emn:incoming>flow_2</emn:incoming>
-    </emn:error>
-    <emn:event typeRef="event_type_course_created" id="event_course_created">
-      <emn:incoming>flow_3</emn:incoming>
-      <emn:outgoing>flow_4</emn:outgoing>
-    </emn:event>
-    <emn:error typeRef="error_type_student_not_enrolled" id="error_student_not_enrolled">
-      <emn:incoming>flow_9</emn:incoming>
-      <emn:outgoing>flow_11</emn:outgoing>
-    </emn:error>
-    <emn:event typeRef="event_type_student_enrolled" id="event_student_enrolled">
-      <emn:incoming>flow_10</emn:incoming>
-      <emn:outgoing>flow_12</emn:outgoing>
-    </emn:event>
-    <emn:error typeRef="error_type_course_not_renamed" id="error_course_not_renamed">
-      <emn:incoming>flow_17</emn:incoming>
-      <emn:outgoing>flow_19</emn:outgoing>
-    </emn:error>
-    <emn:event typeRef="event_type_course_renamed" id="event_course_renamed">
-      <emn:incoming>flow_18</emn:incoming>
-      <emn:outgoing>flow_20</emn:outgoing>
-      <emn:outgoing>flow_28</emn:outgoing>
-    </emn:event>
-    <emn:error typeRef="error_type_student_not_subscribed" id="error_student_not_subscribed">
-      <emn:incoming>flow_32</emn:incoming>
-    </emn:error>
-    <emn:event typeRef="event_type_student_subscribed" id="event_student_subscribed">
-      <emn:incoming>flow_33</emn:incoming>
-      <emn:outgoing>flow_34</emn:outgoing>
-    </emn:event>
-    <emn:error typeRef="error_type_course_capacity_not_changed" id="error_course_capacity_not_changed">
-      <emn:incoming>flow_22</emn:incoming>
-      <emn:outgoing>flow_23</emn:outgoing>
-    </emn:error>
-    <emn:event typeRef="event_type_course_capacity_changed" id="event_course_capacity_changed">
-      <emn:incoming>flow_24</emn:incoming>
-    </emn:event>
-    <emn:event typeRef="event_type_student_unsubscribed" id="event_student_unsubscribed">
-      <emn:incoming>flow_26</emn:incoming>
-      <emn:incoming>flow_37</emn:incoming>
-      <emn:outgoing>flow_27</emn:outgoing>
-    </emn:event>
-    <emn:error typeRef="error_type_student_not_unsubscribed" id="error_student_not_unsubscribed">
-      <emn:incoming>flow_36</emn:incoming>
-    </emn:error>
-    <emn:query typeRef="query_type_courses" id="query_courses">
-      <emn:incoming>flow_4</emn:incoming>
-      <emn:incoming>flow_19</emn:incoming>
-      <emn:incoming>flow_20</emn:incoming>
-      <emn:incoming>flow_23</emn:incoming>
-      <emn:incoming>flow_24</emn:incoming>
-      <emn:incoming>flow_35</emn:incoming>
-      <emn:outgoing>flow_5</emn:outgoing>
-      <emn:outgoing>flow_6</emn:outgoing>
-      <emn:outgoing>flow_7</emn:outgoing>
-    </emn:query>
-    <emn:query typeRef="query_type_students" id="query_students">
-      <emn:incoming>flow_12</emn:incoming>
-      <emn:outgoing>flow_14</emn:outgoing>
-    </emn:query>
-    <emn:query typeRef="query_type_student_details" id="query_student_details">
-      <emn:incoming>flow_11</emn:incoming>
-      <emn:incoming>flow_13</emn:incoming>
-      <emn:incoming>flow_27</emn:incoming>
-      <emn:incoming>flow_28</emn:incoming>
-      <emn:incoming>flow_34</emn:incoming>
-      <emn:outgoing>flow_15</emn:outgoing>
-      <emn:outgoing>flow_29</emn:outgoing>
-      <emn:outgoing>flow_38</emn:outgoing>
-    </emn:query>
-    <emn:messageFlow typeRef="flow_type_1" id="flow_1" sourceRef="view_page_24" targetRef="command_create_course"/>
-    <emn:messageFlow typeRef="flow_type_2" id="flow_2" sourceRef="command_create_course" targetRef="error_course_not_created"/>
-    <emn:messageFlow typeRef="flow_type_3" id="flow_3" sourceRef="command_create_course" targetRef="event_course_created"/>
-    <emn:messageFlow typeRef="flow_type_4" id="flow_4" sourceRef="event_course_created" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_5" id="flow_5" sourceRef="query_courses" targetRef="view_page_27"/>
-    <emn:messageFlow typeRef="flow_type_6" id="flow_6" sourceRef="query_courses" targetRef="view_page_26"/>
-    <emn:messageFlow typeRef="flow_type_7" id="flow_7" sourceRef="query_courses" targetRef="view_page_30"/>
-    <emn:messageFlow typeRef="flow_type_8" id="flow_8" sourceRef="view_page_25" targetRef="command_enroll_student"/>
-    <emn:messageFlow typeRef="flow_type_9" id="flow_9" sourceRef="command_enroll_student" targetRef="error_student_not_enrolled"/>
-    <emn:messageFlow typeRef="flow_type_10" id="flow_10" sourceRef="command_enroll_student" targetRef="event_student_enrolled"/>
-    <emn:messageFlow typeRef="flow_type_11" id="flow_11" sourceRef="error_student_not_enrolled" targetRef="query_student_details"/>
-    <emn:messageFlow typeRef="flow_type_12" id="flow_12" sourceRef="event_student_enrolled" targetRef="query_students"/>
-    <emn:messageFlow typeRef="flow_type_13" id="flow_13" sourceRef="event_student_enrolled" targetRef="query_student_details"/>
-    <emn:messageFlow typeRef="flow_type_14" id="flow_14" sourceRef="query_students" targetRef="view_page_28"/>
-    <emn:messageFlow typeRef="flow_type_15" id="flow_15" sourceRef="query_student_details" targetRef="view_page_29"/>
-    <emn:messageFlow typeRef="flow_type_16" id="flow_16" sourceRef="view_page_26" targetRef="command_rename_course"/>
-    <emn:messageFlow typeRef="flow_type_17" id="flow_17" sourceRef="command_rename_course" targetRef="error_course_not_renamed"/>
-    <emn:messageFlow typeRef="flow_type_18" id="flow_18" sourceRef="command_rename_course" targetRef="event_course_renamed"/>
-    <emn:messageFlow typeRef="flow_type_19" id="flow_19" sourceRef="error_course_not_renamed" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_20" id="flow_20" sourceRef="event_course_renamed" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_21" id="flow_28" sourceRef="event_course_renamed" targetRef="query_student_details"/>
-    <emn:messageFlow typeRef="flow_type_22" id="flow_21" sourceRef="view_page_30" targetRef="command_change_course_capacity"/>
-    <emn:messageFlow typeRef="flow_type_22" id="flow_22" sourceRef="command_change_course_capacity" targetRef="error_course_capacity_not_changed"/>
-    <emn:messageFlow typeRef="flow_type_23" id="flow_23" sourceRef="error_course_capacity_not_changed" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_24" id="flow_24" sourceRef="command_change_course_capacity" targetRef="event_course_capacity_changed"/>
-    <emn:messageFlow typeRef="flow_type_25" id="flow_25" sourceRef="event_course_capacity_changed" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_26" id="flow_26" sourceRef="command_change_course_capacity" targetRef="event_student_unsubscribed"/>
-    <emn:messageFlow typeRef="flow_type_27" id="flow_27" sourceRef="event_student_unsubscribed" targetRef="query_student_details"/>
-    <emn:messageFlow typeRef="flow_type_29" id="flow_29" sourceRef="query_student_details" targetRef="view_page_31"/>
-    <emn:messageFlow typeRef="flow_type_30" id="flow_30" sourceRef="view_page_31" targetRef="command_subscribe_student"/>
-    <emn:messageFlow typeRef="flow_type_31" id="flow_31" sourceRef="view_page_31" targetRef="command_unsubscribe_student"/>
-    <emn:messageFlow typeRef="flow_type_32" id="flow_32" sourceRef="command_subscribe_student" targetRef="error_student_not_subscribed"/>
-    <emn:messageFlow typeRef="flow_type_33" id="flow_33" sourceRef="command_subscribe_student" targetRef="event_student_subscribed"/>
-    <emn:messageFlow typeRef="flow_type_34" id="flow_34" sourceRef="event_student_subscribed" targetRef="query_student_details"/>
-    <emn:messageFlow typeRef="flow_type_35" id="flow_35" sourceRef="event_student_subscribed" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_36" id="flow_36" sourceRef="command_unsubscribe_student" targetRef="error_student_not_unsubscribed"/>
-    <emn:messageFlow typeRef="flow_type_37" id="flow_37" sourceRef="command_unsubscribe_student" targetRef="event_student_unsubscribed"/>
-    <emn:messageFlow typeRef="flow_type_38" id="flow_38" sourceRef="query_student_details" targetRef="view_page_33"/>
-
+    <emn:command id="Command_create_course_1" typeRef="CommandType_create_course" />
+    <emn:messageFlow id="Flow_0ytn02p" sourceRef="View_page_24" targetRef="Command_create_course_1" typeRef="MessageFlowType_16lrebs" />
+    <emn:event id="Event_0mielbt" typeRef="EventType_course_created" />
+    <emn:messageFlow id="Flow_0gbfqub" typeRef="MessageFlowType_15lrebs" sourceRef="Command_create_course_1" targetRef="Event_0mielbt" />
+    <emn:query id="Query_courses_1" typeRef="QueryType_courses" />
+    <emn:view id="View_page27_1" typeRef="ViewType_page_27" />
+    <emn:messageFlow id="Flow_1b9v137" typeRef="MessageFlowType_1eq7typ" sourceRef="Query_courses_1" targetRef="View_page27_1" />
+    <emn:messageFlow id="Flow_1etqwcf" typeRef="MessageFlowType_059omg6" sourceRef="Event_0mielbt" targetRef="Query_courses_1" />
+    <emn:view id="View_page_25" typeRef="ViewType_page_25" />
+    <emn:command id="Command_enroll_student" typeRef="CommandType_enroll_student"/>
+    <emn:messageFlow id="Flow_1snpycr" typeRef="MessageFlowType_147td8q" sourceRef="View_page_25" targetRef="Command_enroll_student" />
+    <emn:event id="Event_student_enrolled" typeRef="EventType_student_enrolled" />
+    <emn:messageFlow id="Flow_11fr4m1" typeRef="MessageFlowType_098lr75" sourceRef="Command_enroll_student" targetRef="Event_student_enrolled" />
+    <emn:query id="Query_students" typeRef="QueryType_students" />
+    <emn:view id="View_page_28" typeRef="ViewType_page_28" />
+    <emn:messageFlow id="Flow_0lfdiju" typeRef="MessageFlowType_18gqizi" sourceRef="Query_students" targetRef="View_page_28" />
+    <emn:messageFlow id="Flow_03ygtcq" typeRef="MessageFlowType_1siqqvn" sourceRef="Event_student_enrolled" targetRef="Query_students" />
   </emn:timeline>
+  <emn:specification id="Specification_create_course_success" name="Create course" scenario="As an admin I want to create course" sliceRef="Slice_0toflhc">
+    <emn:given id="Specification_18vdxuw_given" stateName="No course exists" />
+    <emn:when id="Specification_18vdxuw_when">
+      <emn:command id="Command_04yfs5h" typeRef="CommandType_create_course">
+        <emn:value>{ "courseId": 4711,
+          "name": "Physics I" }</emn:value>
+      </emn:command>
+    </emn:when>
+    <emn:then id="Specification_18vdxuw_then">
+      <emn:event id="Event_0wny2nt" typeRef="EventType_course_created">
+        <emn:value>{
+          "courseId":4711,
+          "name":"Physics I"
+          }</emn:value>
+      </emn:event>
+    </emn:then>
+  </emn:specification>
+  <emn:specification id="Specification_create_course_error" name="Don&#39;t create course">
+    <emn:given id="Specification_1quqjt0_given" stateName="Course exists">
+      <emn:event id="Event_1hq514a" typeRef="EventType_course_created">
+        <emn:value>{
+          "courseId": "4711",
+          "name": "Physics I"
+          }</emn:value>
+      </emn:event>
+    </emn:given>
+    <emn:when id="Specification_1quqjt0_when">
+      <emn:command id="Command_04gsa49" typeRef="CommandType_create_course">
+        <emn:value>{ "courseId": 4711,
+          "name": "Physics I" }</emn:value>
+      </emn:command>
+    </emn:when>
+    <emn:then id="Specification_1quqjt0_then">
+      <emn:error id="Error_1h6wufi" typeRef="ErrorType_duplicate_course">
+        <emn:value>{ "message": "Duplicate course 4711 already exists" }</emn:value>
+      </emn:error>
+    </emn:then>
+  </emn:specification>
+  <emndi:EMNDiagram id="EMNDiagram_1">
+    <emndi:EMNPlane id="EMNPlane_1" emnElement="timeline_1">
+      <emndi:EMNShape id="AggregateLane_1w15s4u_di" emnElement="aggregateLane_course" isHorizontal="true">
+        <dc:Bounds x="200" y="600" width="2010" height="160" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="aggregateLane_1_di" emnElement="aggregateLane_student" isHorizontal="true">
+        <dc:Bounds x="200" y="440" width="2010" height="160" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_1mtw5ng_di" emnElement="Event_student_enrolled">
+        <dc:Bounds x="1370" y="470" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="interaction_1_di" emnElement="interaction_1" isHorizontal="true">
+        <dc:Bounds x="200" y="280" width="2010" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Query_1y1fy8w_di" emnElement="Query_students">
+        <dc:Bounds x="1530" y="310" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_11op9nr_di" emnElement="Slice_11op9nr">
+        <dc:Bounds x="510" y="-110" width="440" height="880" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_0toflhc_di" emnElement="Slice_0toflhc">
+        <dc:Bounds x="250" y="-90" width="410" height="880" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="TriggerLane_17dix3f_di" emnElement="trigger_student" isHorizontal="true">
+        <dc:Bounds x="200" y="-55" width="2010" height="160" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="triggerLane_1_di" emnElement="triggerLane_admin" isHorizontal="true">
+        <dc:Bounds x="200" y="105" width="2010" height="175" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_0wmygiz_di" emnElement="View_page_28">
+        <dc:Bounds x="1640" y="160" width="100" height="80" />
+        <emndi:EMNLabel>
+          <dc:Bounds x="1671" y="142" width="41" height="14" />
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_0sbv8ib_di" emnElement="View_page_25">
+        <dc:Bounds x="1080" y="-15" width="100" height="80" />
+        <emndi:EMNLabel>
+          <dc:Bounds x="1111" y="-33" width="41" height="14" />
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_1c7nbgb_di" emnElement="Command_enroll_student">
+        <dc:Bounds x="1180" y="310" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_1thdbc8_di" emnElement="Slice_1thdbc8">
+        <dc:Bounds x="1050" y="-90" width="450" height="717" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_0xkmauv_di" emnElement="Slice_0xkmauv">
+        <dc:Bounds x="1340" y="-248" width="500" height="848" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1quqjt0_di" emnElement="Specification_create_course_error">
+        <dc:Bounds x="800" y="875" width="500" height="550" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1quqjt0_given_di" emnElement="Specification_1quqjt0_given">
+        <dc:Bounds x="810" y="900" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_1hq514a_di" emnElement="Event_1hq514a">
+        <dc:Bounds x="850" y="930" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1quqjt0_when_di" emnElement="Specification_1quqjt0_when">
+        <dc:Bounds x="810" y="1070" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_04gsa49_di" emnElement="Command_04gsa49">
+        <dc:Bounds x="850" y="1100" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1quqjt0_then_di" emnElement="Specification_1quqjt0_then">
+        <dc:Bounds x="810" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Error_1h6wufi_di" emnElement="Error_1h6wufi">
+        <dc:Bounds x="850" y="1260" width="100" height="100" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_18vdxuw_di" emnElement="Specification_create_course_success">
+        <dc:Bounds x="200" y="875" width="500" height="550" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_18vdxuw_given_di" emnElement="Specification_18vdxuw_given">
+        <dc:Bounds x="210" y="900" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_18vdxuw_when_di" emnElement="Specification_18vdxuw_when">
+        <dc:Bounds x="210" y="1070" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_04yfs5h_di" emnElement="Command_04yfs5h">
+        <dc:Bounds x="260" y="1100" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_18vdxuw_then_di" emnElement="Specification_18vdxuw_then">
+        <dc:Bounds x="210" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_0wny2nt_di" emnElement="Event_0wny2nt">
+        <dc:Bounds x="260" y="1260" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_0dwxu7r_di" emnElement="View_page_24">
+        <dc:Bounds x="280" y="150" width="100" height="80" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_1y2duqg_di" emnElement="Command_create_course_1">
+        <dc:Bounds x="380" y="310" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_0mielbt_di" emnElement="Event_0mielbt">
+        <dc:Bounds x="530" y="620" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Query_1msi0rf_di" emnElement="Query_courses_1">
+        <dc:Bounds x="700" y="310" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_1eft2am_di" emnElement="View_page27_1">
+        <dc:Bounds x="810" y="-15" width="100" height="80" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNEdge id="Flow_0ytn02p_di" emnElement="Flow_0ytn02p">
+        <di:waypoint x="330" y="230" />
+        <di:waypoint x="330" y="290" />
+        <di:waypoint x="430" y="310" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_0gbfqub_di" emnElement="Flow_0gbfqub">
+        <di:waypoint x="430" y="410" />
+        <di:waypoint x="430" y="440" />
+        <di:waypoint x="580" y="440" />
+        <di:waypoint x="580" y="620" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1b9v137_di" emnElement="Flow_1b9v137">
+        <di:waypoint x="750" y="310" />
+        <di:waypoint x="750" y="190" />
+        <di:waypoint x="860" y="190" />
+        <di:waypoint x="860" y="65" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1etqwcf_di" emnElement="Flow_1etqwcf">
+        <di:waypoint x="580" y="620" />
+        <di:waypoint x="580" y="515" />
+        <di:waypoint x="750" y="515" />
+        <di:waypoint x="750" y="410" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1snpycr_di" emnElement="Flow_1snpycr">
+        <di:waypoint x="1130" y="65" />
+        <di:waypoint x="1130" y="190" />
+        <di:waypoint x="1230" y="190" />
+        <di:waypoint x="1230" y="310" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_11fr4m1_di" emnElement="Flow_11fr4m1">
+        <di:waypoint x="1230" y="410" />
+        <di:waypoint x="1230" y="440" />
+        <di:waypoint x="1420" y="440" />
+        <di:waypoint x="1420" y="470" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_0lfdiju_di" emnElement="Flow_0lfdiju">
+        <di:waypoint x="1580" y="310" />
+        <di:waypoint x="1580" y="275" />
+        <di:waypoint x="1690" y="275" />
+        <di:waypoint x="1690" y="240" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_03ygtcq_di" emnElement="Flow_03ygtcq">
+        <di:waypoint x="1420" y="470" />
+        <di:waypoint x="1420" y="440" />
+        <di:waypoint x="1580" y="440" />
+        <di:waypoint x="1580" y="410" />
+      </emndi:EMNEdge>
+    </emndi:EMNPlane>
+  </emndi:EMNDiagram>
 </emn:definitions>
