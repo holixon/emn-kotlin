@@ -3,10 +3,21 @@
 package io.holixon.emn.generation
 
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.MemberName.Companion.member
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
+import io.toolisticon.kotlin.avro.generator.poet.AvroPoetTypes
+import io.toolisticon.kotlin.avro.model.RecordField
+import io.toolisticon.kotlin.avro.model.RecordType
+import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isNullable
+import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isPrimitive
+import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isStringType
+import io.toolisticon.kotlin.avro.value.Name
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_KCLASS
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_LITERAL
 import io.toolisticon.kotlin.generation.poet.CodeBlockBuilder.Companion.codeBlock
@@ -19,6 +30,7 @@ import org.axonframework.eventsourcing.annotation.EventSourcedEntity
 import org.axonframework.eventsourcing.annotations.EventTag
 import org.axonframework.modelling.annotation.InjectEntity
 import org.axonframework.modelling.annotation.TargetEntityId
+import java.util.function.Supplier
 
 data class InjectEntityAnnotation(val idProperty: String? = null) : KotlinAnnotationSpecSupplier {
   override fun spec(): KotlinAnnotationSpec = buildAnnotation(InjectEntity::class) {
@@ -31,7 +43,6 @@ fun AvroPoetType.idProperty(): String? {
   // FIXME -> find a way how to model this.
   return null
 }
-
 
 data class EventTagAnnotation(val key: MemberName) : KotlinAnnotationSpecSupplier {
   override fun spec(): KotlinAnnotationSpec = buildAnnotation(EventTag::class) {
@@ -64,3 +75,33 @@ object CommandHandlerAnnotation : KotlinAnnotationSpecSupplier {
   override fun spec(): KotlinAnnotationSpec = buildAnnotation(CommandHandler::class)
 }
 
+fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, properties: Map<String, Any?>): CodeBlock {
+  require(avroPoetType.avroType is RecordType) { "Can only initialize RecordType, but was ${avroPoetType.avroType}" }
+  val recordType = avroPoetType.avroType as RecordType
+
+  data class FieldAndValue(val field: RecordField, val value: Any?) : Supplier<CodeBlock> {
+
+    override fun get(): CodeBlock = if (field.type is RecordType) {
+      val constructorCall = initializeMessage(
+        avroPoetTypes[field.type.hashCode],
+        avroPoetTypes, properties + (mapOf("value" to value)) // FIXME: this is a hack to support Id types
+      )
+      codeBlock("${field.name} = %L", constructorCall)
+    } else {
+      val format = if (field.schema.isStringType) format.FORMAT_STRING else format.FORMAT_LITERAL
+      codeBlock("${field.name} = $format", value)
+    }
+
+    init {
+      if (value == null) {
+        require(field.schema.isNullable) { "Field ${field.name} is not nullable, but value is null" }
+      }
+      check(field.type is RecordType || field.schema.isPrimitive) { "Field ${field.name} is of type ${field.type}, which is not supported yet" }
+    }
+  }
+
+  val blocks = properties.map { (key, value) -> recordType.getField(Name(key)) to value }
+    .filter { it.first != null }.map { FieldAndValue(it.first!!, it.second).get() }
+
+  return CodeBlock.of("%T(%L)", avroPoetType.typeName, blocks.joinToString(separator = ", "))
+}

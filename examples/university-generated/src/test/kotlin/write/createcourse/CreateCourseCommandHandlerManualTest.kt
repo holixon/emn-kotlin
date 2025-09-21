@@ -23,6 +23,23 @@ internal class CreateCourseCommandHandlerManualTest(val fixture: AxonTestFixture
   }
 
   @Test
+  fun givenNotExistingCourse_WhenCreateCourse_ThenSuccess1() {
+    with(fixture) {
+      val courseId = CourseId.random()
+      val courseName = "Event Sourcing in Practice"
+      val capacity = 3
+
+      given()
+        .noPriorActivity()
+        .`when`()
+        .command(CreateCourse(courseId, courseName, capacity))
+        .then()
+        .success()
+        .events(CourseCreated(courseId, courseName, capacity))
+    }
+  }
+
+  @Test
   fun givenCourseCreated_WhenCreateCourse_ThenSuccess_NoEvents() {
     val courseId = CourseId.random()
     val courseName = "Event Sourcing in Practice"

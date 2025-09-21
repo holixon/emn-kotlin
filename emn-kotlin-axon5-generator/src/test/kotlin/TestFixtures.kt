@@ -2,6 +2,7 @@ package io.holixon.emn.generation
 
 import com.facebook.ktfmt.format.Formatter
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.holixon.emn.EmnDocumentParser
 import io.toolisticon.kotlin.avro.AvroParser
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.spi.load
@@ -12,7 +13,10 @@ import java.nio.file.Paths
 import kotlin.io.path.writeText
 
 @OptIn(ExperimentalKotlinPoetApi::class)
-object TestFixtures {
+data object TestFixtures {
+
+  val logger = KotlinLogging.logger {}
+
   // loads ALL available strategies and processors for ALL contexts
   val SPI_REGISTRY = load()
 

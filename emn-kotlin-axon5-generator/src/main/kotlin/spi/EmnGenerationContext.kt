@@ -1,5 +1,7 @@
 package io.holixon.emn.generation.spi
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.MemberName
@@ -22,9 +24,10 @@ import kotlin.reflect.KClass
  */
 @OptIn(ExperimentalKotlinPoetApi::class)
 class EmnGenerationContext(
+  registry: EmnAxon5GenerationSpiRegistry,
   val definitions: Definitions,
   val properties: EmnAxon5GeneratorProperties,
-  registry: EmnAxon5GenerationSpiRegistry,
+  val objectMapper : ObjectMapper = ObjectMapper().registerKotlinModule(),
   val tags: MutableMap<KClass<*>, Any?> = mutableMapOf()
 ) : KotlinCodeGenerationContextBase<EmnGenerationContext>(registry) {
 

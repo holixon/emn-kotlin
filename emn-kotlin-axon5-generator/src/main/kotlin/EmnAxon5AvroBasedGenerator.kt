@@ -20,7 +20,7 @@ open class EmnAxon5AvroBasedGenerator(
 ) {
 
   object Tags {
-    object TestFileSpec
+    data object TestFileSpec
   }
 
   companion object {

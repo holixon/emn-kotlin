@@ -1,12 +1,12 @@
 package io.holixon.emn.generation.strategy
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.MemberName.Companion.member
 import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator.Tags.TestFileSpec
 import io.holixon.emn.generation.getEmbeddedJsonValueAsMap
+import io.holixon.emn.generation.initializeMessage
 import io.holixon.emn.generation.resolveAvroPoetType
 import io.holixon.emn.generation.spi.CommandSlice
 import io.holixon.emn.generation.spi.EmnGenerationContext
@@ -18,12 +18,11 @@ import io.holixon.emn.model.errors
 import io.holixon.emn.model.events
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetTypes
-import io.toolisticon.kotlin.avro.model.SchemaType
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.classBuilder
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
-import io.toolisticon.kotlin.generation.builder.KotlinFunSpecBuilder
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
 
@@ -32,9 +31,16 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
   contextType = EmnGenerationContext::class,
   inputType = CommandSlice::class
 ) {
+  companion object {
+    val JUNIT_TEST = buildAnnotation(ClassName("org.junit.jupiter.api", "Test"))
+    val AXON_FIXTURE = ClassName("org.axonframework.test.fixture", "AxonTestFixture")
+    val AXON_SETUP = ClassName("org.axonframework.test.fixture", "AxonTestPhase", "SetUp")
+    val AXON_GIVEN = ClassName("org.axonframework.test.fixture", "AxonTestPhase", "Given")
+    val AXON_WHEN = ClassName("org.axonframework.test.fixture", "AxonTestPhase", "When")
+    val AXON_THEN = ClassName("org.axonframework.test.fixture", "AxonTestPhase", "Then")
 
-  // FIXME -> pass over via context.
-  private val objectMapper = ObjectMapper().registerKotlinModule()
+    //org.axonframework.test.fixture.AxonTestPhase.Setup
+  }
 
   override fun invoke(
     context: EmnGenerationContext,
@@ -43,9 +49,17 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     val fileBuilder = fileBuilder(input.commandHandlerFixtureTestClassName)
       .addTag(TestFileSpec)
 
+    fun messageInstantiation(event: FlowElement, avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes): CodeBlock {
+      val elementValue = requireNotNull(event.value) { "Element $event must have a value." }
+      val propertiesMap = elementValue.getEmbeddedJsonValueAsMap(context.objectMapper)
+      requireNotNull(propertiesMap) { "Could not parse value of $event as a map of properties." }
+
+      return initializeMessage(avroPoetType, avroPoetTypes, propertiesMap)
+    }
+
     val commandHandlerTypeBuilder = classBuilder(input.commandHandlerFixtureTestClassName).apply {
 
-      addConstructorProperty( "fixture", ClassName("org.axonframework.test.fixture", "AxonTestFixture") )
+      addConstructorProperty("fixture", AXON_FIXTURE) { makePrivate() }
 
       context.definitions.specifications
         .filter { spec -> spec.slice != null && spec.slice!!.id == input.slice.id }
@@ -55,58 +69,51 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
           val whenStage = requireNotNull(spec.whenStage) { "When stage must be present" }
           val thenStage = requireNotNull(spec.thenStage) { "Then stage must be present" }
 
-          this.addKdoc("\n${spec.name}\n\n")
-          addFunction(buildFun(spec.testMethodName) {
-            addAnnotation(buildAnnotation(ClassName("org.junit.jupiter.api", "Test")))
 
-            addStatement("fixture\n")
-            addStatement(".given()\n")
+          addFunction(buildFun(spec.testMethodName) {
+            addAnnotation(JUNIT_TEST)
+            addKdoc(spec.name)
+
+            addStatement("fixture")
+            addStatement(".given()")
+
             val givenEvents = givenStage.values.events()
+
             if (givenEvents.isEmpty()) {
-              addStatement(".noPriorActivity()\n")
+              addStatement(".noPriorActivity()")
             } else {
               givenEvents.forEach { event ->
-                addStatement(".event(\n") // FIXME -> this is a hack
-                messageInstantiation(
+                val eventCode = messageInstantiation(
                   event,
                   event.typeReference.resolveAvroPoetType(context.protocolDeclarationContext),
                   context.protocolDeclarationContext.avroPoetTypes
                 )
-                addStatement(")\n")
+                addStatement(".event(%L)",  eventCode)
               }
             }
 
-            addStatement(".`when`()\n")
-            val commands = whenStage.values.commands()
-            require(commands.size == 1) { "Currently when stage requires exactly one command." }
-            val command = commands.first()
-            addStatement(".command(\n") // FIXME -> this is a hack
-            messageInstantiation(
+            addStatement(".`when`()")
+
+            val command = whenStage.values.commands().singleOrNull() ?: throw IllegalStateException("Currently when stage requires exactly one command.")
+
+            addStatement(".command(%L)", messageInstantiation(
               command,
               command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext),
               context.protocolDeclarationContext.avroPoetTypes
-            )
-            addStatement(")\n")
+            ))
 
-
-            addStatement(".then()\n")
+            addStatement(".then()")
             val thenEvents = thenStage.values.events()
             val thenErrors = thenStage.values.errors()
             if (thenErrors.isEmpty()) {
-              addStatement(".success()\n")
+              addStatement(".success()")
               if (thenEvents.isEmpty()) {
-                addStatement(".noEvents()\n")
+                addStatement(".noEvents()")
               } else {
-                addStatement(".events(\n") // FIXME -> this is a hack
-                thenEvents.forEach { event ->
-                  messageInstantiation(
-                    event,
-                    event.typeReference.resolveAvroPoetType(context.protocolDeclarationContext),
-                    context.protocolDeclarationContext.avroPoetTypes
-
-                  )
+                val thenEventsCode = thenEvents.map {
+                  messageInstantiation(it, it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext), context.protocolDeclarationContext.avroPoetTypes)
                 }
-                addStatement(")\n")
+                addStatement(".events(%L)", thenEventsCode.joinToString(separator = ","))
               }
             } else {
               addStatement(".exception(%T::class.java)", IllegalStateException::class.java) // FIXME -> generate custom error types first
@@ -119,41 +126,5 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     return KotlinFileSpecList(fileBuilder.build())
   }
 
-  private fun KotlinFunSpecBuilder.messageInstantiation(event: FlowElement, avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes) {
-    val elementValue = requireNotNull(event.value) { "Element $event must have a value."}
-    val propertiesMap = elementValue.getEmbeddedJsonValueAsMap(objectMapper)
-    requireNotNull(propertiesMap) { "Could not parse value of $event as a map of properties." }
-
-    // Build parameter statements
-    val paramStatements = mutableListOf<String>()
-
-    addStatement("%T(", avroPoetType.typeName) // FIXME -> HACK
-    // Iterate through entries and build parameter statements
-    propertiesMap.entries.forEachIndexed { index, (key, value) ->
-      val avroSchemaField = avroPoetType.avroType.schema.fields.find { it.name.value == key }
-      if (avroSchemaField != null) {
-        if (avroSchemaField.type is SchemaType.RECORD) {
-          val complexType = requireNotNull(avroPoetTypes[avroSchemaField.schema.hashCode]) { "Could not find type for ${avroSchemaField.name} for property $key" }
-          addStatement(
-            "$key=%T(\"$value\")", // FIXME -> this should be constructor invocation, nut just a type name
-            complexType.typeName,
-          )
-        } else {
-          // simple type, try to assign directly
-          val simpleAssignment = when (value) {
-            is String -> "$key=\"$value\""
-            else -> "$key=$value"
-          }
-          addStatement(simpleAssignment)
-        }
-      }
-      // If it's the last element, check if we need to add a comma
-      if (index < propertiesMap.entries.size - 1) {
-        // Not the last element, we'll add a comma in the joinToString
-        addStatement(", ")
-      }
-    }
-    addStatement(")\n")
-  }
 
 }
