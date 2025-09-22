@@ -125,9 +125,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
             addStatement(".exception(%T::class.java)", errorPoetType)
           }
           if (thenEvents.isEmpty()) {
-            addCode(
-              CodeBlock.of(".noEvents()")
-            )
+            addStatement(".noEvents()")
           } else {
             addCode {
               add(".events(")
