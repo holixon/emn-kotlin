@@ -31,7 +31,7 @@ object EmnKotlinAxon5MavenPlugin {
    * Format of generated code.
    */
   val KTFMT_FORMAT = Formatter.KOTLINLANG_FORMAT.copy(
-    maxWidth = 256,
+    maxWidth = 140,
     blockIndent = 2,
     continuationIndent = 2
   )

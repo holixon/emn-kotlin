@@ -6,20 +6,19 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.MemberName
-import com.squareup.kotlinpoet.MemberName.Companion.member
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetTypes
 import io.toolisticon.kotlin.avro.model.RecordField
 import io.toolisticon.kotlin.avro.model.RecordType
+import io.toolisticon.kotlin.avro.model.wrapper.AvroSchema
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isNullable
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isPrimitive
+import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isRecordType
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isStringType
-import io.toolisticon.kotlin.avro.value.Name
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_KCLASS
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_LITERAL
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_STRING
 import io.toolisticon.kotlin.generation.poet.CodeBlockBuilder.Companion.codeBlock
 import io.toolisticon.kotlin.generation.spec.KotlinAnnotationSpec
 import io.toolisticon.kotlin.generation.spec.KotlinAnnotationSpecSupplier
@@ -81,27 +80,85 @@ fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, 
 
   data class FieldAndValue(val field: RecordField, val value: Any?) : Supplier<CodeBlock> {
 
-    override fun get(): CodeBlock = if (field.type is RecordType) {
+    override fun get(): CodeBlock = if (field.type.schema.isRecordType) {
+      /*
+      FIXME -> drop, left only for review
       val constructorCall = initializeMessage(
         avroPoetTypes[field.type.hashCode],
-        avroPoetTypes, properties + (mapOf("value" to value)) // FIXME: this is a hack to support Id types
-      )
+        avroPoetTypes,
+        mapOf("value" to value) // FIXME: this is a hack to support id types
+      )*/
+
+      val complexType = avroPoetTypes[field.type.hashCode]
+      val complexTypeRecord = complexType.avroType as RecordType
+      require(complexTypeRecord.schema.fields.size == 1) { "Only a record with exact one field can be instantiated from a value, but ${complexTypeRecord.schema.fields} is found." }
+      val constructorField = complexTypeRecord.schema.fields[0]
+      val constructorCall = CodeBlock.of("%T(${constructorField.schema.poetValueFormat()})", complexType.typeName, value)
       codeBlock("${field.name} = %L", constructorCall)
     } else {
-      val format = if (field.schema.isStringType) format.FORMAT_STRING else format.FORMAT_LITERAL
-      codeBlock("${field.name} = $format", value)
+      codeBlock("${field.name} = ${field.schema.poetValueFormat()}", value)
     }
 
     init {
       if (value == null) {
         require(field.schema.isNullable) { "Field ${field.name} is not nullable, but value is null" }
       }
-      check(field.type is RecordType || field.schema.isPrimitive) { "Field ${field.name} is of type ${field.type}, which is not supported yet" }
+      check(field.type.schema.isRecordType || field.schema.isPrimitive) { "Field ${field.name} is of type ${field.type}, which is not supported yet" }
     }
   }
 
-  val blocks = properties.map { (key, value) -> recordType.getField(Name(key)) to value }
-    .filter { it.first != null }.map { FieldAndValue(it.first!!, it.second).get() }
+  // Fields to values
+  val blocks = recordType.fields.map { field ->
+    val value = if (properties.containsKey(field.name.value)) {
+      properties[field.name.value]
+    } else {
+      // TODO -> resolve default?
+      if (field.schema.isNullable) {
+        null
+      } else {
+        throw IllegalArgumentException("No value was supplied for field ${field.name} is of type ${field.type}")
+      }
+    }
+    FieldAndValue(field, value).get()
+  }
 
-  return CodeBlock.of("%T(%L)", avroPoetType.typeName, blocks.joinToString(separator = ", "))
+  /*
+  FIXME -> drop, left only for review
+  -> Values to fields
+  val blocks = properties
+    .map { (key, value) -> recordType.getField(Name(key)) to value }
+    .filter { it.first != null }
+    .map { FieldAndValue(it.first!!, it.second).get() }
+  */
+
+  return CodeBlock.builder()
+    .add("%T", avroPoetType.typeName)
+    .add("(")
+    .addAll(blocks, CodeBlock.of(", "))
+    .add(")")
+    .build()
 }
+
+/**
+ * Adds list of code blocks to current builder, using optional separator.
+ * @param blocks blocks to add.
+ * @return code block builder.
+ */
+fun CodeBlock.Builder.addAll(blocks: List<CodeBlock>, separator: CodeBlock? = null) = apply {
+  blocks.forEachIndexed { index, block ->
+    add(block)
+    if (separator != null && index < blocks.size - 1) {
+      add(separator)
+    }
+  }
+}
+
+/**
+ * Returns a value format for poet template expansion.
+ */
+fun AvroSchema.poetValueFormat() =
+  if (this.isStringType) {
+    FORMAT_STRING
+  } else {
+    FORMAT_LITERAL
+  }

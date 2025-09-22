@@ -45,6 +45,10 @@ fun ElementValue?.getEmbeddedJsonValueAsMap(objectMapper: ObjectMapper): Map<Str
   }
 }
 
+fun FlowNode.resolveAvroPoetType(context: ProtocolDeclarationContext): AvroPoetType {
+  return this.typeReference.resolveAvroPoetType(context)
+}
+
 fun FlowNodeType.resolveAvroPoetType(context: ProtocolDeclarationContext): AvroPoetType {
   val schemaReference = this.schemaReference()
   val commandAvroType = requireNotNull(context.protocol.types.values.firstOrNull {
