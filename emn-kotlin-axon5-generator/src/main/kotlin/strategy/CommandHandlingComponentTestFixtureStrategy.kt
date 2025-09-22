@@ -55,7 +55,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
 
     if (specifications.isEmpty()) {
       // nothing to generate, no specifications for slice found
-      return return KotlinFileSpecList()
+      return KotlinFileSpecList()
     }
 
     val fileBuilder = fileBuilder(input.commandHandlerFixtureTestClassName)
@@ -89,27 +89,22 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
             addStatement(".noPriorActivity()")
           } else {
             givenEvents.forEach { event ->
-              addCode(
-                CodeBlock
-                  .builder()
-                  .add(".event(")
-                  .add(messageInstantiation(event))
-                  .add(")")
-                  .build()
-              )
+              addCode {
+                add(".event(")
+                add(messageInstantiation(event))
+                add(")")
+              }
             }
           }
 
           addCode(".`when`()")
           require(whenStage.values.commands().size == 1) { "Currently when stage requires exactly one command, but ${whenStage.values.commands().size} wre specified in ${spec.name}" }
           val command = whenStage.values.commands().single()
-          addCode(
-            CodeBlock.builder()
-              .add(".command(")
-              .add(messageInstantiation(command))
-              .add(")\n")
-              .build()
-          )
+          addCode {
+            add(".command(")
+            add(messageInstantiation(command))
+            add(")")
+          }
 
           addStatement(".then()")
           val thenEvents = thenStage.values.events()
@@ -134,14 +129,11 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
               CodeBlock.of(".noEvents()")
             )
           } else {
-            addCode(
-              CodeBlock
-                .builder()
-                .add(".events(")
-                .addAll(thenEvents.map { event -> messageInstantiation(event) }, CodeBlock.of(",\n"))
-                .add(")")
-                .build()
-            )
+            addCode {
+              add(".events(")
+              addAll(thenEvents.map { event -> messageInstantiation(event) }, CodeBlock.of(",\n"))
+              add(")")
+            }
           }
         })
       }

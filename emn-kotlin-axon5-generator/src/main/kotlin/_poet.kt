@@ -19,6 +19,8 @@ import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_KCLASS
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_LITERAL
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_STRING
+import io.toolisticon.kotlin.generation.builder.KotlinFunSpecBuilder
+import io.toolisticon.kotlin.generation.poet.CodeBlockBuilder
 import io.toolisticon.kotlin.generation.poet.CodeBlockBuilder.Companion.codeBlock
 import io.toolisticon.kotlin.generation.spec.KotlinAnnotationSpec
 import io.toolisticon.kotlin.generation.spec.KotlinAnnotationSpecSupplier
@@ -122,7 +124,8 @@ fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, 
     }
     FieldAndValue(field, value).get()
   }
-  return CodeBlock.builder()
+
+  return CodeBlockBuilder.builder()
     .add("%T", avroPoetType.typeName)
     .add("(")
     .addAll(blocks, CodeBlock.of(", "))
@@ -135,7 +138,7 @@ fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, 
  * @param blocks blocks to add.
  * @return code block builder.
  */
-fun CodeBlock.Builder.addAll(blocks: List<CodeBlock>, separator: CodeBlock? = null) = apply {
+fun CodeBlockBuilder.addAll(blocks: List<CodeBlock>, separator: CodeBlock? = null) = apply {
   blocks.forEachIndexed { index, block ->
     add(block)
     if (separator != null && index < blocks.size - 1) {
@@ -153,3 +156,9 @@ fun AvroSchema.poetValueFormat() =
   } else {
     FORMAT_LITERAL
   }
+
+
+fun KotlinFunSpecBuilder.addCode(fn: CodeBlockBuilder.() -> Unit) = apply {
+  val block = CodeBlockBuilder.builder().apply(fn).build()
+  this.addCode(block)
+}
