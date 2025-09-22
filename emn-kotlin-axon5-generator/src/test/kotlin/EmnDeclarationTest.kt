@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 class EmnDeclarationTest {
 
-  private val definitions = EMN_PARSER.parseDefinitions(resourceUrl("faculty-manual.emn"))
+  private val definitions = EMN_PARSER.parseDefinitions(resourceUrl("manual/faculty-manual.emn"))
 
   @Test
   fun `read declaration`() {

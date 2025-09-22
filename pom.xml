@@ -1,11 +1,12 @@
-<project  xmlns="http://maven.apache.org/POM/4.0.0"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>io.toolisticon.maven.parent</groupId>
     <artifactId>maven-parent-kotlin-base</artifactId>
     <version>2025.9.1</version>
-    <relativePath />
+    <relativePath/>
   </parent>
 
   <groupId>io.holixon.emn._</groupId>
@@ -32,16 +33,22 @@
   </modules>
 
   <!-- this is the maven root, all dependencies have to be declared in the concrete modules, using emn-kotlin-parent -->
-  <dependencyManagement />
+  <dependencyManagement/>
 
   <!-- this is the maven root, all dependencies have to be declared in the concrete modules -->
-  <dependencies />
+  <dependencies/>
 
   <build>
     <defaultGoal>clean jacoco:prepare-agent package</defaultGoal>
 
     <!-- this is the maven root, all plugins have to be declared in the concrete modules -->
-    <plugins />
+    <plugins>
+      <plugin>
+        <groupId>com.github.hazendaz.maven</groupId>
+        <artifactId>directory-maven-plugin</artifactId>
+        <!-- sets project.root.dir -->
+      </plugin>
+    </plugins>
   </build>
 
   <licenses>
@@ -55,7 +62,8 @@
     <connection>scm:git:git@github.com:holixon/emn-kotlin.git</connection>
     <url>scm:git:git@github.com:holixon/emn-kotlin.git</url>
     <developerConnection
-    >scm:git:git@github.com:holixon/emn-kotlin.git</developerConnection>
+    >scm:git:git@github.com:holixon/emn-kotlin.git
+    </developerConnection>
     <tag>HEAD</tag>
   </scm>
 

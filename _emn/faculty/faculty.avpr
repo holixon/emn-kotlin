@@ -218,7 +218,18 @@
           "type": "int"
         }
       ]
+    },
+    {
+      "type": "error",
+      "name": "DuplicateCourse",
+      "doc": "A course name has to be unique.",
+      "namespace": "io.holixon.emn.example.faculty",
+      "fields": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ]
     }
-
   ]
 }

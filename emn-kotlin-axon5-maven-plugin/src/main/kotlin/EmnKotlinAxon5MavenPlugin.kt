@@ -16,6 +16,8 @@ object EmnKotlinAxon5MavenPlugin {
   const val DEFAULT_GENERATED_SOURCES = "$BUILD_GENERATED_SOURCES/emn-kotlin"
   const val DEFAULT_GENERATED_TEST_SOURCES = "$BUILD_GENERATED_TEST_SOURCES/emn-kotlin"
 
+  val DEFAULT_INCLUDES = arrayOf("**/*.emn")
+
   enum class CodeFormatter : (File, KotlinFileSpec) -> File {
     KTFMT {
       override fun invoke(outputDirectory: File, fileSpec: KotlinFileSpec): File = fileSpec.writeToFormatted(outputDirectory)

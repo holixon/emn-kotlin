@@ -15,7 +15,7 @@ class RetrievalTest {
 
   @Test
   fun retrieves_for_command_handlers() {
-    val file = File("src/test/resources/faculty.emn")
+    val file = TestFixtures.resourceUrl("faculty/faculty.emn")
     val result = parser.parseDefinitions(file)
 
 
