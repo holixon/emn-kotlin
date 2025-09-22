@@ -15,6 +15,33 @@
     },
     {
       "type": "record",
+      "name": "CourseAndStudentId",
+      "namespace": "io.holixon.emn.example.faculty",
+      "fields": [
+        {
+          "name": "courseId",
+          "type": "string"
+        },
+        {
+          "name": "studentId",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "type": "record",
+      "name": "EnrollStudentToCourseAlternative",
+      "namespace": "io.holixon.emn.example.faculty",
+      "fields": [
+        {
+          "name": "courseAndStudentId",
+          "namespace": "io.holixon.emn.example.faculty",
+          "type": "CourseAndStudentId"
+        }
+      ]
+    },
+    {
+      "type": "record",
       "name": "StudentId",
       "namespace": "io.holixon.emn.example.faculty",
       "fields": [

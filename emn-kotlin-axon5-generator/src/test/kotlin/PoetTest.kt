@@ -1,6 +1,8 @@
 package io.holixon.emn.generation
 
 import _ktx.ResourceKtx.resourceUrl
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.generation.TestFixtures.AvroKotlinFixtures.AVRO_PARSER
@@ -17,37 +19,16 @@ import java.lang.reflect.Field
 @OptIn(ExperimentalKotlinPoetApi::class)
 class PoetTest {
 
-  /**
-   * //  {
-   * //    "type": "record",
-   * //    "name": "CreateCourse",
-   * //    "namespace": "io.holixon.emn.example.faculty",
-   * //    "fields": [
-   * //    {
-   * //      "name": "courseId",
-   * //      "namespace": "io.holixon.emn.example.faculty",
-   * //      "type": "CourseId"
-   * //    },
-   * //    {
-   * //      "name": "name",
-   * //      "type": "string"
-   * //    },
-   * //    {
-   * //      "name": "capacity",
-   * //      "type": "int"
-   * //    }
-   * //    ]
-   * //  },
-   *
-   */
+  val protocol = AVRO_PARSER.parseProtocol(resourceUrl("faculty/faculty.avpr"))
+  val ctx = ProtocolDeclarationContext.of(
+    declaration = protocol,
+    registry = AvroCodeGenerationSpiRegistry(TestFixtures.SPI_REGISTRY),
+    properties = DefaultAvroKotlinGeneratorProperties()
+  )
+
+
   @Test
   fun createsCreateCourseInstantiation() {
-    val protocol = AVRO_PARSER.parseProtocol(resourceUrl("faculty/faculty.avpr"))
-    val ctx = ProtocolDeclarationContext.of(
-      declaration = protocol,
-      registry = AvroCodeGenerationSpiRegistry(TestFixtures.SPI_REGISTRY),
-      properties = DefaultAvroKotlinGeneratorProperties()
-    )
 
     val courseIdType = ctx.avroTypes[Name("CourseId")]!! as RecordType
     val createCourseType = ctx.avroTypes[Name("CreateCourse")]!! as RecordType
@@ -55,10 +36,13 @@ class PoetTest {
     val courseIdPoetType = ctx.avroPoetTypes[courseIdType.hashCode]
 
     val block = initializeMessage(
-      createCoursePoetType, ctx.avroPoetTypes, mapOf(
-        "courseId" to "4711",
-        "name" to "Course 1",
-        "capacity" to 30,
+      createCoursePoetType, ctx.avroPoetTypes, jsonOf(
+        """{
+        "courseId": "4711",
+        "name": "Course 1",
+        "capacity": 30
+        }
+        """.trimIndent()
       )
     )
     logger.info { "Block: $block" }
@@ -80,12 +64,73 @@ class PoetTest {
     assertThat(args!![1]).isInstanceOf(CodeBlock::class.java)
     val complexConstructorCode: CodeBlock = args[1] as CodeBlock
     assertThat(complexConstructorCode.formatParts()).containsExactly("%T", "(", "%S", ")")
+
+
     assertThat(complexConstructorCode.args()).containsExactly(
       courseIdPoetType.typeName,
       "4711"
     )
   }
 
+  @Test
+  fun createsEnrollStudentToCourseAlternativeInstantiation() {
+
+    val courseAndStudentIdType = ctx.avroTypes[Name("CourseAndStudentId")]!! as RecordType
+    val enrollType = ctx.avroTypes[Name("EnrollStudentToCourseAlternative")]!! as RecordType
+    val enrollPoetType = ctx.avroPoetTypes[enrollType.hashCode]
+    val courseAndStudentIdPoetType = ctx.avroPoetTypes[courseAndStudentIdType.hashCode]
+
+    val block = initializeMessage(
+      enrollPoetType, ctx.avroPoetTypes, jsonOf(
+        """
+        {
+          "courseAndStudentId": {
+            "courseId": "4711",
+            "studentId": "0815"
+          }
+        }
+        """.trimIndent()
+      )
+    )
+
+    logger.info { "Block: $block" }
+
+    assertThat(block.formatParts()).containsExactly(
+      "%T", "(",
+      "courseAndStudentId = ", "%L",
+      ")"
+    )
+    val args = block.args()
+    assertThat(args).isNotNull.isNotEmpty.hasSize(2)
+    assertThat(args).contains(
+      enrollPoetType.typeName,
+    )
+    assertThat(args!![1]).isInstanceOf(CodeBlock::class.java)
+    val complexConstructorCode: CodeBlock = args[1] as CodeBlock
+    assertThat(complexConstructorCode.formatParts()).containsExactly(
+      "%T", "(",
+      "courseId = ", "%S", ", ",
+      "studentId = ", "%S",
+      ")"
+    )
+
+
+    assertThat(complexConstructorCode.args()).containsExactly(
+      courseAndStudentIdPoetType.typeName,
+      "4711",
+      "0815"
+    )
+  }
+
+
+  fun jsonOf(json: String): Map<String, Any?> {
+    val om = ObjectMapper().registerKotlinModule()
+    val map: Map<String, Any?> = om.readValue(
+      json,
+      om.typeFactory.constructMapType(Map::class.java, String::class.java, Any::class.java)
+    )
+    return map
+  }
 
   fun CodeBlock.formatParts() = getField<List<String>>(this, "formatParts")
   fun CodeBlock.args() = getField<List<Any>>(this, "args")
@@ -96,5 +141,6 @@ class PoetTest {
     field.isAccessible = true
     return field.get(instance) as? T
   }
+
 }
 
