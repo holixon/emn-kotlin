@@ -77,33 +77,44 @@ object CommandHandlerAnnotation : KotlinAnnotationSpecSupplier {
 }
 
 fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, properties: Map<String, Any?>): CodeBlock {
-  require(avroPoetType.avroType is RecordType) { "Can only initialize RecordType, but was ${avroPoetType.avroType}" }
+  require(avroPoetType.avroType is RecordType) {
+    "Failed to instantiate '${avroPoetType.typeName}'. " +
+      "Can only initialize RecordType, but was '${avroPoetType.avroType}'"
+  }
   val recordType = avroPoetType.avroType as RecordType
 
   data class FieldAndValue(val field: RecordField, val value: Any?) : Supplier<CodeBlock> {
 
     init {
       if (value == null) {
-        require(field.schema.isNullable) { "Field ${field.name} is not nullable, but value is null" }
+        require(field.schema.isNullable) {
+          "Failed to instantiate '${avroPoetType.typeName}'. " +
+            "Field '${field.name}' is not nullable, but value is null"
+        }
       }
-      check(field.type.schema.isRecordType || field.schema.isPrimitive) { "Field ${field.name} is of type ${field.type}, which is not supported yet" }
+      check(field.type.schema.isRecordType || field.schema.isPrimitive) {
+        "Failed to instantiate '${avroPoetType.typeName}'. " +
+          "Field '${field.name}' is of type '${field.type}', which is not supported yet"
+      }
     }
 
     override fun get(): CodeBlock = if (field.type.schema.isRecordType) {
       val complexType = avroPoetTypes[field.type.hashCode]
       val complexTypeRecord = complexType.avroType as RecordType
-      val constructorCall = if (complexTypeRecord.schema.fields.size == 1) {
-        val constructorField = complexTypeRecord.schema.fields[0]
-        CodeBlock.of("%T(${constructorField.schema.poetValueFormat()})", complexType.typeName, value)
-      } else {
-        if (value is Map<*, *>) {
-          @Suppress("UNCHECKED_CAST")
-          initializeMessage(complexType, avroPoetTypes, (value as Map<String, Any?>) )
+      val constructorCall = if (value is Map<*, *>) { // complex value structure found
+        @Suppress("UNCHECKED_CAST")
+        initializeMessage(complexType, avroPoetTypes, (value as Map<String, Any?>))
+      } else { // value is not a map -> simple value
+        if (complexTypeRecord.schema.fields.size == 1) {
+          val constructorField = complexTypeRecord.schema.fields[0]
+          CodeBlock.of("%T(${constructorField.schema.poetValueFormat()})", complexType.typeName, value)
         } else {
-          throw IllegalStateException("Field ${field.name} is of type ${field.type}, which can't be initialized from value $value")
+          throw IllegalArgumentException(
+            "Failed to instantiate '${avroPoetType.typeName}'. "
+              + "Field '${field.name}' is of type '${field.type.name.value}', which can't be initialized from value '$value'"
+          )
         }
       }
-
       codeBlock("${field.name} = %L", constructorCall)
     } else {
       codeBlock("${field.name} = ${field.schema.poetValueFormat()}", value)
@@ -119,7 +130,10 @@ fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, 
       if (field.schema.isNullable) {
         null
       } else {
-        throw IllegalArgumentException("No value was supplied for field ${field.name} is of type ${field.type}")
+        throw IllegalArgumentException(
+          "Failed to instantiate '${avroPoetType.typeName}'. "
+            + "No value was supplied for field '${field.name}' of type '${field.type.name}'"
+        )
       }
     }
     FieldAndValue(field, value).get()

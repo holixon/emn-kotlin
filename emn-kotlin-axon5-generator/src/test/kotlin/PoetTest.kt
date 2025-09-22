@@ -14,6 +14,7 @@ import io.toolisticon.kotlin.avro.model.RecordType
 import io.toolisticon.kotlin.avro.value.Name
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.lang.reflect.Field
 
 @OptIn(ExperimentalKotlinPoetApi::class)
@@ -75,9 +76,9 @@ class PoetTest {
   @Test
   fun createsEnrollStudentToCourseAlternativeInstantiation() {
 
-    val courseAndStudentIdType = ctx.avroTypes[Name("CourseAndStudentId")]!! as RecordType
     val enrollType = ctx.avroTypes[Name("EnrollStudentToCourseAlternative")]!! as RecordType
     val enrollPoetType = ctx.avroPoetTypes[enrollType.hashCode]
+    val courseAndStudentIdType = ctx.avroTypes[Name("CourseAndStudentId")]!! as RecordType
     val courseAndStudentIdPoetType = ctx.avroPoetTypes[courseAndStudentIdType.hashCode]
 
     val block = initializeMessage(
@@ -119,6 +120,72 @@ class PoetTest {
       courseAndStudentIdPoetType.typeName,
       "4711",
       "0815"
+    )
+  }
+
+
+  @Test
+  fun `fail to instantiate by missing value`() {
+    val createCourseType = ctx.avroTypes[Name("CreateCourse")]!! as RecordType
+    val createCoursePoetType = ctx.avroPoetTypes[createCourseType.hashCode]
+    val thrown = assertThrows<IllegalArgumentException> {
+      initializeMessage(
+        createCoursePoetType, ctx.avroPoetTypes, jsonOf(
+          """{
+        "courseId": "4711",
+        "name": "Course 1"
+        }
+        """.trimIndent()
+        )
+      )
+    }
+    assertThat(thrown.message).isEqualTo(
+      "Failed to instantiate '${createCourseType.namespace.value + "." + createCourseType.name.value}'. "
+        + "No value was supplied for field 'capacity' of type 'int'"
+    )
+  }
+
+  @Test
+  fun `fail to instantiate by null value`() {
+    val createCourseType = ctx.avroTypes[Name("CreateCourse")]!! as RecordType
+    val createCoursePoetType = ctx.avroPoetTypes[createCourseType.hashCode]
+    val thrown = assertThrows<IllegalArgumentException> {
+      initializeMessage(
+        createCoursePoetType, ctx.avroPoetTypes, jsonOf(
+          """{
+        "courseId": null,
+        "name": "Course 1",
+        "capacity": 30
+        }
+        """.trimIndent()
+        )
+      )
+    }
+    assertThat(thrown.message).isEqualTo(
+      "Failed to instantiate '${createCourseType.namespace.value + "." + createCourseType.name.value}'. "
+        + "Field 'courseId' is not nullable, but value is null"
+    )
+  }
+
+  @Test
+  fun `fail to instantiate by wrong value type`() {
+    val enrollType = ctx.avroTypes[Name("EnrollStudentToCourseAlternative")]!! as RecordType
+    val enrollPoetType = ctx.avroPoetTypes[enrollType.hashCode]
+    val thrown = assertThrows<IllegalArgumentException> {
+      initializeMessage(
+        enrollPoetType, ctx.avroPoetTypes, jsonOf(
+          """{
+        "courseAndStudentId": "4711",
+        "name": "Course 1",
+        "capacity": 30
+        }
+        """.trimIndent()
+        )
+      )
+    }
+    assertThat(thrown.message).isEqualTo(
+      "Failed to instantiate '${enrollType.namespace.value + "." + enrollType.name.value}'. "
+        + "Field 'courseAndStudentId' is of type 'CourseAndStudentId', which can't be initialized from value '4711'"
     )
   }
 
