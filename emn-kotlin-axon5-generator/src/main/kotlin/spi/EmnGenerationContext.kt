@@ -27,7 +27,7 @@ class EmnGenerationContext(
   registry: EmnAxon5GenerationSpiRegistry,
   val definitions: Definitions,
   val properties: EmnAxon5GeneratorProperties,
-  val objectMapper : ObjectMapper = ObjectMapper().registerKotlinModule(),
+  val objectMapper: ObjectMapper = ObjectMapper().registerKotlinModule(),
   val tags: MutableMap<KClass<*>, Any?> = mutableMapOf()
 ) : KotlinCodeGenerationContextBase<EmnGenerationContext>(registry) {
 
@@ -52,6 +52,14 @@ class EmnGenerationContext(
   val events: List<Event> by lazy { slices.map { it.flowElements.filterIsInstance<Event>() }.flatten() }
 
   val eventTypes: List<EventType> by lazy { commands.map { it.typeReference as EventType }.distinct() }
+
+  /**
+   * Retrieves a list of specifications for given slice.
+   * @param slice: slice to look for specifications.
+   * @return list of specification referencing given slice.
+   */
+  fun specificationsForSlice(slice: Slice): List<Specification> =
+    definitions.specifications.filter { spec -> spec.slice != null && spec.slice!!.id == slice.id }
 
 
   override val contextType: KClass<EmnGenerationContext> = EmnGenerationContext::class

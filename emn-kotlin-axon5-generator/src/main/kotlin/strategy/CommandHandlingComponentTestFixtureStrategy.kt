@@ -4,20 +4,15 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.asClassName
+import io.holixon.emn.generation.*
 import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator.Tags.TestFileSpec
-import io.holixon.emn.generation.getEmbeddedJsonValueAsMap
-import io.holixon.emn.generation.initializeMessage
-import io.holixon.emn.generation.resolveAvroPoetType
 import io.holixon.emn.generation.spi.CommandSlice
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.generation.spi.commandHandlerFixtureTestClassName
-import io.holixon.emn.generation.testMethodName
-import io.holixon.emn.model.FlowElement
+import io.holixon.emn.model.FlowNode
 import io.holixon.emn.model.commands
 import io.holixon.emn.model.errors
 import io.holixon.emn.model.events
-import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
-import io.toolisticon.kotlin.avro.generator.poet.AvroPoetTypes
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.classBuilder
@@ -26,6 +21,9 @@ import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.className
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
 
+/**
+ * Generates a fixture JUnit test, with passed fixture configuration as parameter.
+ */
 @OptIn(ExperimentalKotlinPoetApi::class)
 class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<EmnGenerationContext, CommandSlice>(
   contextType = EmnGenerationContext::class,
@@ -44,96 +42,113 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     context: EmnGenerationContext,
     input: CommandSlice
   ): KotlinFileSpecList {
-    val fileBuilder = fileBuilder(input.commandHandlerFixtureTestClassName)
-      .addTag(TestFileSpec)
 
-    fun messageInstantiation(event: FlowElement, avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes): CodeBlock {
-      val elementValue = requireNotNull(event.value) { "Element $event must have a value." }
+    fun messageInstantiation(message: FlowNode): CodeBlock {
+      val elementValue = requireNotNull(message.value) { "Element $message must have a value." }
       val propertiesMap = elementValue.getEmbeddedJsonValueAsMap(context.objectMapper)
-      requireNotNull(propertiesMap) { "Could not parse value of $event as a map of properties." }
-
-      if (avroPoetType.typeName is ClassName) {
-        val cn = avroPoetType.typeName.className()
-        fileBuilder.addImport("io.jan.foo", "Bar")
-      }
-
-      return initializeMessage(avroPoetType, avroPoetTypes, propertiesMap)
+      requireNotNull(propertiesMap) { "Could not parse value of $message as a map of properties." }
+      val avroPoetType = message.resolveAvroPoetType(context.protocolDeclarationContext)
+      return initializeMessage(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
     }
 
+    val specifications = context.specificationsForSlice(input.slice)
+
+    if (specifications.isEmpty()) {
+      // nothing to generate, no specifications for slice found
+      return return KotlinFileSpecList()
+    }
+
+    val fileBuilder = fileBuilder(input.commandHandlerFixtureTestClassName)
+      .addTag(TestFileSpec)
     val commandHandlerTypeBuilder = classBuilder(input.commandHandlerFixtureTestClassName).apply {
 
       addConstructorProperty("fixture", AXON_FIXTURE) { makePrivate() }
 
-      context.definitions.specifications
-        .filter { spec -> spec.slice != null && spec.slice!!.id == input.slice.id }
-        .forEach { spec ->
+      specifications.forEach { spec ->
 
-          val givenStage = requireNotNull(spec.givenStage) { "Given stage must be present" }
-          val whenStage = requireNotNull(spec.whenStage) { "When stage must be present" }
-          val thenStage = requireNotNull(spec.thenStage) { "Then stage must be present" }
+        val givenStage = requireNotNull(spec.givenStage) { "Given stage must be present, but it is missing in ${spec.name}" }
+        val whenStage = requireNotNull(spec.whenStage) { "When stage must be present, but it is missing in ${spec.name}" }
+        val thenStage = requireNotNull(spec.thenStage) { "Then stage must be present, but it is missing in ${spec.name}" }
 
 
-          addFunction(buildFun(spec.testMethodName) {
-            addAnnotation(JUNIT_TEST)
-            addKdoc(spec.name)
+        addFunction(buildFun(spec.testMethodName) {
+          addAnnotation(JUNIT_TEST)
+          addKdoc(
+            """
+              ${"\n" + spec.name}
+              ${if (spec.scenario != null) "\nScenario: ${spec.scenario}" else ""}
+            """.trimIndent()
+          )
 
-            addStatement("fixture")
-            addStatement(".given()")
+          addCode("fixture")
+          addCode(".given()")
 
-            val givenEvents = givenStage.values.events()
+          val givenEvents = givenStage.values.events()
 
-            if (givenEvents.isEmpty()) {
-              addStatement(".noPriorActivity()")
-            } else {
-              givenEvents.forEach { event ->
-                val eventCode = messageInstantiation(
-                  event,
-                  event.typeReference.resolveAvroPoetType(context.protocolDeclarationContext),
-                  context.protocolDeclarationContext.avroPoetTypes
-                )
-                addStatement(".event(%L)", eventCode)
-              }
+          if (givenEvents.isEmpty()) {
+            addStatement(".noPriorActivity()")
+          } else {
+            givenEvents.forEach { event ->
+              addCode(
+                CodeBlock
+                  .builder()
+                  .add(".event(")
+                  .add(messageInstantiation(event))
+                  .add(")")
+                  .build()
+              )
             }
+          }
 
-            addStatement(".`when`()")
+          addCode(".`when`()")
+          require(whenStage.values.commands().size == 1) { "Currently when stage requires exactly one command, but ${whenStage.values.commands().size} wre specified in ${spec.name}" }
+          val command = whenStage.values.commands().single()
+          addCode(
+            CodeBlock.builder()
+              .add(".command(")
+              .add(messageInstantiation(command))
+              .add(")\n")
+              .build()
+          )
 
-            val command = whenStage.values.commands().singleOrNull() ?: throw IllegalStateException("Currently when stage requires exactly one command.")
-
-            addStatement(".command(%L)", messageInstantiation(
-              command,
-              command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext),
-              context.protocolDeclarationContext.avroPoetTypes
-            ))
-
-            addStatement(".then()")
-            val thenEvents = thenStage.values.events()
-            val thenErrors = thenStage.values.errors()
-            if (thenErrors.isEmpty()) {
-              addStatement(".success()")
-              if (thenEvents.isEmpty()) {
-                addStatement(".noEvents()")
-              } else {
-                val thenEventsCode = thenEvents.map {
-                  messageInstantiation(it, it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext), context.protocolDeclarationContext.avroPoetTypes)
-                }
-                addStatement(".events(%L)", thenEventsCode.joinToString(separator = ","))
-              }
-            } else {
-              val errorPoetType = try {
-                thenErrors.map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
-                  .single().typeName.className()
-              } catch (e:Exception) {
-                IllegalStateException::class.asClassName()
-              }
-              addStatement(".exception(%T::class.java)", errorPoetType)
+          addStatement(".then()")
+          val thenEvents = thenStage.values.events()
+          val thenErrors = thenStage.values.errors()
+          if (thenErrors.isEmpty()) {
+            addStatement(".success()")
+          } else {
+            require(thenErrors.size == 1) { "At most one error is supported in the then stage, but ${thenErrors.size} were specified in ${spec.name}" }
+            val errorPoetType = try {
+              thenErrors
+                .map { it.resolveAvroPoetType(context.protocolDeclarationContext) }
+                .single()
+                .typeName
+                .className()
+            } catch (_: Exception) {
+              IllegalStateException::class.asClassName()
             }
-          })
-        }
+            addStatement(".exception(%T::class.java)", errorPoetType)
+          }
+          if (thenEvents.isEmpty()) {
+            addCode(
+              CodeBlock.of(".noEvents()")
+            )
+          } else {
+            addCode(
+              CodeBlock
+                .builder()
+                .add(".events(")
+                .addAll(thenEvents.map { event -> messageInstantiation(event) }, CodeBlock.of(",\n"))
+                .add(")")
+                .build()
+            )
+          }
+        })
+      }
     }
 
     fileBuilder.addType(commandHandlerTypeBuilder.build())
     return KotlinFileSpecList(fileBuilder.build())
   }
-
 
 }

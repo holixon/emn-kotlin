@@ -10,15 +10,36 @@ import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordType
 import io.toolisticon.kotlin.avro.value.Name
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
-import java.io.File
 
-@Deprecated("This is a spike, not a test, should be removed or converted to a real test.")
 @OptIn(ExperimentalKotlinPoetApi::class)
 class PoetTest {
 
+  /**
+   * //  {
+   * //    "type": "record",
+   * //    "name": "CreateCourse",
+   * //    "namespace": "io.holixon.emn.example.faculty",
+   * //    "fields": [
+   * //    {
+   * //      "name": "courseId",
+   * //      "namespace": "io.holixon.emn.example.faculty",
+   * //      "type": "CourseId"
+   * //    },
+   * //    {
+   * //      "name": "name",
+   * //      "type": "string"
+   * //    },
+   * //    {
+   * //      "name": "capacity",
+   * //      "type": "int"
+   * //    }
+   * //    ]
+   * //  },
+   *
+   */
+  @Deprecated("This is a spike, not a test, should be removed or converted to a real test.")
   @Test
-  fun name(@TempDir tempDir: File) {
+  fun createsCreateCourseInstantiation() {
     val protocol = AVRO_PARSER.parseProtocol(resourceUrl("faculty/faculty.avpr"))
     val ctx = ProtocolDeclarationContext.of(
       declaration = protocol,
@@ -27,36 +48,15 @@ class PoetTest {
     )
 
     val type = ctx.avroTypes[Name("CreateCourse")]!! as RecordType
-    val poetType = ctx.avroPoetTypes.get(type.hashCode)
-
-    val f = type.getField(Name("courseId"))!!
+    val poetType = ctx.avroPoetTypes[type.hashCode]
 
     val block = initializeMessage(poetType, ctx.avroPoetTypes, mapOf(
       "courseId" to "4711",
       "name" to "Course 1",
-      "capacity" to 30
+      "capacity" to 30,
     ))
 
     logger.info { "Block: $block" }
   }
-//  {
-//    "type": "record",
-//    "name": "CreateCourse",
-//    "namespace": "io.holixon.emn.example.faculty",
-//    "fields": [
-//    {
-//      "name": "courseId",
-//      "namespace": "io.holixon.emn.example.faculty",
-//      "type": "CourseId"
-//    },
-//    {
-//      "name": "name",
-//      "type": "string"
-//    },
-//    {
-//      "name": "capacity",
-//      "type": "int"
-//    }
-//    ]
-//  },
+
 }
