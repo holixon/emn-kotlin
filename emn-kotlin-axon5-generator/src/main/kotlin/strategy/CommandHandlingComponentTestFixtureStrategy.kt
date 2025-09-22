@@ -131,7 +131,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
           } else {
             addCode {
               add(".events(")
-              addAll(thenEvents.map { event -> messageInstantiation(event) }, CodeBlock.of(",\n"))
+              addAll(thenEvents.map { event -> messageInstantiation(event) }, CodeBlock.of(", "))
               add(")")
             }
           }
