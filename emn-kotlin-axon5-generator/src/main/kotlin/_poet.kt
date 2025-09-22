@@ -10,6 +10,7 @@ import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetTypes
 import io.toolisticon.kotlin.avro.model.RecordField
 import io.toolisticon.kotlin.avro.model.RecordType
+import io.toolisticon.kotlin.avro.model.wrapper.AvroSchema
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isNullable
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isPrimitive
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isRecordType
@@ -92,21 +93,10 @@ fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, 
       val complexTypeRecord = complexType.avroType as RecordType
       require(complexTypeRecord.schema.fields.size == 1) { "Only a record with exact one field can be instantiated from a value, but ${complexTypeRecord.schema.fields} is found." }
       val constructorField = complexTypeRecord.schema.fields[0]
-      val format = if (constructorField.schema.isStringType) {
-        FORMAT_STRING
-      } else {
-        FORMAT_LITERAL
-      }
-
-      val constructorCall = CodeBlock.of("%T($format)", complexType.typeName, value)
+      val constructorCall = CodeBlock.of("%T(${constructorField.schema.poetValueFormat()})", complexType.typeName, value)
       codeBlock("${field.name} = %L", constructorCall)
     } else {
-      val format = if (field.schema.isStringType) {
-        FORMAT_STRING
-      } else {
-        FORMAT_LITERAL
-      }
-      codeBlock("${field.name} = $format", value)
+      codeBlock("${field.name} = ${field.schema.poetValueFormat()}", value)
     }
 
     init {
@@ -162,3 +152,13 @@ fun CodeBlock.Builder.addAll(blocks: List<CodeBlock>, separator: CodeBlock? = nu
     }
   }
 }
+
+/**
+ * Returns a value format for poet template expansion.
+ */
+fun AvroSchema.poetValueFormat() =
+  if (this.isStringType) {
+    FORMAT_STRING
+  } else {
+    FORMAT_LITERAL
+  }
