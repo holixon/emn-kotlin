@@ -15,7 +15,6 @@ import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isPrimitive
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isRecordType
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isStringType
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_KCLASS
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_LITERAL
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_STRING
@@ -81,11 +80,25 @@ fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, 
   data class FieldAndValue(val field: RecordField, val value: Any?) : Supplier<CodeBlock> {
 
     override fun get(): CodeBlock = if (field.type.schema.isRecordType) {
+      /*
+      FIXME -> drop, left only for review
       val constructorCall = initializeMessage(
         avroPoetTypes[field.type.hashCode],
         avroPoetTypes,
         mapOf("value" to value) // FIXME: this is a hack to support id types
-      )
+      )*/
+
+      val complexType = avroPoetTypes[field.type.hashCode]
+      val complexTypeRecord = complexType.avroType as RecordType
+      require(complexTypeRecord.schema.fields.size == 1) { "Only a record with exact one field can be instantiated from a value, but ${complexTypeRecord.schema.fields} is found." }
+      val constructorField = complexTypeRecord.schema.fields[0]
+      val format = if (constructorField.schema.isStringType) {
+        FORMAT_STRING
+      } else {
+        FORMAT_LITERAL
+      }
+
+      val constructorCall = CodeBlock.of("%T($format)", complexType.typeName, value)
       codeBlock("${field.name} = %L", constructorCall)
     } else {
       val format = if (field.schema.isStringType) {
@@ -120,6 +133,7 @@ fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, 
   }
 
   /*
+  FIXME -> drop, left only for review
   -> Values to fields
   val blocks = properties
     .map { (key, value) -> recordType.getField(Name(key)) to value }
