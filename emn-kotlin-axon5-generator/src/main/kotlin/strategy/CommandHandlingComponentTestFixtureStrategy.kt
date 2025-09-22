@@ -3,7 +3,7 @@ package io.holixon.emn.generation.strategy
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import com.squareup.kotlinpoet.MemberName.Companion.member
+import com.squareup.kotlinpoet.asClassName
 import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator.Tags.TestFileSpec
 import io.holixon.emn.generation.getEmbeddedJsonValueAsMap
 import io.holixon.emn.generation.initializeMessage
@@ -18,11 +18,11 @@ import io.holixon.emn.model.errors
 import io.holixon.emn.model.events
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetTypes
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.classBuilder
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.className
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
 
@@ -38,8 +38,6 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     val AXON_GIVEN = ClassName("org.axonframework.test.fixture", "AxonTestPhase", "Given")
     val AXON_WHEN = ClassName("org.axonframework.test.fixture", "AxonTestPhase", "When")
     val AXON_THEN = ClassName("org.axonframework.test.fixture", "AxonTestPhase", "Then")
-
-    //org.axonframework.test.fixture.AxonTestPhase.Setup
   }
 
   override fun invoke(
@@ -53,6 +51,11 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
       val elementValue = requireNotNull(event.value) { "Element $event must have a value." }
       val propertiesMap = elementValue.getEmbeddedJsonValueAsMap(context.objectMapper)
       requireNotNull(propertiesMap) { "Could not parse value of $event as a map of properties." }
+
+      if (avroPoetType.typeName is ClassName) {
+        val cn = avroPoetType.typeName.className()
+        fileBuilder.addImport("io.jan.foo", "Bar")
+      }
 
       return initializeMessage(avroPoetType, avroPoetTypes, propertiesMap)
     }
@@ -88,7 +91,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
                   event.typeReference.resolveAvroPoetType(context.protocolDeclarationContext),
                   context.protocolDeclarationContext.avroPoetTypes
                 )
-                addStatement(".event(%L)",  eventCode)
+                addStatement(".event(%L)", eventCode)
               }
             }
 
@@ -116,7 +119,13 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
                 addStatement(".events(%L)", thenEventsCode.joinToString(separator = ","))
               }
             } else {
-              addStatement(".exception(%T::class.java)", IllegalStateException::class.java) // FIXME -> generate custom error types first
+              val errorPoetType = try {
+                thenErrors.map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
+                  .single().typeName.className()
+              } catch (e:Exception) {
+                IllegalStateException::class.asClassName()
+              }
+              addStatement(".exception(%T::class.java)", errorPoetType)
             }
           })
         }

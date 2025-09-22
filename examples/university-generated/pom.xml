@@ -76,6 +76,26 @@
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
       <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-emn-resources</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${kp.generatedResources}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.root.dir}/_emn/</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>io.holixon.emn.generation</groupId>
         <artifactId>emn-kotlin-axon5-maven-plugin</artifactId>
         <version>${project.version}</version>
@@ -86,6 +106,10 @@
             <goals>
               <goal>generate</goal>
             </goals>
+            <configuration>
+              <resourceDirectory>${kp.generatedResources}</resourceDirectory>
+              <includes>faculty/**.emn</includes>
+            </configuration>
           </execution>
         </executions>
       </plugin>

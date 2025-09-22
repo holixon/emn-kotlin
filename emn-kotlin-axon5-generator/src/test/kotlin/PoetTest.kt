@@ -13,12 +13,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
+@Deprecated("This is a spike, not a test, should be removed or converted to a real test.")
 @OptIn(ExperimentalKotlinPoetApi::class)
 class PoetTest {
 
   @Test
   fun name(@TempDir tempDir: File) {
-    val protocol = AVRO_PARSER.parseProtocol(resourceUrl("faculty.avpr"))
+    val protocol = AVRO_PARSER.parseProtocol(resourceUrl("faculty/faculty.avpr"))
     val ctx = ProtocolDeclarationContext.of(
       declaration = protocol,
       registry = AvroCodeGenerationSpiRegistry(TestFixtures.SPI_REGISTRY),

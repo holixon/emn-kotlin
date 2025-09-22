@@ -30,6 +30,11 @@ class GenerateMojo : AbstractContextAwareMojo() {
     const val GOAL = "generate"
   }
 
+  /**
+   * The source directory of EMN and AVRO protocol files. This directory is added to the classpath
+   * at schema compiling time. All files can therefore be referenced as classpath
+   * resources following the directory structure under the source directory.
+   */
   @Parameter(
     property = "resourceDirectory",
     required = true,
@@ -37,6 +42,9 @@ class GenerateMojo : AbstractContextAwareMojo() {
   )
   private lateinit var resourceDirectory: File
 
+  /**
+   * The output directory will contain the final generated sources.
+   */
   @Parameter(
     property = "outputDirectory",
     required = true,
@@ -44,12 +52,24 @@ class GenerateMojo : AbstractContextAwareMojo() {
   )
   private lateinit var outputDirectory: File
 
+  /**
+   * The output directory will contain the final generated test sources.
+   */
   @Parameter(
     property = "testOutputDirectory",
     required = true,
     defaultValue = EmnKotlinAxon5MavenPlugin.DEFAULT_GENERATED_TEST_SOURCES
   )
   private lateinit var testOutputDirectory: File
+
+  /**
+   * List of include patterns to use. See also [org.apache.maven.shared.model.fileset.FileSet]
+   * for pattern format.
+   */
+  @Parameter(
+    property = "includes",
+  )
+  private var includes : Array<String> = EmnKotlinAxon5MavenPlugin.DEFAULT_INCLUDES
 
   private val SPI_REGISTRY = load()
 
@@ -60,8 +80,6 @@ class GenerateMojo : AbstractContextAwareMojo() {
 
     testOutputDirectory.createIfNotExists()
     mojoContext.mavenProject?.addTestCompileSourceRoot(testOutputDirectory.absolutePath)
-
-    val includes = arrayOf("**/*.emn")
 
     if (!resourceDirectory.exists()) {
       log.warn("Skip non existing resource directory $resourceDirectory.")

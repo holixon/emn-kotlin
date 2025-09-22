@@ -28,8 +28,8 @@ class EmnAxon5AvroBasedGeneratorTest {
 
   @Test
   fun `generate dummy`() {
-    val definitions = emnParser.parseDefinitions(resourceUrl("faculty.emn"))
-    val declaration = avprParser.parseProtocol(resourceUrl("faculty.avpr"))
+    val definitions = emnParser.parseDefinitions(resourceUrl("faculty/faculty.emn"))
+    val declaration = avprParser.parseProtocol(resourceUrl("faculty/faculty.avpr"))
 
     val files = generator.generate(definitions, declaration)
 
