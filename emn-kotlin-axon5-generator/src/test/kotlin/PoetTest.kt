@@ -78,7 +78,7 @@ class PoetTest {
 
     val enrollType = ctx.avroTypes[Name("EnrollStudentToCourseAlternative")]!! as RecordType
     val enrollPoetType = ctx.avroPoetTypes[enrollType.hashCode]
-    val courseAndStudentIdType = ctx.avroTypes[Name("CourseAndStudentId")]!! as RecordType
+    val courseAndStudentIdType = ctx.avroTypes[Name("CourseAndStudentCompositeKey")]!! as RecordType
     val courseAndStudentIdPoetType = ctx.avroPoetTypes[courseAndStudentIdType.hashCode]
 
     val block = initializeMessage(
@@ -185,7 +185,7 @@ class PoetTest {
     }
     assertThat(thrown.message).isEqualTo(
       "Failed to instantiate '${enrollType.namespace.value + "." + enrollType.name.value}'. "
-        + "Field 'courseAndStudentId' is of type 'CourseAndStudentId', which can't be initialized from value '4711'"
+        + "Field 'courseAndStudentId' is of type 'CourseAndStudentCompositeKey', which can't be initialized from value '4711'"
     )
   }
 

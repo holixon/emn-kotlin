@@ -15,7 +15,7 @@
     },
     {
       "type": "record",
-      "name": "CourseAndStudentId",
+      "name": "CourseAndStudentCompositeKey",
       "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
@@ -36,7 +36,7 @@
         {
           "name": "courseAndStudentId",
           "namespace": "io.holixon.emn.example.faculty",
-          "type": "CourseAndStudentId"
+          "type": "CourseAndStudentCompositeKey"
         }
       ]
     },
