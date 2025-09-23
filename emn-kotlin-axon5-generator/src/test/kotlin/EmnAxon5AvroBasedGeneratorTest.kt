@@ -14,6 +14,7 @@ class EmnAxon5AvroBasedGeneratorTest {
   private val properties = DefaultEmnAxon5GeneratorProperties(
     emnName = "faculty",
     rootPackageName = "io.holixon.emn.example.faculty",
+    instanceCreator = "instancio"
   )
 
   private val generator = EmnAxon5AvroBasedGenerator.create(

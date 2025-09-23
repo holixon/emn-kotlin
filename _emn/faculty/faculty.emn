@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL" xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1p59kc5" targetNamespace="https://holixon.io/schema/emn" exporter="Hand crafted" exporterVersion="1.0.0" xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd https://holixon.io/spec/EMN/20241231/DI ../../../../doc/EMNDI.xsd">
+<emn:definitions
+  xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
+  xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  id="Definitions_1p59kc5"
+  targetNamespace="https://holixon.io/schema/emn"
+  exporter="Hand crafted"
+  exporterVersion="1.0.0"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../doc/EMN.xsd https://holixon.io/spec/EMN/20241231/DI ../../doc/EMNDI.xsd">
   <emn:types>
     <emn:viewType id="ViewType_page_24" name="Page 24">
       <emn:outgoing>MessageFlowType_16lrebs</emn:outgoing>
@@ -171,14 +181,18 @@
     <emn:given id="Specification_18vdxuw_given" stateName="No course exists" />
     <emn:when id="Specification_18vdxuw_when">
       <emn:command id="Command_04yfs5h" typeRef="CommandType_create_course">
-        <emn:value>{ "courseId": "4711", "capacity": 25,
-          "name": "Physics I" }</emn:value>
+        <emn:value>{
+          "courseId": "4711",
+          "capacity": 25,
+          "name": "Physics I"
+          }</emn:value>
       </emn:command>
     </emn:when>
     <emn:then id="Specification_18vdxuw_then">
       <emn:event id="Event_0wny2nt" typeRef="EventType_course_created">
         <emn:value>{
-          "courseId": "4711", "capacity": 25,
+          "courseId": "4711",
+          "capacity": 25,
           "name":"Physics I"
           }</emn:value>
       </emn:event>
@@ -188,15 +202,15 @@
     <emn:given id="Specification_1quqjt0_given" stateName="Course exists">
       <emn:event id="Event_1hq514a" typeRef="EventType_course_created">
         <emn:value>{
-          "courseId": "4711", "capacity": 25,
-          "name": "Physics I"
+          "courseId": "4711"
           }</emn:value>
       </emn:event>
     </emn:given>
     <emn:when id="Specification_1quqjt0_when">
       <emn:command id="Command_04gsa49" typeRef="CommandType_create_course">
-        <emn:value>{ "courseId": "4711", "capacity": 25,
-          "name": "Physics I" }</emn:value>
+        <emn:value>{
+          "courseId": "4711"
+          }</emn:value>
       </emn:command>
     </emn:when>
     <emn:then id="Specification_1quqjt0_then">
@@ -210,7 +224,6 @@
       <emn:event id="Event_1oza6ao" typeRef="EventType_course_created">
         <emn:value>{
           "courseId": "4711",
-          "capacity": 25,
           "name": "Physics I"
           }</emn:value>
       </emn:event>
@@ -237,7 +250,6 @@
       <emn:event id="Event_0ge116t" typeRef="EventType_course_created">
         <emn:value>{
           "courseId": "4711",
-          "capacity": 25,
           "name": "Physics I"
           }</emn:value>
       </emn:event>
