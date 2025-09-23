@@ -2,8 +2,7 @@ package io.holixon.emn.example.faculty.write.createcourse
 
 import io.holixon.emn.example.faculty.CourseCreated
 import io.holixon.emn.example.faculty.CreateCourse
-import io.holixon.emn.example.faculty.FacultyTags.COURSE
-import org.axonframework.eventsourcing.annotation.EventSourcedEntity
+import io.holixon.emn.example.faculty.DuplicateCourse
 import org.axonframework.eventsourcing.annotation.reflection.EntityCreator
 
 class CreateCourseState @EntityCreator constructor() : CreateCourseCommandHandler.State {
@@ -11,7 +10,7 @@ class CreateCourseState @EntityCreator constructor() : CreateCourseCommandHandle
 
   override fun decide(command: CreateCourse): List<Any> {
     if (created) {
-      return listOf()
+      throw DuplicateCourse("Course with id=${command.courseId.`val`} already exists.")
     }
     return listOf(CourseCreated(command.courseId, command.name, command.capacity))
   }

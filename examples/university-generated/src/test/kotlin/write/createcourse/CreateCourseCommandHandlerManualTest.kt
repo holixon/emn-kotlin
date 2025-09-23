@@ -3,6 +3,7 @@ package io.holixon.emn.example.faculty.write.createcourse
 import io.holixon.emn.example.faculty.CourseCreated
 import io.holixon.emn.example.faculty.CourseId
 import io.holixon.emn.example.faculty.CreateCourse
+import io.holixon.emn.example.faculty.DuplicateCourse
 import org.axonframework.test.fixture.AxonTestFixture
 import org.junit.jupiter.api.Test
 
@@ -40,7 +41,7 @@ internal class CreateCourseCommandHandlerManualTest(val fixture: AxonTestFixture
   }
 
   @Test
-  fun givenCourseCreated_WhenCreateCourse_ThenSuccess_NoEvents() {
+  fun givenCourseCreated_WhenCreateCourse_ThenErrorDuplicateCourse() {
     val courseId = CourseId.random()
     val courseName = "Event Sourcing in Practice"
     val capacity = 3
@@ -50,7 +51,7 @@ internal class CreateCourseCommandHandlerManualTest(val fixture: AxonTestFixture
       .`when`()
       .command(CreateCourse(courseId, courseName, capacity))
       .then()
-      .success()
       .noEvents()
+      .exception(DuplicateCourse::class.java)
   }
 }

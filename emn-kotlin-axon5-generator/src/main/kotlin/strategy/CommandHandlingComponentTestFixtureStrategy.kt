@@ -105,16 +105,18 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
             addStatement(".success()")
           } else {
             require(thenErrors.size == 1) { "At most one error is supported in the then stage, but ${thenErrors.size} were specified in ${spec.name}" }
-            val errorPoetType = try {
-              thenErrors
-                .map { it.resolveAvroPoetType(context.protocolDeclarationContext) }
-                .single()
-                .typeName
-                .className()
+            val thenError = thenErrors.first()
+            try {
+              val exceptionClass = thenError.resolveAvroPoetType(context.protocolDeclarationContext).typeName.className()
+              val message = thenError.value?.getEmbeddedJsonValueAsMap(context.objectMapper)?.get("message")
+              if (message != null) {
+                addStatement(".exception(%T::class.java, %S)", exceptionClass, message)
+              } else {
+                addStatement(".exception(%T::class.java)", exceptionClass)
+              }
             } catch (_: Exception) {
-              IllegalStateException::class.asClassName()
+              addStatement(".exception(%T::class.java)", IllegalStateException::class.asClassName())
             }
-            addStatement(".exception(%T::class.java)", errorPoetType)
           }
           if (thenEvents.isEmpty()) {
             addStatement(".noEvents()")

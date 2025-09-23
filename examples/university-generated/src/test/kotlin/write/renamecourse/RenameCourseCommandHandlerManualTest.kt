@@ -1,6 +1,7 @@
 package io.holixon.emn.example.faculty.write.renamecourse
 
 import io.holixon.emn.example.faculty.CourseCreated
+import io.holixon.emn.example.faculty.CourseDoesNotExist
 import io.holixon.emn.example.faculty.CourseId
 import io.holixon.emn.example.faculty.CourseRenamed
 import io.holixon.emn.example.faculty.RenameCourse
@@ -18,7 +19,7 @@ internal class RenameCourseCommandHandlerManualTest(val fixture: AxonTestFixture
       .`when`()
       .command(RenameCourse(courseId, "Event Sourcing in Practice"))
       .then()
-      .exception(RuntimeException::class.java, "Course with given id does not exist")
+      .exception(CourseDoesNotExist::class.java)
       .noEvents()
   }
 

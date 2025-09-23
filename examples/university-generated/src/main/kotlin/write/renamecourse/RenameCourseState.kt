@@ -1,6 +1,7 @@
 package io.holixon.emn.example.faculty.write.renamecourse
 
 import io.holixon.emn.example.faculty.CourseCreated
+import io.holixon.emn.example.faculty.CourseDoesNotExist
 import io.holixon.emn.example.faculty.CourseRenamed
 import io.holixon.emn.example.faculty.RenameCourse
 import org.axonframework.eventsourcing.annotation.reflection.EntityCreator
@@ -11,7 +12,7 @@ class RenameCourseState @EntityCreator constructor() : RenameCourseCommandHandle
 
   override fun decide(command: RenameCourse): List<Any> {
     return if (!this.created) {
-      throw IllegalStateException("Course with given id does not exist")
+      throw CourseDoesNotExist("Course with id=${command.courseId.`val`} does not exist.")
     } else {
       if (command.name == name) {
         listOf()
