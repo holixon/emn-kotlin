@@ -62,9 +62,6 @@
     </emn:viewType>
     <emn:messageFlowType id="MessageFlowType_1siqqvn" name="MessageFlow" sourceRef="EventType_student_enrolled" targetRef="QueryType_students" />
     <emn:messageFlowType id="MessageFlowType_18gqizi" name="MessageFlow" sourceRef="QueryType_students" targetRef="ViewType_page_28" />
-    <emn:errorType id="ErrorType_duplicate_course" name="Duplicate course">
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.DuplicateCourse</emn:schema>
-    </emn:errorType>
     <emn:viewType id="ViewType_1yybliu" name="Page 26">
       <emn:incoming>MessageFlowType_171i7uq</emn:incoming>
       <emn:outgoing>MessageFlowType_0a31qig</emn:outgoing>
@@ -81,6 +78,12 @@
     <emn:messageFlowType id="MessageFlowType_06zmu93" name="MessageFlow" sourceRef="CommandType_rename_course" targetRef="EventType_course_renamed" />
     <emn:messageFlowType id="MessageFlowType_0a31qig" name="MessageFlow" sourceRef="ViewType_1yybliu" targetRef="CommandType_rename_course" />
     <emn:messageFlowType id="MessageFlowType_171i7uq" name="MessageFlow" sourceRef="QueryType_courses" targetRef="ViewType_1yybliu" />
+    <emn:errorType id="ErrorType_duplicate_course" name="Duplicate course">
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.DuplicateCourse</emn:schema>
+    </emn:errorType>
+    <emn:errorType id="ErrorType_course_does_not_exist" name="Course does not exist">
+      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseDoesNotExist</emn:schema>
+    </emn:errorType>
   </emn:types>
   <emn:timeline id="timeline_1" name="Faculty">
     <emn:laneSet id="lanes_1">
@@ -204,7 +207,7 @@
     </emn:when>
     <emn:then id="Specification_1quqjt0_then">
       <emn:error id="Error_1h6wufi" typeRef="ErrorType_duplicate_course">
-        <emn:value>{ "message": "Duplicate course 4711 already exists" }</emn:value>
+        <emn:value>{ "message": "Course with id=4711 already exists." }</emn:value>
       </emn:error>
     </emn:then>
   </emn:specification>
@@ -263,7 +266,11 @@
           }</emn:value>
       </emn:command>
     </emn:when>
-    <emn:then id="Then_1dezz9r" />
+    <emn:then id="Then_1dezz9r">
+      <emn:error id="Error_0q2v7fo" typeRef="ErrorType_course_does_not_exist">
+        <emn:value>{ "message": "Course with id=4711 does not exist." }</emn:value>
+      </emn:error>
+    </emn:then>
   </emn:specification>
   <emndi:EMNDiagram id="EMNDiagram_1">
     <emndi:EMNPlane id="EMNPlane_1" emnElement="timeline_1">
@@ -319,6 +326,9 @@
       </emndi:EMNShape>
       <emndi:EMNShape id="Then_1tkg7df_di" emnElement="Then_1dezz9r">
         <dc:Bounds x="2480" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Error_0q2v7fo_di" emnElement="Error_0q2v7fo">
+        <dc:Bounds x="2540" y="1270" width="100" height="100" />
       </emndi:EMNShape>
       <emndi:EMNShape id="Specification_1ote18y_di" emnElement="Specification_1ote18y">
         <dc:Bounds x="1930" y="860" width="500" height="550" />

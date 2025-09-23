@@ -249,7 +249,19 @@
     {
       "type": "error",
       "name": "DuplicateCourse",
-      "doc": "A course name has to be unique.",
+      "doc": "Error: A course name has to be unique.",
+      "namespace": "io.holixon.emn.example.faculty",
+      "fields": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "type": "error",
+      "name": "CourseDoesNotExist",
+      "doc": "Error: Course with given id does not exist.",
       "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
