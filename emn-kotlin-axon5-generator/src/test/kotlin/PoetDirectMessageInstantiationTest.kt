@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.generation.TestFixtures.AvroKotlinFixtures.AVRO_PARSER
+import io.holixon.emn.generation.TestFixtures.jsonOf
 import io.holixon.emn.generation.TestFixtures.logger
 import io.toolisticon.kotlin.avro.generator.DefaultAvroKotlinGeneratorProperties
 import io.toolisticon.kotlin.avro.generator.spi.AvroCodeGenerationSpiRegistry
@@ -18,7 +19,7 @@ import org.junit.jupiter.api.assertThrows
 import java.lang.reflect.Field
 
 @OptIn(ExperimentalKotlinPoetApi::class)
-class PoetTest {
+class PoetDirectMessageInstantiationTest {
 
   val protocol = AVRO_PARSER.parseProtocol(resourceUrl("faculty/faculty.avpr"))
   val ctx = ProtocolDeclarationContext.of(
@@ -36,7 +37,7 @@ class PoetTest {
     val createCoursePoetType = ctx.avroPoetTypes[createCourseType.hashCode]
     val courseIdPoetType = ctx.avroPoetTypes[courseIdType.hashCode]
 
-    val block = initializeMessage(
+    val block = instantiateMessageDirectly(
       createCoursePoetType, ctx.avroPoetTypes, jsonOf(
         """{
         "courseId": "4711",
@@ -81,7 +82,7 @@ class PoetTest {
     val courseAndStudentIdType = ctx.avroTypes[Name("CourseAndStudentCompositeKey")]!! as RecordType
     val courseAndStudentIdPoetType = ctx.avroPoetTypes[courseAndStudentIdType.hashCode]
 
-    val block = initializeMessage(
+    val block = instantiateMessageDirectly(
       enrollPoetType, ctx.avroPoetTypes, jsonOf(
         """
         {
@@ -129,7 +130,7 @@ class PoetTest {
     val createCourseType = ctx.avroTypes[Name("CreateCourse")]!! as RecordType
     val createCoursePoetType = ctx.avroPoetTypes[createCourseType.hashCode]
     val thrown = assertThrows<IllegalArgumentException> {
-      initializeMessage(
+      instantiateMessageDirectly(
         createCoursePoetType, ctx.avroPoetTypes, jsonOf(
           """{
         "courseId": "4711",
@@ -150,7 +151,7 @@ class PoetTest {
     val createCourseType = ctx.avroTypes[Name("CreateCourse")]!! as RecordType
     val createCoursePoetType = ctx.avroPoetTypes[createCourseType.hashCode]
     val thrown = assertThrows<IllegalArgumentException> {
-      initializeMessage(
+      instantiateMessageDirectly(
         createCoursePoetType, ctx.avroPoetTypes, jsonOf(
           """{
         "courseId": null,
@@ -172,7 +173,7 @@ class PoetTest {
     val enrollType = ctx.avroTypes[Name("EnrollStudentToCourseAlternative")]!! as RecordType
     val enrollPoetType = ctx.avroPoetTypes[enrollType.hashCode]
     val thrown = assertThrows<IllegalArgumentException> {
-      initializeMessage(
+      instantiateMessageDirectly(
         enrollPoetType, ctx.avroPoetTypes, jsonOf(
           """{
         "courseAndStudentId": "4711",
@@ -187,26 +188,6 @@ class PoetTest {
       "Failed to instantiate '${enrollType.namespace.value + "." + enrollType.name.value}'. "
         + "Field 'courseAndStudentId' is of type 'CourseAndStudentCompositeKey', which can't be initialized from value '4711'"
     )
-  }
-
-
-  fun jsonOf(json: String): Map<String, Any?> {
-    val om = ObjectMapper().registerKotlinModule()
-    val map: Map<String, Any?> = om.readValue(
-      json,
-      om.typeFactory.constructMapType(Map::class.java, String::class.java, Any::class.java)
-    )
-    return map
-  }
-
-  fun CodeBlock.formatParts() = getField<List<String>>(this, "formatParts")
-  fun CodeBlock.args() = getField<List<Any>>(this, "args")
-
-  @Suppress("UNCHECKED_CAST")
-  fun <T> getField(instance: Any, fieldName: String): T? {
-    val field: Field = instance.javaClass.getDeclaredField(fieldName)
-    field.isAccessible = true
-    return field.get(instance) as? T
   }
 
 }

@@ -13,17 +13,25 @@ class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<
 ) {
   override fun invoke(context: EmnGenerationContext, input: Definitions): KotlinFileSpecList {
 
-    val commandHandlerComponentFiles: List<KotlinFileSpec> = context.commandSlices.flatMap { commandSlice ->
-      CommandHandlingComponentStrategy().invoke(context, commandSlice)
+    val commandHandlerComponentFiles: List<KotlinFileSpec> = if (context.properties.generateCommandSlices) {
+      context.commandSlices.flatMap { commandSlice ->
+        CommandHandlingComponentStrategy().invoke(context, commandSlice)
+      }
+    } else {
+      emptyList()
     }
 
-    val commandHandlerComponentTestFixtureFiles: List<KotlinFileSpec> = context.commandSlices.flatMap { commandSlice ->
-      CommandHandlingComponentTestFixtureStrategy().invoke(context, commandSlice)
+    val commandHandlerComponentTestFixtureFiles: List<KotlinFileSpec> = if (context.properties.generateCommandSliceTests) {
+      context.commandSlices.flatMap { commandSlice ->
+        CommandHandlingComponentTestFixtureStrategy().invoke(context, commandSlice)
+      }
+    } else {
+      emptyList()
     }
 
     return KotlinFileSpecList(
       commandHandlerComponentFiles
-      + commandHandlerComponentTestFixtureFiles
+        + commandHandlerComponentTestFixtureFiles
     )
   }
 

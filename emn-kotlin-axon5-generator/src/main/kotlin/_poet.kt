@@ -15,6 +15,7 @@ import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isNullable
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isPrimitive
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isRecordType
 import io.toolisticon.kotlin.avro.model.wrapper.AvroSchemaChecks.isStringType
+import io.toolisticon.kotlin.avro.value.Name
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_KCLASS
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_LITERAL
@@ -76,7 +77,18 @@ object CommandHandlerAnnotation : KotlinAnnotationSpecSupplier {
   override fun spec(): KotlinAnnotationSpec = buildAnnotation(CommandHandler::class)
 }
 
-fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, properties: Map<String, Any?>): CodeBlock {
+fun instantiateMessageWithInstancio(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, properties: Map<String, Any?>): CodeBlock =
+  instantiateMessage(avroPoetType, avroPoetTypes, properties, InstancioCreatorStyle)
+
+fun instantiateMessageDirectly(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, properties: Map<String, Any?>): CodeBlock =
+  instantiateMessage(avroPoetType, avroPoetTypes, properties, DirectCreatorStyle)
+
+internal fun instantiateMessage(
+  avroPoetType: AvroPoetType,
+  avroPoetTypes: AvroPoetTypes,
+  properties: Map<String, Any?>,
+  creatorStyle: CreatorStyle
+): CodeBlock {
   require(avroPoetType.avroType is RecordType) {
     "Failed to instantiate '${avroPoetType.typeName}'. " +
       "Can only initialize RecordType, but was '${avroPoetType.avroType}'"
@@ -86,6 +98,7 @@ fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, 
   data class FieldAndValue(val field: RecordField, val value: Any?) : Supplier<CodeBlock> {
 
     init {
+
       if (value == null) {
         require(field.schema.isNullable) {
           "Failed to instantiate '${avroPoetType.typeName}'. " +
@@ -103,11 +116,14 @@ fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, 
       val complexTypeRecord = complexType.avroType as RecordType
       val constructorCall = if (value is Map<*, *>) { // complex value structure found
         @Suppress("UNCHECKED_CAST")
-        initializeMessage(complexType, avroPoetTypes, (value as Map<String, Any?>))
+        instantiateMessage(complexType, avroPoetTypes, (value as Map<String, Any?>), creatorStyle)
       } else { // value is not a map -> simple value
-        if (complexTypeRecord.schema.fields.size == 1) {
-          val constructorField = complexTypeRecord.schema.fields[0]
-          CodeBlock.of("%T(${constructorField.schema.poetValueFormat()})", complexType.typeName, value)
+        if (creatorStyle.supportsSingleValueCreation(complexTypeRecord.schema, value)) {
+          creatorStyle.getSingleValueConstructorCodeBlockBuilder(
+            elementTypeName = complexType.typeName,
+            schema = complexTypeRecord.schema,
+            value = value
+          ).build()
         } else {
           throw IllegalArgumentException(
             "Failed to instantiate '${avroPoetType.typeName}'. "
@@ -121,30 +137,17 @@ fun initializeMessage(avroPoetType: AvroPoetType, avroPoetTypes: AvroPoetTypes, 
     }
   }
 
-  // Fields to values
-  val blocks = recordType.fields.map { field ->
-    val value = if (properties.containsKey(field.name.value)) {
-      properties[field.name.value]
-    } else {
-      // TODO -> resolve default?
-      if (field.schema.isNullable) {
-        null
-      } else {
-        throw IllegalArgumentException(
-          "Failed to instantiate '${avroPoetType.typeName}'. "
-            + "No value was supplied for field '${field.name}' of type '${field.type.name}'"
-        )
-      }
-    }
-    FieldAndValue(field, value).get()
-  }
+  creatorStyle.validateValues(recordType.schema, properties)
 
-  return CodeBlockBuilder.builder()
-    .add("%T", avroPoetType.typeName)
-    .add("(")
-    .addAll(blocks, CodeBlock.of(", "))
-    .add(")")
-    .build()
+  val blocks = properties.map { (fieldName, value) -> recordType.getField(Name(fieldName)) to value }
+    .filter { it.first != null }
+    .map { (field, v) -> FieldAndValue(field!!, v) }
+    .map { it.get() }
+
+  return creatorStyle.getConstructorCodeBlockBuilder(
+    elementTypeName = avroPoetType.typeName,
+    blocks = blocks
+  ).build()
 }
 
 /**

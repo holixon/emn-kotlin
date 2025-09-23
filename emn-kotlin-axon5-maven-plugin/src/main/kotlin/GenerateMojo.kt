@@ -5,6 +5,7 @@ import io.holixon.emn.EmnDocumentParser
 import io.holixon.emn.generation.DefaultEmnAxon5GeneratorProperties
 import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator
 import io.holixon.emn.generation.maven.EmnKotlinAxon5MavenPlugin.writeToFormatted
+import io.holixon.emn.generation.maven.GenerateMojo.Companion.DEFAULT_INSTANCE_CREATOR
 import io.holixon.emn.generation.maven.GenerateMojo.Companion.GOAL
 import io.toolisticon.kotlin.avro.AvroParser
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.spi.load
@@ -28,6 +29,7 @@ class GenerateMojo : AbstractContextAwareMojo() {
 
   companion object {
     const val GOAL = "generate"
+    const val DEFAULT_INSTANCE_CREATOR = "instancio"
   }
 
   /**
@@ -61,6 +63,14 @@ class GenerateMojo : AbstractContextAwareMojo() {
     defaultValue = EmnKotlinAxon5MavenPlugin.DEFAULT_GENERATED_TEST_SOURCES
   )
   private lateinit var testOutputDirectory: File
+
+
+  @Parameter(
+    property = "instanceCreator",
+    required = true,
+    defaultValue = DEFAULT_INSTANCE_CREATOR
+  )
+  private var instanceCreator: String = DEFAULT_INSTANCE_CREATOR
 
   /**
    * List of include patterns to use. See also [org.apache.maven.shared.model.fileset.FileSet]
@@ -105,6 +115,9 @@ class GenerateMojo : AbstractContextAwareMojo() {
     val properties = DefaultEmnAxon5GeneratorProperties(
       emnName = "faculty",
       rootPackageName = "io.holixon.emn.example.faculty",
+      instanceCreator = instanceCreator,
+      generateCommandSlices = true,
+      generateCommandSliceTests = true
     )
 
     val generator = EmnAxon5AvroBasedGenerator.create(

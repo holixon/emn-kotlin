@@ -43,14 +43,6 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     input: CommandSlice
   ): KotlinFileSpecList {
 
-    fun messageInstantiation(message: FlowNode): CodeBlock {
-      val elementValue = requireNotNull(message.value) { "Element $message must have a value." }
-      val propertiesMap = elementValue.getEmbeddedJsonValueAsMap(context.objectMapper)
-      requireNotNull(propertiesMap) { "Could not parse value of $message as a map of properties." }
-      val avroPoetType = message.resolveAvroPoetType(context.protocolDeclarationContext)
-      return initializeMessage(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
-    }
-
     val specifications = context.specificationsForSlice(input.slice)
 
     if (specifications.isEmpty()) {
@@ -91,7 +83,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
             givenEvents.forEach { event ->
               addCode {
                 add(".event(")
-                add(messageInstantiation(event))
+                add(messageInstantiation(event, context))
                 add(")")
               }
             }
@@ -102,7 +94,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
           val command = whenStage.values.commands().single()
           addCode {
             add(".command(")
-            add(messageInstantiation(command))
+            add(messageInstantiation(command, context))
             add(")")
           }
 
@@ -131,7 +123,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
           } else {
             addCode {
               add(".events(")
-              addAll(thenEvents.map { event -> messageInstantiation(event) }, CodeBlock.of(", "))
+              addAll(thenEvents.map { event -> messageInstantiation(event, context) }, CodeBlock.of(", "))
               add(")")
             }
           }
@@ -143,4 +135,14 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     return KotlinFileSpecList(fileBuilder.build())
   }
 
+  fun messageInstantiation(message: FlowNode, context: EmnGenerationContext): CodeBlock {
+    val elementValue = requireNotNull(message.value) { "Element $message must have a value." }
+    val propertiesMap = elementValue.getEmbeddedJsonValueAsMap(context.objectMapper)
+    requireNotNull(propertiesMap) { "Could not parse value of $message as a map of properties." }
+    val avroPoetType = message.resolveAvroPoetType(context.protocolDeclarationContext)
+    return when(context.properties.instanceCreator) {
+      "instancio" -> instantiateMessageWithInstancio(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
+      else ->   instantiateMessageDirectly(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
+    }
+  }
 }

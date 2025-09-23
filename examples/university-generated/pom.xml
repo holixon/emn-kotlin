@@ -62,6 +62,12 @@
       <version>3.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.instancio</groupId>
+      <artifactId>instancio-junit</artifactId>
+      <version>5.5.1</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
@@ -109,6 +115,7 @@
             <configuration>
               <resourceDirectory>${kp.generatedResources}</resourceDirectory>
               <includes>faculty/**.emn</includes>
+              <useInstancio>true</useInstancio>
             </configuration>
           </execution>
         </executions>
