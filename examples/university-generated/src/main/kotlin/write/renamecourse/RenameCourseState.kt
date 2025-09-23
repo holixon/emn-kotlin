@@ -12,7 +12,7 @@ class RenameCourseState @EntityCreator constructor() : RenameCourseCommandHandle
 
   override fun decide(command: RenameCourse): List<Any> {
     return if (!this.created) {
-      throw CourseDoesNotExist("Course with id=${command.courseId.`val`} does not exist.")
+      throw CourseDoesNotExist("Course with id=${command.courseId.value} does not exist.")
     } else {
       if (command.name == name) {
         listOf()

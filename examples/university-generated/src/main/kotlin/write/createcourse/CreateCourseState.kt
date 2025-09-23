@@ -10,7 +10,7 @@ class CreateCourseState @EntityCreator constructor() : CreateCourseCommandHandle
 
   override fun decide(command: CreateCourse): List<Any> {
     if (created) {
-      throw DuplicateCourse("Course with id=${command.courseId.`val`} already exists.")
+      throw DuplicateCourse("Course with id=${command.courseId.value} already exists.")
     }
     return listOf(CourseCreated(command.courseId, command.name, command.capacity))
   }

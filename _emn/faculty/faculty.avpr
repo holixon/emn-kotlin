@@ -8,7 +8,7 @@
       "namespace": "io.holixon.emn.example.faculty",
       "fields": [
         {
-          "name": "val",
+          "name": "value",
           "type": "string"
         }
       ]
