@@ -115,7 +115,6 @@
             <configuration>
               <resourceDirectory>${kp.generatedResources}</resourceDirectory>
               <includes>faculty/**.emn</includes>
-              <useInstancio>true</useInstancio>
             </configuration>
           </execution>
         </executions>
