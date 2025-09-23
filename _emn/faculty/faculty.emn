@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<emn:definitions
-  xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
-  xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI"
-  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  id="Definitions_1p59kc5"
-  targetNamespace="https://holixon.io/schema/emn"
-  exporter="Hand crafted"
-  exporterVersion="1.0.0"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../doc/EMN.xsd https://holixon.io/spec/EMN/20241231/DI ../../doc/EMNDI.xsd">
+<emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL" xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1p59kc5" targetNamespace="https://holixon.io/schema/emn" exporter="Hand crafted" exporterVersion="1.0.0" xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../doc/EMN.xsd https://holixon.io/spec/EMN/20241231/DI ../../doc/EMNDI.xsd">
   <emn:types>
     <emn:viewType id="ViewType_page_24" name="Page 24">
       <emn:outgoing>MessageFlowType_16lrebs</emn:outgoing>
@@ -75,7 +65,6 @@
     <emn:errorType id="ErrorType_duplicate_course" name="Duplicate course">
       <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.DuplicateCourse</emn:schema>
     </emn:errorType>
-    <emn:errorType id="ErrorType_course_not_exists" name="Error course does not exist" />
     <emn:viewType id="ViewType_1yybliu" name="Page 26">
       <emn:incoming>MessageFlowType_171i7uq</emn:incoming>
       <emn:outgoing>MessageFlowType_0a31qig</emn:outgoing>
@@ -93,7 +82,7 @@
     <emn:messageFlowType id="MessageFlowType_0a31qig" name="MessageFlow" sourceRef="ViewType_1yybliu" targetRef="CommandType_rename_course" />
     <emn:messageFlowType id="MessageFlowType_171i7uq" name="MessageFlow" sourceRef="QueryType_courses" targetRef="ViewType_1yybliu" />
   </emn:types>
-  <emn:timeline id="timeline_1" name="Timeline">
+  <emn:timeline id="timeline_1" name="Faculty">
     <emn:laneSet id="lanes_1">
       <emn:triggerLaneSet>
         <emn:triggerLane id="triggerLane_admin" name="Admin">
@@ -198,7 +187,7 @@
       </emn:event>
     </emn:then>
   </emn:specification>
-  <emn:specification id="Specification_create_course_error" name="Don&#39;t create course">
+  <emn:specification id="Specification_create_course_error" name="Don&#39;t create course" sliceRef="Slice_0toflhc">
     <emn:given id="Specification_1quqjt0_given" stateName="Course exists">
       <emn:event id="Event_1hq514a" typeRef="EventType_course_created">
         <emn:value>{
@@ -265,8 +254,7 @@
     <emn:then id="Then_1tkg7df" />
   </emn:specification>
   <emn:specification id="Specification_0wjemf5" name="Rename non-existing course" scenario="If I rename a course that does not exists, an error is thrown" sliceRef="Slice_0xnxibu">
-    <emn:given id="Given_0z7eshb">
-    </emn:given>
+    <emn:given id="Given_0z7eshb" />
     <emn:when id="When_0t6n42q">
       <emn:command id="Command_18yqilx" typeRef="CommandType_rename_course">
         <emn:value>{
@@ -275,18 +263,12 @@
           }</emn:value>
       </emn:command>
     </emn:when>
-    <emn:then id="Then_1dezz9r">
-      <emn:error id="Error_12sdfg" typeRef="ErrorType_course_not_exists" />
-    </emn:then>
+    <emn:then id="Then_1dezz9r" />
   </emn:specification>
   <emndi:EMNDiagram id="EMNDiagram_1">
     <emndi:EMNPlane id="EMNPlane_1" emnElement="timeline_1">
       <emndi:EMNShape id="AggregateLane_1w15s4u_di" emnElement="aggregateLane_course" isHorizontal="true">
         <dc:Bounds x="200" y="600" width="2470" height="160" />
-        <emndi:EMNLabel />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="Event_course_renamed_di" emnElement="Event_course_renamed">
-        <dc:Bounds x="2170" y="620" width="100" height="100" />
         <emndi:EMNLabel />
       </emndi:EMNShape>
       <emndi:EMNShape id="aggregateLane_1_di" emnElement="aggregateLane_student" isHorizontal="true">
@@ -321,12 +303,6 @@
       <emndi:EMNShape id="triggerLane_1_di" emnElement="triggerLane_admin" isHorizontal="true">
         <dc:Bounds x="200" y="105" width="2470" height="175" />
         <emndi:EMNLabel />
-      </emndi:EMNShape>
-      <emndi:EMNShape id="View_1eft2am_di" emnElement="View_page27_1">
-        <dc:Bounds x="810" y="140" width="100" height="80" />
-        <emndi:EMNLabel>
-          <dc:Bounds x="840" y="115" width="41" height="14" />
-        </emndi:EMNLabel>
       </emndi:EMNShape>
       <emndi:EMNShape id="Specification_2ote18y_di" emnElement="Specification_0wjemf5">
         <dc:Bounds x="2470" y="860" width="500" height="550" />
@@ -447,6 +423,12 @@
         <dc:Bounds x="700" y="310" width="100" height="100" />
         <emndi:EMNLabel />
       </emndi:EMNShape>
+      <emndi:EMNShape id="View_1eft2am_di" emnElement="View_page27_1">
+        <dc:Bounds x="810" y="140" width="100" height="80" />
+        <emndi:EMNLabel>
+          <dc:Bounds x="840" y="115" width="41" height="14" />
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
       <emndi:EMNShape id="View_0sbv8ib_di" emnElement="View_page_25">
         <dc:Bounds x="1080" y="-15" width="100" height="80" />
         <emndi:EMNLabel>
@@ -479,6 +461,10 @@
       </emndi:EMNShape>
       <emndi:EMNShape id="Command_rename_course_di" emnElement="Command_rename_course">
         <dc:Bounds x="2070" y="310" width="100" height="100" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_course_renamed_di" emnElement="Event_course_renamed">
+        <dc:Bounds x="2170" y="620" width="100" height="100" />
         <emndi:EMNLabel />
       </emndi:EMNShape>
       <emndi:EMNEdge id="Flow_0ytn02p_di" emnElement="Flow_0ytn02p">
