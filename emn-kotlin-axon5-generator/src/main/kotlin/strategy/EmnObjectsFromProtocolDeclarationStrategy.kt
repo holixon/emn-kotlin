@@ -7,6 +7,7 @@ import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.generator.strategy.AvroFileSpecListFromProtocolDeclarationStrategy
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFile
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildObject
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.constantName
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.propertyName
@@ -24,7 +25,7 @@ class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDe
 
     val tagClassName = emnContext.getTagClassName()
 
-    val tagFile = KotlinCodeGeneration.buildFile(tagClassName) {
+    val tagFile = buildFile(tagClassName) {
       addType(buildObject(tagClassName) {
         emnContext.definitions.aggregates().mapNotNull { it.name }
           .distinct().forEach { name ->
@@ -35,6 +36,7 @@ class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDe
           }
       })
     }
+
     return KotlinFileSpecList(tagFile)
   }
 }

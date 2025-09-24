@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 class ExtensionsTest {
 
   @Test
+  @Deprecated("move to SpecificationTest")
   fun `test testMethodName with events in given stage`() {
     // Create a specification with events in the given stage
     val event1 = Event(
@@ -67,6 +68,7 @@ class ExtensionsTest {
   }
 
   @Test
+  @Deprecated("move to SpecificationTest")
   fun `test testMethodName with events in given stage but no events in then stage`() {
     // Create a specification with events in the given stage
     val event1 = Event(
@@ -116,6 +118,7 @@ class ExtensionsTest {
   }
 
   @Test
+  @Deprecated("move to SpecificationTest")
   fun `test testMethodName with events in given stage and error in then stage`() {
     // Create a specification with events in the given stage
     val event1 = Event(
@@ -171,6 +174,7 @@ class ExtensionsTest {
   }
 
   @Test
+  @Deprecated("move to SpecificationTest")
   fun `test testMethodName with no events in given stage`() {
     // Create a specification with no events in the given stage
     val command = Command(
@@ -213,6 +217,7 @@ class ExtensionsTest {
   }
 
   @Test
+  @Deprecated("move to SpecificationTest")
   fun `test testMethodName requires exactly one command in when stage`() {
     // Create a specification with multiple commands in the when stage
     val command1 = Command(

@@ -44,6 +44,12 @@
     </dependency>
 
     <dependency>
+      <groupId>io.konform</groupId>
+      <artifactId>konform-jvm</artifactId>
+      <version>0.11.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.facebook</groupId>
       <artifactId>ktfmt</artifactId>
       <version>${ktfmt.version}</version>

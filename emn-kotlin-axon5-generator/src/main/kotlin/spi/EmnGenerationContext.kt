@@ -8,6 +8,8 @@ import com.squareup.kotlinpoet.MemberName
 import io.holixon.emn.generation.EmnAxon5GeneratorProperties
 import io.holixon.emn.generation.hasAvroTypeDefinitionRef
 import io.holixon.emn.generation.isCommandSliceWithAvroTypeDefinitionRef
+import io.holixon.emn.generation.model.CommandSlice
+import io.holixon.emn.generation.model.Specification
 import io.holixon.emn.model.*
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordType
@@ -28,6 +30,9 @@ class EmnGenerationContext(
   val definitions: Definitions,
   val properties: EmnAxon5GeneratorProperties,
   val objectMapper: ObjectMapper = ObjectMapper().registerKotlinModule(),
+  /**
+   * Tags can be used by kotlinPoet to add additional data at runtime.
+   */
   val tags: MutableMap<KClass<*>, Any?> = mutableMapOf()
 ) : KotlinCodeGenerationContextBase<EmnGenerationContext>(registry) {
 
@@ -58,8 +63,8 @@ class EmnGenerationContext(
    * @param slice: slice to look for specifications.
    * @return list of specification referencing given slice.
    */
-  fun specificationsForSlice(slice: Slice): List<Specification> =
-    definitions.specifications.filter { spec -> spec.slice != null && spec.slice!!.id == slice.id }
+  fun specificationsForSlice(slice: Slice): Set<Specification> = definitions.specifications.filter { spec -> spec.slice != null && spec.slice!!.id == slice.id }
+    .map { Specification(it) }.toSet()
 
 
   override val contextType: KClass<EmnGenerationContext> = EmnGenerationContext::class
@@ -117,5 +122,3 @@ class EmnGenerationContext(
     )
   }
 }
-
-

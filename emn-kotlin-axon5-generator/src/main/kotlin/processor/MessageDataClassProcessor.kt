@@ -2,7 +2,6 @@ package io.holixon.emn.generation.processor
 
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.generation.avro.SchemaDeclarationContextExt.emnContext
-import io.holixon.emn.generation.spi.commandHandlerClassName
 import io.holixon.emn.model.CommandType
 import io.holixon.emn.model.EventType
 import io.toolisticon.kotlin.avro.generator.processor.KotlinDataClassFromRecordTypeProcessorBase
@@ -23,7 +22,6 @@ class MessageDataClassProcessor : KotlinDataClassFromRecordTypeProcessorBase() {
       val commandSlice = emnContext.commandSlices.firstOrNull { it.command.typeReference == commandType }
       if (commandSlice != null) {
         builder.addKdoc(KDoc.of("\nSlice: ${commandSlice.name}"))
-
         builder.addKdoc(KDoc.of("\n@see %T", commandSlice.commandHandlerClassName))
       }
     } else {

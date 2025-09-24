@@ -1,11 +1,11 @@
-package io.holixon.emn.generation.spi
+package io.holixon.emn.generation.model
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.generation.EmnAxon5GeneratorProperties
 import io.holixon.emn.model.Command
 import io.holixon.emn.model.Slice
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.simpleName
 import io.toolisticon.kotlin.generation.support.StringTransformations.WITHOUT_SPACES_TO_LOWER
 import io.toolisticon.kotlin.generation.support.StringTransformations.transform
 
@@ -19,8 +19,13 @@ data class CommandSlice(
   val packageSuffix = name.transform(WITHOUT_SPACES_TO_LOWER)
 
   val packageName = "${properties.commandSliceRootPackageName}.$packageSuffix"
-  val simpleClassName = KotlinCodeGeneration.name.simpleName(name)
+  val simpleClassName = simpleName(name)
+
+  val commandHandlerClassName: ClassName by lazy {
+    ClassName(packageName, simpleClassName + "CommandHandler")
+  }
+  val commandHandlerFixtureTestClassName: ClassName by lazy {
+    ClassName(packageName, simpleClassName + "CommandHandlerTest")
+  }
 }
 
-val CommandSlice.commandHandlerClassName: ClassName get() = ClassName(packageName, simpleClassName + "CommandHandler")
-val CommandSlice.commandHandlerFixtureTestClassName: ClassName get() = ClassName(packageName, simpleClassName + "CommandHandlerTest")

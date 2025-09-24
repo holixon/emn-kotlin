@@ -4,9 +4,8 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.holixon.emn.generation.*
-import io.holixon.emn.generation.spi.CommandSlice
+import io.holixon.emn.generation.model.CommandSlice
 import io.holixon.emn.generation.spi.EmnGenerationContext
-import io.holixon.emn.generation.spi.commandHandlerClassName
 import io.holixon.emn.model.applyIfExactlyOne
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun

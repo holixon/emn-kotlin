@@ -6,16 +6,14 @@ import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.asClassName
 import io.holixon.emn.generation.*
 import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator.Tags.TestFileSpec
-import io.holixon.emn.generation.spi.CommandSlice
+import io.holixon.emn.generation.model.Specification
+import io.holixon.emn.generation.model.Specification.Stage.ThenStage.*
+import io.holixon.emn.generation.model.CommandSlice
 import io.holixon.emn.generation.spi.EmnGenerationContext
-import io.holixon.emn.generation.spi.commandHandlerFixtureTestClassName
 import io.holixon.emn.model.FlowNode
-import io.holixon.emn.model.commands
-import io.holixon.emn.model.errors
-import io.holixon.emn.model.events
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildClass
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.classBuilder
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.className
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
@@ -47,92 +45,86 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
 
     if (specifications.isEmpty()) {
       // nothing to generate, no specifications for slice found
-      return KotlinFileSpecList()
+      return KotlinFileSpecList.EMPTY
     }
 
-    val fileBuilder = fileBuilder(input.commandHandlerFixtureTestClassName)
-      .addTag(TestFileSpec)
-    val commandHandlerTypeBuilder = classBuilder(input.commandHandlerFixtureTestClassName).apply {
+    val className = input.commandHandlerFixtureTestClassName
+    val fileBuilder = fileBuilder(className).addTag(TestFileSpec)
 
-      addConstructorProperty("fixture", AXON_FIXTURE) { makePrivate() }
+    val commandHandlerTestClass = buildClass(className) {
+      addConstructorProperty("fixture", AXON_FIXTURE).makePrivate()
+      specifications.forEach { addFunction(buildTestFunction(it, context)) }
+    }
 
-      specifications.forEach { spec ->
+    return KotlinFileSpecList(fileBuilder.addType(commandHandlerTestClass).build())
+  }
 
-        val givenStage = requireNotNull(spec.givenStage) { "Given stage must be present, but it is missing in ${spec.name}" }
-        val whenStage = requireNotNull(spec.whenStage) { "When stage must be present, but it is missing in ${spec.name}" }
-        val thenStage = requireNotNull(spec.thenStage) { "Then stage must be present, but it is missing in ${spec.name}" }
+  fun buildTestFunction(specification: Specification, context: EmnGenerationContext) = buildFun(specification.testMethodName) {
+    addAnnotation(JUNIT_TEST)
+    addKdoc(specification.messageKdoc)
 
+    addCode("fixture")
 
-        addFunction(buildFun(spec.testMethodName) {
-          addAnnotation(JUNIT_TEST)
-          addKdoc(
-            """
-              ${"\n" + spec.name}
-              ${if (spec.scenario != null) "\nScenario: ${spec.scenario}" else ""}
-            """.trimIndent()
-          )
-
-          addCode("fixture")
-          addCode(".given()")
-
-          val givenEvents = givenStage.values.events()
-
-          if (givenEvents.isEmpty()) {
-            addStatement(".noPriorActivity()")
-          } else {
-            givenEvents.forEach { event ->
-              addCode {
-                add(".event(")
-                add(messageInstantiation(event, context))
-                add(")")
-              }
-            }
-          }
-
-          addCode(".`when`()")
-          require(whenStage.values.commands().size == 1) { "Currently when stage requires exactly one command, but ${whenStage.values.commands().size} wre specified in ${spec.name}" }
-          val command = whenStage.values.commands().single()
+    // GIVEN
+    with(specification.givenStage) {
+      addCode(".given()")
+      if (isEmpty()) {
+        addStatement(".noPriorActivity()")
+      } else {
+        forEach { event ->
           addCode {
-            add(".command(")
-            add(messageInstantiation(command, context))
+            add(".event(")
+            add(messageInstantiation(event, context))
             add(")")
           }
-
-          addStatement(".then()")
-          val thenEvents = thenStage.values.events()
-          val thenErrors = thenStage.values.errors()
-          if (thenErrors.isEmpty()) {
-            addStatement(".success()")
-          } else {
-            require(thenErrors.size == 1) { "At most one error is supported in the then stage, but ${thenErrors.size} were specified in ${spec.name}" }
-            val thenError = thenErrors.first()
-            try {
-              val exceptionClass = thenError.resolveAvroPoetType(context.protocolDeclarationContext).typeName.className()
-              val message = thenError.value?.getEmbeddedJsonValueAsMap(context.objectMapper)?.get("message")
-              if (message != null) {
-                addStatement(".exception(%T::class.java, %S)", exceptionClass, message)
-              } else {
-                addStatement(".exception(%T::class.java)", exceptionClass)
-              }
-            } catch (_: Exception) {
-              addStatement(".exception(%T::class.java)", IllegalStateException::class.asClassName())
-            }
-          }
-          if (thenEvents.isEmpty()) {
-            addStatement(".noEvents()")
-          } else {
-            addCode {
-              add(".events(")
-              addAll(thenEvents.map { event -> messageInstantiation(event, context) }, CodeBlock.of(", "))
-              add(")")
-            }
-          }
-        })
+        }
       }
     }
 
-    fileBuilder.addType(commandHandlerTypeBuilder.build())
-    return KotlinFileSpecList(fileBuilder.build())
+    // WHEN
+    with(specification.whenStage) {
+      addCode(".`when`()")
+      addCode {
+        add(".command(")
+        add(messageInstantiation(command, context))
+        add(")")
+      }
+    }
+
+    // THEN
+    with(specification.thenStage) {
+      addStatement(".then()")
+      when (this) {
+        is ThenEmpty -> {
+          addStatement(".success()")
+          addStatement(".noEvents()")
+        }
+
+        is ThenEvents -> {
+          addStatement(".success()")
+          addCode {
+            add(".events(")
+            addAll(map { event -> messageInstantiation(event, context) }, CodeBlock.of(", "))
+            add(")")
+          }
+        }
+
+        is ThenError -> {
+          addStatement(".noEvents()")
+          try {
+            val exceptionClass = error.resolveAvroPoetType(context.protocolDeclarationContext).typeName.className()
+            val message = error.value?.getEmbeddedJsonValueAsMap(context.objectMapper)?.get("message")
+            if (message != null) {
+              addStatement(".exception(%T::class.java, %S)", exceptionClass, message)
+            } else {
+              addStatement(".exception(%T::class.java)", exceptionClass)
+            }
+          } catch (_: Exception) {
+            addStatement(".exception(%T::class.java)", IllegalStateException::class.asClassName())
+          }
+        }
+      }
+    }
   }
 
   fun messageInstantiation(message: FlowNode, context: EmnGenerationContext): CodeBlock {
@@ -140,9 +132,9 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     val propertiesMap = elementValue.getEmbeddedJsonValueAsMap(context.objectMapper)
     requireNotNull(propertiesMap) { "Could not parse value of $message as a map of properties." }
     val avroPoetType = message.resolveAvroPoetType(context.protocolDeclarationContext)
-    return when(context.properties.instanceCreator) {
+    return when (context.properties.instanceCreator) {
       "instancio" -> instantiateMessageWithInstancio(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
-      else ->   instantiateMessageDirectly(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
+      else -> instantiateMessageDirectly(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
     }
   }
 }

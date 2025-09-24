@@ -9,6 +9,9 @@ import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.value.CanonicalName
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration
 
+@OptIn(ExperimentalKotlinPoetApi::class)
+val FlowNode.simpleName: String get() = KotlinCodeGeneration.name.simpleName(this.typeReference.name)
+
 fun Slice.isCommandSliceWithAvroTypeDefinitionRef(): Boolean {
   val sliceCommands = this.flowElements.commands() // contain exactly one command
   return sliceCommands.size == 1
@@ -65,7 +68,7 @@ fun KLogger.conflictingAggregatesFound(emnElementType: FlowElementType) = {
   this.warn { "Found conflicting EMN declaration, elements of type ${emnElementType.name} belong to different aggregate lanes." }
 }
 
-
+@Deprecated("moved to Specification")
 @OptIn(ExperimentalKotlinPoetApi::class)
 val Specification.testMethodName: String get() {
   // Extract events from the "given" stage

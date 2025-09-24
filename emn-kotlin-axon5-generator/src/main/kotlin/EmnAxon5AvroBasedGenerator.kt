@@ -32,13 +32,11 @@ open class EmnAxon5AvroBasedGenerator(
     fun create(
       spiList: KotlinCodeGenerationSpiList = load(),
       properties: EmnAxon5GeneratorProperties,
-    ): EmnAxon5AvroBasedGenerator {
-      return EmnAxon5AvroBasedGenerator(
-        registry = EmnAxon5GenerationSpiRegistry(spiList),
-        properties = properties,
-        avroRegistry = AvroCodeGenerationSpiRegistry(spiList),
-      )
-    }
+    ) = EmnAxon5AvroBasedGenerator(
+      avroRegistry = AvroCodeGenerationSpiRegistry(spiList),
+      registry = EmnAxon5GenerationSpiRegistry(spiList),
+      properties = properties,
+    )
   }
 
   internal fun contextEmnContextFactory(declaration: ProtocolDeclaration, definitions: Definitions): EmnGenerationContext {
