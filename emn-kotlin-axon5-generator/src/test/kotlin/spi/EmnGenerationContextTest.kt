@@ -4,7 +4,6 @@ import _ktx.ResourceKtx.resourceUrl
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.EmnDocumentParser
 import io.holixon.emn.generation.DefaultEmnAxon5GeneratorProperties
-import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator
 import io.holixon.emn.generation.TestFixtures
 import io.holixon.emn.generation.TestFixtures.AvroKotlinFixtures.AVRO_PARSER
 import org.assertj.core.api.Assertions.assertThat

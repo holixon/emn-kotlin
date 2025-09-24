@@ -6,17 +6,16 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.MemberName
 import io.holixon.emn.generation.EmnAxon5GeneratorProperties
-import io.holixon.emn.generation.avro.ProtocolDeclarationContextExt.allDeclaredTypes
 import io.holixon.emn.generation.hasAvroTypeDefinitionRef
 import io.holixon.emn.generation.isCommandSliceWithAvroTypeDefinitionRef
-import io.holixon.emn.generation.model.AvroEmnTypes
-import io.holixon.emn.generation.model.CommandSlice
+import io.holixon.emn.generation.model.*
 import io.holixon.emn.generation.model.Specification
 import io.holixon.emn.model.*
 import io.konform.validation.Validation
 import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
 import io.toolisticon.kotlin.avro.generator.spi.AvroCodeGenerationSpiRegistry
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
+import io.toolisticon.kotlin.avro.model.AvroNamedType
 import io.toolisticon.kotlin.avro.model.RecordType
 import io.toolisticon.kotlin.avro.value.CanonicalName
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.className
@@ -45,30 +44,20 @@ class EmnGenerationContext(
   companion object {
     val validateContext = Validation<EmnGenerationContext> {
       dynamic { ctx ->
-
         // Checks that all referenced Avro types are actually declared in the used protocol.
-        with(
-          ctx.protocolDeclarationContext.allDeclaredTypes
-          .map { it.schema.canonicalName.fqn }.toSet()
-        ) {
-          ctx.definitions.nodeTypes.filter { it.hasAvroTypeDefinitionRef() }
-            .map { it.id to it.schemaReference() }
-            .forEach { (id, fqn) ->
-              constrain("NodeType '$id' references Avro type '$fqn', but is it not declared in protocol '${ctx.protocolDeclarationContext.protocol.canonicalName.fqn}'") {
-                contains(fqn)
-              }
+        ctx.definitions.nodeTypes.filter { it.hasAvroTypeDefinitionRef() }
+          .map { it.id to CanonicalName.parse(it.schemaReference()) }
+          .forEach { (id, fqn) ->
+            constrain("NodeType '$id' references Avro type '${fqn.fqn}', but it is not declared in protocol '${ctx.protocolDeclarationContext.protocol.canonicalName.fqn}'") {
+              ctx.protocolTypesByFqn.containsKey(fqn)
             }
-        }
+          }
       }
 
       EmnGenerationContext::definitions {
 
         Definitions::specifications onEach {
           run(Specification.validateParsedSpecification)
-        }
-
-        Definitions::nodeTypes onEach {
-
         }
       }
     }
@@ -110,16 +99,52 @@ class EmnGenerationContext(
     checkNotNull(tag(ProtocolDeclarationContext::class)) { "ProtocolDeclarationContext not found in tags, this is a misconfiguration." }
   }
 
-  val avroTypes by lazy {
-    definitions.nodeTypes.filter { it.hasAvroTypeDefinitionRef() }.forEach {
-      println("Type definition: ${it.name} - ${it::class}")
-    }
 
-    AvroEmnTypes()
+  val protocolTypesByFqn: Map<CanonicalName, AvroNamedType> by lazy {
+    protocolDeclarationContext.avroTypes.values
+      .filterIsInstance<AvroNamedType>()
+      .associateBy { it.schema.canonicalName }
+  }
+
+  /**
+   * Resolve all EMN types that have an Avro type mapping.
+   */
+  val avroTypes by lazy {
+    AvroEmnTypes(definitions.nodeTypes.filter { it.hasAvroTypeDefinitionRef() }
+      .map {
+        it to protocolTypesByFqn[CanonicalName.parse(it.schemaReference())]!!
+      }.map {
+        it.first to protocolDeclarationContext.avroPoetTypes[it.second.hashCode]
+      }
+      .map {
+        when (it.first) {
+          is CommandType -> AvroEmnCommandType(
+            nodeType = it.first as CommandType,
+            poetType = it.second
+          )
+
+          is EventType -> AvroEmnEventType(
+            nodeType = it.first as EventType,
+            poetType = it.second
+          )
+
+          is QueryType -> AvroEmnQueryType(
+            nodeType = it.first as QueryType,
+            poetType = it.second
+          )
+
+          is ErrorType -> AvroEmnErrorType(
+            nodeType = it.first as ErrorType,
+            poetType = it.second
+          )
+
+          else -> throw IllegalStateException("EMN type ${it.first::class.simpleName} is not supported for Avro type mapping")
+        }
+      })
   }
 
   val specifications by lazy {
-    definitions.specifications.map { Specification(it) }
+    Specifications(definitions.specifications.map { Specification(it) })
   }
 
   val timelines: List<Timeline> by lazy {
@@ -139,15 +164,6 @@ class EmnGenerationContext(
   val commands: List<Command> by lazy { slices.map { it.flowElements.commands() }.flatten() }
 
   val events: List<Event> by lazy { slices.map { it.flowElements.filterIsInstance<Event>() }.flatten() }
-
-  /**
-   * Retrieves a list of specifications for given slice.
-   * @param slice: slice to look for specifications.
-   * @return list of specification referencing given slice.
-   */
-  fun specificationsForSlice(slice: Slice): Set<Specification> = definitions.specifications.filter { spec -> spec.slice != null && spec.slice!!.id == slice.id }
-    .map { Specification(it) }.toSet()
-
 
   // FIXME has to be parsed from emn definitions
   val entities: MutableList<Entity> = mutableListOf()

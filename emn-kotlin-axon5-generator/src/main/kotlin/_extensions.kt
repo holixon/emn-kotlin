@@ -2,15 +2,15 @@ package io.holixon.emn.generation
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import io.github.oshai.kotlinlogging.KLogger
 import io.holixon.emn.model.*
-import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
-import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
-import io.toolisticon.kotlin.avro.value.CanonicalName
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration
+import io.toolisticon.kotlin.generation.SimpleName
 
+/**
+ * Get [SimpleName] from [FlowNode]'s typeReference name.
+ */
 @OptIn(ExperimentalKotlinPoetApi::class)
-val FlowNode.simpleName: String get() = KotlinCodeGeneration.name.simpleName(this.typeReference.name)
+val FlowNode.simpleName: SimpleName get() = KotlinCodeGeneration.name.simpleName(this.typeReference.name)
 
 fun Slice.isCommandSliceWithAvroTypeDefinitionRef(): Boolean {
   val sliceCommands = this.flowElements.commands() // contain exactly one command
@@ -19,7 +19,6 @@ fun Slice.isCommandSliceWithAvroTypeDefinitionRef(): Boolean {
     && this.flowElements.events()
     .containsAll(sliceCommands.first().possibleEvents()) // all events are in the slice
 }
-
 
 fun FlowNode.hasAvroTypeDefinitionRef() = this.typeReference.hasAvroTypeDefinitionRef()
 
@@ -46,26 +45,6 @@ fun ElementValue?.getEmbeddedJsonValueAsMap(objectMapper: ObjectMapper): Map<Str
       null
     }
   }
-}
-
-fun FlowNode.resolveAvroPoetType(context: ProtocolDeclarationContext): AvroPoetType {
-  return this.typeReference.resolveAvroPoetType(context)
-}
-
-fun FlowNodeType.resolveAvroPoetType(context: ProtocolDeclarationContext): AvroPoetType {
-  val schemaReference = this.schemaReference()
-  val commandAvroType = requireNotNull(context.protocol.types.values.firstOrNull {
-    it.schema.canonicalName == CanonicalName.parse(schemaReference)
-  }) { "Referenced unknown type $schemaReference" }
-  return context.avroPoetTypes[commandAvroType.hashCode]
-}
-
-fun KLogger.noAggregateFoundLogger(emnElementType: FlowElementType) = {
-  this.info { "No aggregate found for ${emnElementType.name}" }
-}
-
-fun KLogger.conflictingAggregatesFound(emnElementType: FlowElementType) = {
-  this.warn { "Found conflicting EMN declaration, elements of type ${emnElementType.name} belong to different aggregate lanes." }
 }
 
 @Deprecated("moved to Specification")

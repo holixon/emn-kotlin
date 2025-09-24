@@ -58,8 +58,6 @@ open class EmnAxon5AvroBasedGenerator(
   fun generate(definitions: Definitions, declaration: ProtocolDeclaration): KotlinFileSpecList {
     val context = contextEmnContextFactory(declaration, definitions)
 
-    // validate references between protocol declaration and EMN definitions
-
     val avroGeneratedFiles = generateFiles(input = declaration, context = context.protocolDeclarationContext)
 
     val emnGeneratedFiles = generateFiles(input = definitions, context = context)

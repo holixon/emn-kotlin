@@ -20,7 +20,6 @@ import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_KCLASS
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_LITERAL
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.format.FORMAT_STRING
-import io.toolisticon.kotlin.generation.WithTags
 import io.toolisticon.kotlin.generation.builder.KotlinFunSpecBuilder
 import io.toolisticon.kotlin.generation.poet.CodeBlockBuilder
 import io.toolisticon.kotlin.generation.poet.CodeBlockBuilder.Companion.codeBlock
@@ -34,7 +33,6 @@ import org.axonframework.eventsourcing.annotations.EventTag
 import org.axonframework.modelling.annotation.InjectEntity
 import org.axonframework.modelling.annotation.TargetEntityId
 import java.util.function.Supplier
-import kotlin.reflect.KClass
 
 data class InjectEntityAnnotation(val idProperty: String? = null) : KotlinAnnotationSpecSupplier {
   override fun spec(): KotlinAnnotationSpec = buildAnnotation(InjectEntity::class) {
@@ -43,10 +41,6 @@ data class InjectEntityAnnotation(val idProperty: String? = null) : KotlinAnnota
   }
 }
 
-fun AvroPoetType.idProperty(): String? {
-  // FIXME -> find a way how to model this.
-  return null
-}
 
 data class EventTagAnnotation(val key: MemberName) : KotlinAnnotationSpecSupplier {
   override fun spec(): KotlinAnnotationSpec = buildAnnotation(EventTag::class) {
