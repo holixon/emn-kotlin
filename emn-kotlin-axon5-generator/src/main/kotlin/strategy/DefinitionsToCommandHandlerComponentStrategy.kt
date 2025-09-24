@@ -13,75 +13,16 @@ class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<
 ) {
   override fun invoke(context: EmnGenerationContext, input: Definitions): KotlinFileSpecList {
 
-    val commandHandlerComponentFiles: List<KotlinFileSpec> = if (context.properties.generateCommandSlices) {
-      context.commandSlices.flatMap { commandSlice ->
-        CommandHandlingComponentStrategy().invoke(context, commandSlice)
-      }
-    } else {
-      emptyList()
+    // empty if disabled in properties.
+    val commandHandlerComponentFiles: List<KotlinFileSpec> = context.commandSlices.flatMap {
+      CommandHandlingComponentStrategy().execute(context, it)
     }
 
-    val commandHandlerComponentTestFixtureFiles: List<KotlinFileSpec> = if (context.properties.generateCommandSliceTests) {
-      context.commandSlices.flatMap { commandSlice ->
-        CommandHandlingComponentTestFixtureStrategy().invoke(context, commandSlice)
-      }
-    } else {
-      emptyList()
+    // empty if disabled in properties.
+    val commandHandlerComponentTestFixtureFiles: List<KotlinFileSpec> = context.commandSlices.flatMap {
+      CommandHandlingComponentTestFixtureStrategy().execute(context, it)
     }
 
-    return KotlinFileSpecList(
-      commandHandlerComponentFiles
-        + commandHandlerComponentTestFixtureFiles
-    )
+    return KotlinFileSpecList(commandHandlerComponentFiles + commandHandlerComponentTestFixtureFiles)
   }
-
-  // UNUSED
-  /*
-  private fun buildSlice(input: Definitions): KotlinFileSpec {
-    val timeline = input.timelines[0]
-
-
-    val slice = timeline.sliceSet.first()
-
-    val sliceName = slice.name?.replace(" ", "") ?: "slice1"
-    // FIXME
-    val packageName = "io.holixon.emn.example.faculty." + sliceName.lowercase()
-    val commandHandlerClassName = sliceName.replaceFirstChar { if (it.isLowerCase()) it.uppercase() else it.toString() } + "CommandHandler"
-
-    val sliceClassName = ClassName(packageName, commandHandlerClassName)
-    val sliceFileBuilder = fileBuilder(sliceClassName)
-    val sliceRoot = KotlinCodeGeneration.builder.interfaceBuilder(sliceClassName)
-
-    sliceRoot.addKdoc(
-      """
-        Commands: ${slice.commands()}
-
-        Events: ${slice.events()}
-
-        Aggregates: ${timeline.aggregatesForSlice(slice)}
-
-      """.trimIndent()
-    )
-
-    return sliceFileBuilder
-      .addType(sliceRoot)
-      .build()
-  }
-
-   */
-
-  /*
-  private fun buildFoo(input: Definitions): KotlinFileSpec {
-    val classNameFoo = ClassName("io.toolisticon.kotlin.generation", "Foo")
-    val fileBuilder = fileBuilder(classNameFoo)
-
-    val root = KotlinCodeGeneration.builder.interfaceBuilder(classNameFoo);
-    root.addKdoc("Using definitions: $input")
-
-    return fileBuilder
-      .addType(root)
-      .build()
-  }
-
-   */
 }

@@ -8,10 +8,14 @@ import com.squareup.kotlinpoet.MemberName
 import io.holixon.emn.generation.EmnAxon5GeneratorProperties
 import io.holixon.emn.generation.hasAvroTypeDefinitionRef
 import io.holixon.emn.generation.isCommandSliceWithAvroTypeDefinitionRef
-import io.holixon.emn.generation.model.CommandSlice
+import io.holixon.emn.generation.model.*
 import io.holixon.emn.generation.model.Specification
 import io.holixon.emn.model.*
+import io.konform.validation.Validation
+import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
+import io.toolisticon.kotlin.avro.generator.spi.AvroCodeGenerationSpiRegistry
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
+import io.toolisticon.kotlin.avro.model.AvroNamedType
 import io.toolisticon.kotlin.avro.model.RecordType
 import io.toolisticon.kotlin.avro.value.CanonicalName
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.className
@@ -19,6 +23,7 @@ import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.constantName
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.simpleName
 import io.toolisticon.kotlin.generation.PackageName
 import io.toolisticon.kotlin.generation.spi.context.KotlinCodeGenerationContextBase
+import io.toolisticon.kotlin.generation.spi.registry.KotlinCodeGenerationSpiList
 import kotlin.reflect.KClass
 
 /**
@@ -36,6 +41,112 @@ class EmnGenerationContext(
   val tags: MutableMap<KClass<*>, Any?> = mutableMapOf()
 ) : KotlinCodeGenerationContextBase<EmnGenerationContext>(registry) {
 
+  companion object {
+    val validateContext = Validation<EmnGenerationContext> {
+      dynamic { ctx ->
+        // Checks that all referenced Avro types are actually declared in the used protocol.
+        ctx.definitions.nodeTypes.filter { it.hasAvroTypeDefinitionRef() }
+          .map { it.id to CanonicalName.parse(it.schemaReference()) }
+          .forEach { (id, fqn) ->
+            constrain("NodeType '$id' references Avro type '${fqn.fqn}', but it is not declared in protocol '${ctx.protocolDeclarationContext.protocol.canonicalName.fqn}'") {
+              ctx.protocolTypesByFqn.containsKey(fqn)
+            }
+          }
+      }
+
+      EmnGenerationContext::definitions {
+
+        Definitions::specifications onEach {
+          run(Specification.validateParsedSpecification)
+        }
+      }
+    }
+
+    fun create(
+      declaration: ProtocolDeclaration,
+      definitions: Definitions,
+      spiList: KotlinCodeGenerationSpiList,
+      properties: EmnAxon5GeneratorProperties,
+    ) = create(declaration, definitions, EmnAxon5GenerationSpiRegistry(spiList), AvroCodeGenerationSpiRegistry(spiList), properties)
+
+    fun create(
+      declaration: ProtocolDeclaration,
+      definitions: Definitions,
+      registry: EmnAxon5GenerationSpiRegistry,
+      avroRegistry: AvroCodeGenerationSpiRegistry,
+      properties: EmnAxon5GeneratorProperties,
+    ): EmnGenerationContext {
+      val emnCtx = EmnGenerationContext(
+        definitions = definitions,
+        registry = registry,
+        properties = properties
+      )
+
+      val avprContext = ProtocolDeclarationContext.of(
+        declaration = declaration,
+        registry = avroRegistry,
+        properties = properties
+      )
+
+      avprContext.tags[EmnGenerationContext::class] = emnCtx
+      emnCtx.tags[ProtocolDeclarationContext::class] = avprContext
+
+      return emnCtx
+    }
+  }
+
+  val protocolDeclarationContext by lazy {
+    checkNotNull(tag(ProtocolDeclarationContext::class)) { "ProtocolDeclarationContext not found in tags, this is a misconfiguration." }
+  }
+
+
+  val protocolTypesByFqn: Map<CanonicalName, AvroNamedType> by lazy {
+    protocolDeclarationContext.avroTypes.values
+      .filterIsInstance<AvroNamedType>()
+      .associateBy { it.schema.canonicalName }
+  }
+
+  /**
+   * Resolve all EMN types that have an Avro type mapping.
+   */
+  val avroTypes by lazy {
+    AvroEmnTypes(definitions.nodeTypes.filter { it.hasAvroTypeDefinitionRef() }
+      .map {
+        it to protocolTypesByFqn[CanonicalName.parse(it.schemaReference())]!!
+      }.map {
+        it.first to protocolDeclarationContext.avroPoetTypes[it.second.hashCode]
+      }
+      .map {
+        when (it.first) {
+          is CommandType -> AvroEmnCommandType(
+            nodeType = it.first as CommandType,
+            poetType = it.second
+          )
+
+          is EventType -> AvroEmnEventType(
+            nodeType = it.first as EventType,
+            poetType = it.second
+          )
+
+          is QueryType -> AvroEmnQueryType(
+            nodeType = it.first as QueryType,
+            poetType = it.second
+          )
+
+          is ErrorType -> AvroEmnErrorType(
+            nodeType = it.first as ErrorType,
+            poetType = it.second
+          )
+
+          else -> throw IllegalStateException("EMN type ${it.first::class.simpleName} is not supported for Avro type mapping")
+        }
+      })
+  }
+
+  val specifications by lazy {
+    Specifications(definitions.specifications.map { Specification(it) })
+  }
+
   val timelines: List<Timeline> by lazy {
     definitions.timelines
   }
@@ -52,27 +163,7 @@ class EmnGenerationContext(
 
   val commands: List<Command> by lazy { slices.map { it.flowElements.commands() }.flatten() }
 
-  val commandTypes: List<CommandType> by lazy { commands.map { it.typeReference as CommandType }.distinct() }
-
   val events: List<Event> by lazy { slices.map { it.flowElements.filterIsInstance<Event>() }.flatten() }
-
-  val eventTypes: List<EventType> by lazy { commands.map { it.typeReference as EventType }.distinct() }
-
-  /**
-   * Retrieves a list of specifications for given slice.
-   * @param slice: slice to look for specifications.
-   * @return list of specification referencing given slice.
-   */
-  fun specificationsForSlice(slice: Slice): Set<Specification> = definitions.specifications.filter { spec -> spec.slice != null && spec.slice!!.id == slice.id }
-    .map { Specification(it) }.toSet()
-
-
-  override val contextType: KClass<EmnGenerationContext> = EmnGenerationContext::class
-
-  @Suppress("UNCHECKED_CAST")
-  override fun <T : Any> tag(type: KClass<T>): T? = tags[type] as? T
-
-  val protocolDeclarationContext: ProtocolDeclarationContext get() = tags[ProtocolDeclarationContext::class]!! as ProtocolDeclarationContext
 
   // FIXME has to be parsed from emn definitions
   val entities: MutableList<Entity> = mutableListOf()
@@ -121,4 +212,12 @@ class EmnGenerationContext(
       simpleName = simpleName(properties.emnName + "Tags")
     )
   }
+
+  // region [overrides]
+  override val contextType: KClass<EmnGenerationContext> = EmnGenerationContext::class
+
+  @Suppress("UNCHECKED_CAST")
+  override fun <T : Any> tag(type: KClass<T>): T? = tags[type] as? T
+  // endregion [overrides]
+
 }

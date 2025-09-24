@@ -2,6 +2,7 @@ package io.holixon.emn.generation.strategy
 
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
+import io.holixon.emn.generation.avro.ProtocolDeclarationContextExt.emnContext
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
@@ -21,7 +22,7 @@ class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDe
     context: ProtocolDeclarationContext,
     input: ProtocolDeclaration
   ): KotlinFileSpecList {
-    val emnContext = context.tag(EmnGenerationContext::class)!!
+    val emnContext = context.emnContext
 
     val tagClassName = emnContext.getTagClassName()
 

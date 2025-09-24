@@ -41,10 +41,6 @@ data class InjectEntityAnnotation(val idProperty: String? = null) : KotlinAnnota
   }
 }
 
-fun AvroPoetType.idProperty(): String? {
-  // FIXME -> find a way how to model this.
-  return null
-}
 
 data class EventTagAnnotation(val key: MemberName) : KotlinAnnotationSpecSupplier {
   override fun spec(): KotlinAnnotationSpec = buildAnnotation(EventTag::class) {

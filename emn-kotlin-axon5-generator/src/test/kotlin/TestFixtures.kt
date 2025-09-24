@@ -41,7 +41,7 @@ data object TestFixtures {
 
   fun KotlinFileSpec.writeTo(generatedSourcesDir: Path, overwrite: Boolean = false) {
     val file = this.get().writeTo(generatedSourcesDir)
-    println("Written file to $file")
+    //println("Written file to $file")
 
 //    file.writeText(Formatter.format(KTFMT_FORMAT, this.code))
     file.writeText(this.code)

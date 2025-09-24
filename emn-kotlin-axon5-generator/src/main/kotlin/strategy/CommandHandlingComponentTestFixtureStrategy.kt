@@ -3,12 +3,11 @@ package io.holixon.emn.generation.strategy
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import com.squareup.kotlinpoet.asClassName
 import io.holixon.emn.generation.*
 import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator.Tags.TestFileSpec
+import io.holixon.emn.generation.model.CommandSlice
 import io.holixon.emn.generation.model.Specification
 import io.holixon.emn.generation.model.Specification.Stage.ThenStage.*
-import io.holixon.emn.generation.model.CommandSlice
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.model.FlowNode
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
@@ -41,7 +40,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     input: CommandSlice
   ): KotlinFileSpecList {
 
-    val specifications = context.specificationsForSlice(input.slice)
+    val specifications = context.specifications[input.slice]
 
     if (specifications.isEmpty()) {
       // nothing to generate, no specifications for slice found
@@ -111,16 +110,14 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
 
         is ThenError -> {
           addStatement(".noEvents()")
-          try {
-            val exceptionClass = error.resolveAvroPoetType(context.protocolDeclarationContext).typeName.className()
-            val message = error.value?.getEmbeddedJsonValueAsMap(context.objectMapper)?.get("message")
-            if (message != null) {
-              addStatement(".exception(%T::class.java, %S)", exceptionClass, message)
-            } else {
-              addStatement(".exception(%T::class.java)", exceptionClass)
-            }
-          } catch (_: Exception) {
-            addStatement(".exception(%T::class.java)", IllegalStateException::class.asClassName())
+
+          val exceptionClass = context.avroTypes[error.errorType].poetType.typeName.className()
+          val message = error.value?.getEmbeddedJsonValueAsMap(context.objectMapper)?.get("message")
+
+          if (message != null) {
+            addStatement(".exception(%T::class.java, %S)", exceptionClass, message)
+          } else {
+            addStatement(".exception(%T::class.java)", exceptionClass)
           }
         }
       }
@@ -131,10 +128,15 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     val elementValue = requireNotNull(message.value) { "Element $message must have a value." }
     val propertiesMap = elementValue.getEmbeddedJsonValueAsMap(context.objectMapper)
     requireNotNull(propertiesMap) { "Could not parse value of $message as a map of properties." }
-    val avroPoetType = message.resolveAvroPoetType(context.protocolDeclarationContext)
+    val avroPoetType = context.avroTypes.single { it.nodeType == message.typeReference }.poetType
+
     return when (context.properties.instanceCreator) {
       "instancio" -> instantiateMessageWithInstancio(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
       else -> instantiateMessageDirectly(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
     }
+  }
+
+  override fun test(context: EmnGenerationContext, input: Any): Boolean {
+    return context.properties.generateCommandSliceTests && super.test(context, input)
   }
 }

@@ -41,22 +41,22 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
     val commandHandlerTypeBuilder = classBuilder(input.commandHandlerClassName).apply {
 
       val command = input.command
-      val commandPoetType = command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext)
+      val commandPoetType = context.avroTypes[command.commandType].poetType
 
       val sourcingEvents = command.sourcingEvents().distinct()
       val possibleEvents = command.possibleEvents().distinct()
 
       val eventTypesToHandle = EventTypesToHandle(
         sourcingEventTypes = sourcingEvents
-          .map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
+          .map { context.avroTypes[it.eventType].poetType }
           .distinct(),
         possibleEventTypes = possibleEvents
-          .map { it.typeReference.resolveAvroPoetType(context.protocolDeclarationContext) }
+          .map { context.avroTypes[it.eventType].poetType }
           .distinct())
 
       // FIXME -> this is wrong, we should resolve it the same way, it is resolved for generation of the
       // @TargetEntityId in the command
-      val idProperty = input.command.typeReference.resolveAvroPoetType(context.protocolDeclarationContext).idProperty()
+      val idProperty = context.avroTypes[input.command.commandType].idProperty()
 
       // gather aggregates for all events relevant to this command included in the slice
       val aggregateLanes = (sourcingEvents + possibleEvents).distinct()
@@ -88,8 +88,11 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
         }
       }
     }
-    fileBuilder.addType(commandHandlerTypeBuilder.build())
-    return KotlinFileSpecList(fileBuilder.build())
+    return KotlinFileSpecList(
+      fileBuilder.addType(
+        commandHandlerTypeBuilder.build()
+      ).build()
+    )
   }
 
   private fun buildHandler(
@@ -149,5 +152,9 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
         addFunction(evolve(event, noop))
       }
     }
+  }
+
+  override fun test(context: EmnGenerationContext, input: Any): Boolean {
+    return context.properties.generateCommandSlices && super.test(context, input)
   }
 }

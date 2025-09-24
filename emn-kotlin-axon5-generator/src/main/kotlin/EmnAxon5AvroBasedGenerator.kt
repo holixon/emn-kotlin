@@ -6,7 +6,6 @@ import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.model.Definitions
 import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
 import io.toolisticon.kotlin.avro.generator.spi.AvroCodeGenerationSpiRegistry
-import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.generateFiles
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.spi.load
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
@@ -40,28 +39,24 @@ open class EmnAxon5AvroBasedGenerator(
   }
 
   internal fun contextEmnContextFactory(declaration: ProtocolDeclaration, definitions: Definitions): EmnGenerationContext {
-    val emnCtx = EmnGenerationContext(
+    val emnCtx = EmnGenerationContext.create(
+      declaration = declaration,
       definitions = definitions,
       registry = registry,
-      properties = properties
+      avroRegistry = avroRegistry,
+      properties = properties,
     )
 
-    val avprContext = ProtocolDeclarationContext.of(
-      declaration = declaration,
-      registry = avroRegistry,
-      properties = properties
-    )
-
-    avprContext.tags[EmnGenerationContext::class] = emnCtx
-    emnCtx.tags[ProtocolDeclarationContext::class] = avprContext
+    val validation = EmnGenerationContext.validateContext(emnCtx)
+    require(validation.isValid) {
+      "EMN Generation Context is not valid: ${validation.errors.joinToString { "${it.dataPath} ${it.message}" }}"
+    }
 
     return emnCtx
   }
 
   fun generate(definitions: Definitions, declaration: ProtocolDeclaration): KotlinFileSpecList {
     val context = contextEmnContextFactory(declaration, definitions)
-
-    // validate references between protocol declaration and EMN definitions
 
     val avroGeneratedFiles = generateFiles(input = declaration, context = context.protocolDeclarationContext)
 

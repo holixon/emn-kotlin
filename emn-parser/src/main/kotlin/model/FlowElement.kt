@@ -28,6 +28,8 @@ sealed class FlowNode(
 
 class Command(id: String, typeReference: CommandType, value: ElementValue?) : FlowNode(id = id, typeReference = typeReference, value = value) {
 
+  val commandType: CommandType = typeReference
+
   fun sourcingEvents(): List<Event> {
     val directEvents = this.views()
       .flatMap { view -> view.queries() }
@@ -48,11 +50,13 @@ class Command(id: String, typeReference: CommandType, value: ElementValue?) : Fl
 class Query(id: String, typeReference: QueryType, value: ElementValue?) :
   FlowNode(id = id, typeReference = typeReference, value = value) {
   fun events() = this.incoming.map { flow -> flow.source }.events()
+  val queryType: QueryType = typeReference
 }
 
 class Event(id: String, typeReference: EventType, value: ElementValue?) :
   FlowNode(id = id, typeReference = typeReference, value = value) {
   fun commands() = this.incoming.map { flow -> flow.source }.commands()
+  val eventType: EventType = typeReference
 }
 
 class ExternalEvent(id: String, typeReference: ExternalEventType, value: ElementValue?) :
@@ -73,6 +77,8 @@ class ExternalSystem(id: String, typeReference: ExternalSystemType, value: Eleme
   FlowNode(id = id, typeReference = typeReference, value = value)
 
 class Error(id: String, typeReference: ErrorType, value: ElementValue?) :
-  FlowNode(id = id, typeReference = typeReference, value = value)
+  FlowNode(id = id, typeReference = typeReference, value = value) {
+  val errorType: ErrorType = typeReference
+}
 
 class FlowNodeReference(id: String) : FlowNode(id = id, typeReference = NoTypeReference, value = null)
