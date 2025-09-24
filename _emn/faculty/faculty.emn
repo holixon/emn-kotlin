@@ -24,7 +24,6 @@
       <emn:incoming>MessageFlowType_059omg6</emn:incoming>
       <emn:outgoing>MessageFlowType_1eq7typ</emn:outgoing>
       <emn:outgoing>MessageFlowType_171i7uq</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.Courses</emn:schema>
     </emn:queryType>
     <emn:messageFlowType id="MessageFlowType_0h7ooc6" name="MessageFlow" sourceRef="EventType_02v07ad" targetRef="QueryType_courses" />
     <emn:viewType id="ViewType_page_27" name="Page 27">
@@ -54,7 +53,6 @@
       <emn:incoming>MessageFlowType_0mqywd0</emn:incoming>
       <emn:incoming>MessageFlowType_1siqqvn</emn:incoming>
       <emn:outgoing>MessageFlowType_18gqizi</emn:outgoing>
-      <emn:schema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.Students</emn:schema>
     </emn:queryType>
     <emn:messageFlowType id="MessageFlowType_0mqywd0" name="MessageFlow" sourceRef="EventType_02lce3c" targetRef="QueryType_students" />
     <emn:viewType id="ViewType_page_28" name="Page 28">

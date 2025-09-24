@@ -4,6 +4,7 @@ import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import io.holixon.emn.EmnDocumentParser
 import io.holixon.emn.generation.DefaultEmnAxon5GeneratorProperties
 import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator
+import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator.Tags.TestFileSpec
 import io.holixon.emn.generation.maven.EmnKotlinAxon5MavenPlugin.writeToFormatted
 import io.holixon.emn.generation.maven.GenerateMojo.Companion.DEFAULT_INSTANCE_CREATOR
 import io.holixon.emn.generation.maven.GenerateMojo.Companion.GOAL
@@ -146,6 +147,6 @@ class GenerateMojo : AbstractContextAwareMojo() {
     }
   }
 
-  val KotlinFileSpec.isMain: Boolean get() = this.tag(EmnAxon5AvroBasedGenerator.Tags.TestFileSpec::class) == null
-  val KotlinFileSpec.isTest: Boolean get() = this.tag(EmnAxon5AvroBasedGenerator.Tags.TestFileSpec::class) != null
+  val KotlinFileSpec.isMain: Boolean get() = this.tag(TestFileSpec::class) == null
+  val KotlinFileSpec.isTest: Boolean get() = this.tag(TestFileSpec::class) != null
 }

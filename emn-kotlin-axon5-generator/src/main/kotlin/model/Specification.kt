@@ -2,29 +2,15 @@
 
 package io.holixon.emn.generation.model
 
-import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import com.squareup.kotlinpoet.asClassName
-import io.holixon.emn.generation.addAll
-import io.holixon.emn.generation.addCode
-import io.holixon.emn.generation.getEmbeddedJsonValueAsMap
 import io.holixon.emn.generation.model.Specification.Stage.*
-import io.holixon.emn.generation.model.Specification.Stage.ThenStage.ThenEmpty
-import io.holixon.emn.generation.model.Specification.Stage.ThenStage.ThenError
-import io.holixon.emn.generation.model.Specification.Stage.ThenStage.ThenEvents
-import io.holixon.emn.generation.resolveAvroPoetType
 import io.holixon.emn.generation.simpleName
-import io.holixon.emn.generation.strategy.CommandHandlingComponentTestFixtureStrategy.Companion.JUNIT_TEST
 import io.holixon.emn.model.Command
 import io.holixon.emn.model.Event
 import io.konform.validation.Validation
 import io.konform.validation.required
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.className
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.simpleName
-import io.toolisticon.kotlin.generation.builder.KotlinFunSpecBuilder
 import io.toolisticon.kotlin.generation.poet.KDoc
-import io.toolisticon.kotlin.generation.spec.KotlinFunSpec
 import io.holixon.emn.model.Error as EmnError
 import io.holixon.emn.model.Specification as EmnSpecification
 import io.holixon.emn.model.WhenStage as EmnWhenStage
@@ -41,7 +27,9 @@ import io.holixon.emn.model.WhenStage as EmnWhenStage
  *   - exactly one error (ThenError)
  */
 class Specification(
+  val id: String,
   val name: String,
+  val sliceId: String? = null,
   val scenario: String?,
   val givenStage: GivenStage,
   val whenStage: WhenStage,
@@ -89,6 +77,8 @@ class Specification(
       }
 
       return Specification(
+        id = specification.id,
+        sliceId = specification.slice?.id,
         name = specification.name,
         scenario = specification.scenario,
         givenStage = GivenStage(specification.givenStage!!.events),
