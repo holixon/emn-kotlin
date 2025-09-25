@@ -20,6 +20,7 @@
 
   <properties>
     <axon.version>5.0.0-M3</axon.version>
+    <instancio.version>5.5.1</instancio.version>
   </properties>
 
   <modules>

@@ -10,6 +10,7 @@ import io.holixon.emn.generation.model.Specification
 import io.holixon.emn.generation.model.Specification.Stage.ThenStage.*
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.model.FlowNode
+import io.toolisticon.kotlin.avro.generator.AvroKotlinGenerator
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildClass
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
@@ -17,6 +18,7 @@ import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.className
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
+import io.toolisticon.kotlin.generation.support.GeneratedAnnotation
 
 /**
  * Generates a fixture JUnit test, with passed fixture configuration as parameter.
@@ -49,6 +51,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
 
     val className = input.commandHandlerFixtureTestClassName
     val fileBuilder = fileBuilder(className).addTag(TestFileSpec)
+    fileBuilder.addAnnotation(GeneratedAnnotation(value = AvroKotlinGenerator.NAME).date(context.properties.nowSupplier()))
 
     val commandHandlerTestClass = buildClass(className) {
       addConstructorProperty("fixture", AXON_FIXTURE).makePrivate()

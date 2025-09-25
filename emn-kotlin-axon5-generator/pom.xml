@@ -55,6 +55,12 @@
       <version>${ktfmt.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.instancio</groupId>
+      <artifactId>instancio-junit</artifactId>
+      <version>${instancio.version}</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 

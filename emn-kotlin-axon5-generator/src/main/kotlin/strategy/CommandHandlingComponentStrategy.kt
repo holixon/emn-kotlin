@@ -7,6 +7,7 @@ import io.holixon.emn.generation.*
 import io.holixon.emn.generation.model.CommandSlice
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.model.applyIfExactlyOne
+import io.toolisticon.kotlin.avro.generator.AvroKotlinGenerator
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildInterface
@@ -18,6 +19,7 @@ import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spec.KotlinFunSpec
 import io.toolisticon.kotlin.generation.spec.KotlinInterfaceSpec
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
+import io.toolisticon.kotlin.generation.support.GeneratedAnnotation
 import org.axonframework.eventhandling.gateway.EventAppender
 
 private val logger = KotlinLogging.logger {}
@@ -37,7 +39,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
   override fun invoke(context: EmnGenerationContext, input: CommandSlice): KotlinFileSpecList {
 
     val fileBuilder = fileBuilder(input.commandHandlerClassName)
-
+    fileBuilder.addAnnotation(GeneratedAnnotation(value = AvroKotlinGenerator.NAME).date(context.properties.nowSupplier()))
     val commandHandlerTypeBuilder = classBuilder(input.commandHandlerClassName).apply {
 
       val command = input.command

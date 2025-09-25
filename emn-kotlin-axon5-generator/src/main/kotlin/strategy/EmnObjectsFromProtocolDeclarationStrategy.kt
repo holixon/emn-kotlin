@@ -5,6 +5,7 @@ import com.squareup.kotlinpoet.KModifier
 import io.holixon.emn.generation.avro.ProtocolDeclarationContextExt.emnContext
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
+import io.toolisticon.kotlin.avro.generator.AvroKotlinGenerator
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.generator.strategy.AvroFileSpecListFromProtocolDeclarationStrategy
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration
@@ -14,6 +15,7 @@ import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.constantName
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.propertyName
 import io.toolisticon.kotlin.generation.poet.FormatSpecifier
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
+import io.toolisticon.kotlin.generation.support.GeneratedAnnotation
 
 @OptIn(ExperimentalKotlinPoetApi::class)
 class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDeclarationStrategy() {
@@ -27,6 +29,7 @@ class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDe
     val tagClassName = emnContext.getTagClassName()
 
     val tagFile = buildFile(tagClassName) {
+      addAnnotation(GeneratedAnnotation(value = AvroKotlinGenerator.NAME).date(context.properties.nowSupplier()))
       addType(buildObject(tagClassName) {
         emnContext.definitions.aggregates().mapNotNull { it.name }
           .distinct().forEach { name ->
