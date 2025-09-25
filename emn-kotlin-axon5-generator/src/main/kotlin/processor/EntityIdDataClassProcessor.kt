@@ -1,8 +1,7 @@
 package io.holixon.emn.generation.processor
 
 import com.squareup.kotlinpoet.*
-import io.holixon.emn.generation.avro.SchemaDeclarationContextExt.entityName
-import io.holixon.emn.generation.avro.SchemaDeclarationContextExt.isEntityId
+import io.holixon.emn.generation.emnContext
 import io.toolisticon.kotlin.avro.generator.processor.KotlinDataClassFromRecordTypeProcessorBase
 import io.toolisticon.kotlin.avro.generator.spi.SchemaDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordType
@@ -16,10 +15,11 @@ import java.util.*
 class EntityIdDataClassProcessor : KotlinDataClassFromRecordTypeProcessorBase() {
   override fun invoke(context: SchemaDeclarationContext, input: RecordType, builder: KotlinDataClassSpecBuilder): KotlinDataClassSpecBuilder {
     input.documentation?.let { builder.addKdoc(it.value) }
+
     val poetType = context.avroPoetTypes[input.hashCode]
     val className = poetType.typeName as ClassName
 
-    val entityName = context.entityName(input)
+    val entityName = context.emnContext.avroTypes.ids.single { it.avroType == input }.name
 
     builder.addType(buildCompanionObject {
       addProperty("ENTITY_ID", String::class) {
@@ -43,6 +43,7 @@ class EntityIdDataClassProcessor : KotlinDataClassFromRecordTypeProcessorBase() 
   }
 
   override fun test(context: SchemaDeclarationContext, input: Any): Boolean {
-    return super.test(context, input) && context.isEntityId(input)
+    val idTypes = context.emnContext.avroTypes.ids.map { it.avroType }
+    return super.test(context, input) && idTypes.contains(input)
   }
 }

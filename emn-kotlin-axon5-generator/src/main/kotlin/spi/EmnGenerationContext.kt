@@ -52,6 +52,15 @@ class EmnGenerationContext(
               ctx.protocolTypesByFqn.containsKey(fqn)
             }
           }
+
+        // Checks that all referenced id types are actually declared in the used protocol.
+        ctx.definitions.aggregates().filter { it.hasAvroTypeDefinitionRef() }
+          .map { it.id to CanonicalName.parse(it.schemaReference()) }
+          .forEach { (id, fqn) ->
+            constrain("Aggregate '$id' references Avro id type '${fqn.fqn}', but it is not declared in protocol '${ctx.protocolDeclarationContext.protocol.canonicalName.fqn}'") {
+              ctx.protocolTypesByFqn.containsKey(fqn)
+            }
+          }
       }
 
       EmnGenerationContext::definitions {
@@ -59,7 +68,15 @@ class EmnGenerationContext(
         Definitions::specifications onEach {
           run(Specification.validateParsedSpecification)
         }
+        dynamic { definitions ->
+          definitions.aggregates().forEach { aggregateLane ->
+            constrain("AggregateLane must have a name, was null for id '${aggregateLane.id}'") {
+              !aggregateLane.name.isNullOrBlank()
+            }
+          }
+        }
       }
+
     }
 
     fun create(
@@ -110,7 +127,7 @@ class EmnGenerationContext(
    * Resolve all EMN types that have an Avro type mapping.
    */
   val avroTypes by lazy {
-    AvroEmnTypes(definitions.nodeTypes.filter { it.hasAvroTypeDefinitionRef() }
+    val nodeTypes = definitions.nodeTypes.filter { it.hasAvroTypeDefinitionRef() }
       .map {
         it to protocolTypesByFqn[CanonicalName.parse(it.schemaReference())]!!
       }.map {
@@ -140,7 +157,18 @@ class EmnGenerationContext(
 
           else -> throw IllegalStateException("EMN type ${it.first::class.simpleName} is not supported for Avro type mapping")
         }
-      })
+      }
+
+    val idTypes = definitions.aggregates().filter { it.hasAvroTypeDefinitionRef() }
+      .map {
+        it to protocolTypesByFqn[CanonicalName.parse(it.schemaReference())]!!
+      }
+      .map {
+        it.first to protocolDeclarationContext.avroPoetTypes[it.second.hashCode]
+      }
+      .map { AvroEmnIdType(it.first, it.second) }
+
+    AvroEmnTypes(nodeTypes + idTypes)
   }
 
   val specifications by lazy {

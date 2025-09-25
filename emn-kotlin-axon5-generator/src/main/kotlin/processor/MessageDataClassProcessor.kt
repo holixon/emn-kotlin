@@ -1,7 +1,7 @@
 package io.holixon.emn.generation.processor
 
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import io.holixon.emn.generation.avro.SchemaDeclarationContextExt.emnContext
+import io.holixon.emn.generation.emnContext
 import io.holixon.emn.model.CommandType
 import io.holixon.emn.model.EventType
 import io.toolisticon.kotlin.avro.generator.processor.KotlinDataClassFromRecordTypeProcessorBase

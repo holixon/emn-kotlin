@@ -21,4 +21,11 @@ data class AggregateLane(
   override val name: String? = null,
   override val flowElements: List<FlowElement> = emptyList(),
   val idSchema: Schema? = null,
-) : Lane(id = id, name = name, flowElements = flowElements)
+) : Lane(id = id, name = name, flowElements = flowElements) {
+
+  fun schemaReference(): String {
+    requireNotNull(this.idSchema) { "No schema found for $this" }
+    require(this.idSchema is EmbeddedSchema) { "Only embedded schema is currently supported, but it was ${this.idSchema::class.simpleName}" }
+    return (this.idSchema).content
+  }
+}

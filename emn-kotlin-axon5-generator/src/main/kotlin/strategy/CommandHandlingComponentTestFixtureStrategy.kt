@@ -131,7 +131,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     val elementValue = requireNotNull(message.value) { "Element $message must have a value." }
     val propertiesMap = elementValue.getEmbeddedJsonValueAsMap(context.objectMapper)
     requireNotNull(propertiesMap) { "Could not parse value of $message as a map of properties." }
-    val avroPoetType = context.avroTypes.single { it.nodeType == message.typeReference }.poetType
+    val avroPoetType = context.avroTypes.messages.single { it.nodeType == message.typeReference }.poetType
 
     return when (context.properties.instanceCreator) {
       "instancio" -> instantiateMessageWithInstancio(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
