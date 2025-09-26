@@ -5,8 +5,10 @@ import io.holixon.emn.example.faculty.CourseId
 import io.holixon.emn.example.faculty.CreateCourse
 import io.holixon.emn.example.faculty.DuplicateCourse
 import org.axonframework.test.fixture.AxonTestFixture
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
+@Disabled("Not needed, just for demonstration of Axon Test Fixture usage")
 internal class CreateCourseCommandHandlerManualTest(val fixture: AxonTestFixture) {
 
   @Test

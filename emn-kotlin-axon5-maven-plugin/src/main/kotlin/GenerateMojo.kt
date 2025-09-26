@@ -89,6 +89,13 @@ class GenerateMojo : AbstractContextAwareMojo() {
   )
   private var generateConcreteStateImpl : Boolean = false
 
+  @Parameter(
+    property = "annotateForSpringBoot",
+    required = true,
+    defaultValue = "false"
+  )
+  private var annotateForSpringBoot : Boolean = false
+
   private val SPI_REGISTRY = load()
 
   override fun execute() {
@@ -127,6 +134,7 @@ class GenerateMojo : AbstractContextAwareMojo() {
       generateCommandSlices = true,
       generateCommandSliceTests = true,
       generateConcreteStateImpl = generateConcreteStateImpl,
+      annotateForSpringBoot = annotateForSpringBoot,
     )
 
     val generator = EmnAxon5AvroBasedGenerator.create(

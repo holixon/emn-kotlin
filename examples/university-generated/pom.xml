@@ -114,6 +114,7 @@
             </goals>
             <configuration>
               <resourceDirectory>${kp.generatedResources}</resourceDirectory>
+              <generateConcreteStateImpl>false</generateConcreteStateImpl>
               <includes>faculty/**.emn</includes>
             </configuration>
           </execution>

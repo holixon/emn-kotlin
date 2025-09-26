@@ -161,6 +161,7 @@
             <configuration>
               <resourceDirectory>${kp.generatedResources}</resourceDirectory>
               <includes>faculty/**.emn</includes>
+              <annotateForSpringBoot>true</annotateForSpringBoot>
             </configuration>
           </execution>
         </executions>

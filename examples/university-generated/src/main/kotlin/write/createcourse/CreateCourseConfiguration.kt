@@ -10,7 +10,7 @@ fun EventSourcingConfigurer.configureCreateCourse(): EventSourcingConfigurer {
     EventSourcedEntityModule
       .annotated(
         CourseId::class.java,
-        CreateCourseCommandHandler.State::class.java
+        CreateCourseState::class.java
       )
 
   val commandHandlingModule = CommandHandlingModule

@@ -5,21 +5,24 @@ import io.holixon.emn.example.faculty.CourseId
 import io.holixon.emn.example.faculty.CreateCourse
 import io.holixon.emn.example.faculty.DuplicateCourse
 import io.holixon.emn.example.faculty.FacultyTags.COURSE
+import org.axonframework.eventsourcing.annotations.EventSourcingHandler
 import org.axonframework.eventsourcing.annotations.reflection.EntityCreator
 import org.axonframework.spring.stereotype.EventSourced
-import org.springframework.stereotype.Component
 
 
 @EventSourced(idType = CourseId::class, tagKey = COURSE)
-class CreateCourseState @EntityCreator constructor() : CreateCourseCommandHandler.State {
+class CreateCourseState @EntityCreator constructor() {
   private var created: Boolean = false
 
-  override fun decide(command: CreateCourse): List<Any> {
+  fun decide(command: CreateCourse): List<Any> {
     if (created) {
       throw DuplicateCourse("Course with id=${command.courseId.value} already exists.")
     }
     return listOf(CourseCreated(command.courseId, command.name, command.capacity))
   }
 
-  override fun evolve(event: CourseCreated): CreateCourseCommandHandler.State = apply { created = true }
+  @EventSourcingHandler
+  fun evolve(event: CourseCreated) = apply {
+    created = true
+  }
 }

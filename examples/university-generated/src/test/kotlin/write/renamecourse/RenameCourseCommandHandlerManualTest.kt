@@ -6,8 +6,10 @@ import io.holixon.emn.example.faculty.CourseId
 import io.holixon.emn.example.faculty.CourseRenamed
 import io.holixon.emn.example.faculty.RenameCourse
 import org.axonframework.test.fixture.AxonTestFixture
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
+@Disabled("Not needed, just for demonstration of Axon Test Fixture usage")
 internal class RenameCourseCommandHandlerManualTest(val fixture: AxonTestFixture) {
 
   @Test

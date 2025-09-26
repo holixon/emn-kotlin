@@ -61,7 +61,17 @@ object TargetEntityIdAnnotation : KotlinAnnotationSpecSupplier {
 data class EventSourcedEntityAnnotation(val key: MemberName, val concreteTypes: List<ClassName> = listOf()) : KotlinAnnotationSpecSupplier {
   override fun spec(): KotlinAnnotationSpec = buildAnnotation(EventSourcedEntity::class) {
     addMember("tagKey = %M", key)
-    addMember(codeBlock("concreteTypes = $FORMAT_LITERAL", CodeBlockArray(FORMAT_KCLASS, concreteTypes).build()))
+    if (concreteTypes.isNotEmpty()) {
+      addMember(codeBlock("concreteTypes = $FORMAT_LITERAL", CodeBlockArray(FORMAT_KCLASS, concreteTypes).build()))
+    }
+  }
+}
+
+@OptIn(ExperimentalKotlinPoetApi::class)
+data class EventSourcedAnnotation(val key: MemberName, val idType: ClassName) : KotlinAnnotationSpecSupplier {
+  override fun spec(): KotlinAnnotationSpec = buildAnnotation(ClassName("org.axonframework.spring.stereotype", "EventSourced")) {
+    addMember("tagKey = %M", key)
+    addMember("idType = %T::class", idType)
   }
 }
 

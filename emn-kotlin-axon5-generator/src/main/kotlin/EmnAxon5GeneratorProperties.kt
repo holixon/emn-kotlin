@@ -4,6 +4,8 @@ import io.toolisticon.kotlin.avro.generator.AvroKotlinGeneratorProperties
 import io.toolisticon.kotlin.generation.PackageName
 import java.time.Instant
 
+
+
 /**
  * Properties for EMN generator.
  */
@@ -36,6 +38,8 @@ interface EmnAxon5GeneratorProperties : AvroKotlinGeneratorProperties {
    * If true, the instancio wi used for object creation, allowing to specify only relevant values.
    */
   val instanceCreator: String
+
+  val annotateForSpringBoot : Boolean
 }
 
 /**
@@ -50,5 +54,6 @@ data class DefaultEmnAxon5GeneratorProperties(
   override val generateCommandSlices: Boolean = true,
   override val generateCommandSliceTests: Boolean = true,
   override val generateConcreteStateImpl: Boolean = true,
-  override val instanceCreator: String = "none"
+  override val instanceCreator: String = "none",
+  override val annotateForSpringBoot: Boolean = false,
 ) : EmnAxon5GeneratorProperties

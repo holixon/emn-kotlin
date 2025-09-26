@@ -7,16 +7,17 @@ import io.holixon.emn.example.faculty.CourseRenamed
 import io.holixon.emn.example.faculty.FacultyTags.COURSE
 import io.holixon.emn.example.faculty.RenameCourse
 import org.axonframework.eventsourcing.annotations.EventSourcedEntity
+import org.axonframework.eventsourcing.annotations.EventSourcingHandler
 import org.axonframework.eventsourcing.annotations.reflection.EntityCreator
 import org.axonframework.spring.stereotype.EventSourced
 import org.springframework.stereotype.Component
 
 @EventSourced(tagKey = COURSE, idType = CourseId::class)
-class RenameCourseState @EntityCreator constructor() : RenameCourseCommandHandler.State {
+class RenameCourseState @EntityCreator constructor() {
   private var created: Boolean = false
   private var name: String = ""
 
-  override fun decide(command: RenameCourse): List<Any> {
+  fun decide(command: RenameCourse): List<Any> {
     return if (!this.created) {
       throw CourseDoesNotExist("Course with id=${command.courseId.value} does not exist.")
     } else {
@@ -30,14 +31,15 @@ class RenameCourseState @EntityCreator constructor() : RenameCourseCommandHandle
     }
   }
 
-  override fun evolve(event: CourseRenamed): RenameCourseCommandHandler.State {
+  @EventSourcingHandler
+  fun evolve(event: CourseRenamed) = apply{
     this.created = true
     this.name = event.name
     return this
   }
 
-
-  override fun evolve(event: CourseCreated): RenameCourseCommandHandler.State {
+  @EventSourcingHandler
+  fun evolve(event: CourseCreated)= apply {
     this.created = true
     this.name = event.name
     return this
