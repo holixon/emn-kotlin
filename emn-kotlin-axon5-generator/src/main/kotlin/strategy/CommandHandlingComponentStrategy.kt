@@ -27,7 +27,7 @@ import io.toolisticon.kotlin.generation.spec.KotlinInterfaceSpec
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
 import io.toolisticon.kotlin.generation.support.GeneratedAnnotation
 import org.axonframework.eventhandling.gateway.EventAppender
-import org.axonframework.eventsourcing.annotation.reflection.EntityCreator
+import org.axonframework.eventsourcing.annotations.reflection.EntityCreator
 
 private val logger = KotlinLogging.logger {}
 
