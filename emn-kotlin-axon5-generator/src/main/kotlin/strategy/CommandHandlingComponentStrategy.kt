@@ -6,21 +6,28 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.holixon.emn.generation.*
 import io.holixon.emn.generation.model.CommandSlice
 import io.holixon.emn.generation.spi.EmnGenerationContext
+import io.holixon.emn.model.AggregateLane
 import io.holixon.emn.model.applyIfExactlyOne
 import io.toolisticon.kotlin.avro.generator.AvroKotlinGenerator
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildClass
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFile
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildInterface
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildParameter
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.classBuilder
+import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.constructorBuilder
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.builder.fileBuilder
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.simpleName
+import io.toolisticon.kotlin.generation.spec.KotlinFileSpec
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spec.KotlinFunSpec
 import io.toolisticon.kotlin.generation.spec.KotlinInterfaceSpec
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
 import io.toolisticon.kotlin.generation.support.GeneratedAnnotation
 import org.axonframework.eventhandling.gateway.EventAppender
+import org.axonframework.eventsourcing.annotation.reflection.EntityCreator
 
 private val logger = KotlinLogging.logger {}
 
@@ -40,8 +47,10 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
 
     val fileBuilder = fileBuilder(input.commandHandlerClassName)
     fileBuilder.addAnnotation(GeneratedAnnotation(value = AvroKotlinGenerator.NAME).date(context.properties.nowSupplier()))
-    val commandHandlerTypeBuilder = classBuilder(input.commandHandlerClassName).apply {
 
+    val concreteStateTypes = mutableListOf<KotlinFileSpec>()
+
+    val commandHandlerTypeBuilder = classBuilder(input.commandHandlerClassName).apply {
       val command = input.command
       val commandPoetType = context.avroTypes[command.commandType].poetType
 
@@ -60,6 +69,63 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
       // @TargetEntityId in the command
       val idProperty = context.avroTypes[input.command.commandType].idProperty()
 
+      fun buildConcreteState(stateImplClassName: ClassName, stateClassName: ClassName): KotlinFileSpec = buildFile(stateImplClassName) {
+        addType(buildClass(stateImplClassName) {
+          addSuperinterface(stateClassName)
+          primaryConstructor(constructorBuilder().apply {
+            addAnnotation(buildAnnotation(EntityCreator::class))
+          })
+          addFunction(buildFun("decide") {
+            addModifiers(KModifier.OVERRIDE)
+            addParameter("command", commandPoetType.typeName)
+            returns(List::class.asClassName().parameterizedBy(Any::class.asClassName()))
+            addStatement("return TODO(\"Not yet implemented\")")
+          })
+          eventTypesToHandle.forEach { (eventType, noop) ->
+            // --
+            addFunction(buildFun("evolve") {
+              addModifiers(KModifier.OVERRIDE)
+              addParameter("event", eventType.typeName)
+              returns(stateClassName)
+              if (noop) {
+                addStatement("return super.evolve(event)")
+              } else {
+                addStatement("return TODO(\"Not yet implemented\")")
+              }
+            })
+            // --
+          }
+        })
+      }
+
+      fun buildCommandHandler(aggregateLane: AggregateLane) {
+        val stateClassName = ClassName(input.commandHandlerClassName.packageName, input.commandHandlerClassName.simpleName, "State")
+        val stateImplClassName = ClassName(input.commandHandlerClassName.packageName, "${commandPoetType.typeName.simpleName}State")
+
+        if (context.properties.generateConcreteStateImpl) {
+          concreteStateTypes.add(buildConcreteState(stateImplClassName, stateClassName))
+        }
+
+        val tagMember = context.resolveAggregateTagName(aggregateLane)
+
+        val state = buildSingleTagState(
+          stateClassName,
+          stateImplClassName,
+          eventTypesToHandle = eventTypesToHandle,
+          commandType = commandPoetType,
+          tagMember = tagMember
+        )
+        addFunction(
+          buildHandler(
+            commandType = commandPoetType,
+            stateSpec = state,
+            idProperty = idProperty
+          )
+        )
+        addType(state)
+      }
+
+
       // gather aggregates for all events relevant to this command included in the slice
       val aggregateLanes = (sourcingEvents + possibleEvents).distinct()
         .filter { e -> input.slice.containsFlowElement(e) }
@@ -68,33 +134,14 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
       aggregateLanes.applyIfExactlyOne(
         logger.noAggregateFoundLogger(command.typeReference),
         logger.conflictingAggregatesFound(command.typeReference) // TODO -> replace with DCB state generation!
-      ) { aggregateLane ->
-
-        if (aggregateLane.name != null) {
-          val tagMember = context.resolveAggregateTagName(aggregateLane)
-
-          val state = buildSingleTagState(
-            handlerClassName = input.commandHandlerClassName,
-            eventTypesToHandle = eventTypesToHandle,
-            commandType = commandPoetType,
-            tagMember = tagMember
-          )
-          addFunction(
-            buildHandler(
-              commandType = commandPoetType,
-              stateSpec = state,
-              idProperty = idProperty
-            )
-          )
-          addType(state)
-        }
-      }
+      ) { buildCommandHandler(it) }
     }
+
     return KotlinFileSpecList(
       fileBuilder.addType(
         commandHandlerTypeBuilder.build()
       ).build()
-    )
+    ) + KotlinFileSpecList(concreteStateTypes)
   }
 
   private fun buildHandler(
@@ -119,14 +166,13 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
   }
 
   private fun buildSingleTagState(
-    handlerClassName: ClassName,
+    stateClassName: ClassName,
+    stateImplClassName: ClassName,
     eventTypesToHandle: EventTypesToHandle,
     commandType: AvroPoetType,
     tagMember: MemberName
   ): KotlinInterfaceSpec {
 
-    val stateClassName = ClassName(handlerClassName.packageName, handlerClassName.simpleName, "State")
-    val stateImplClassName = ClassName(handlerClassName.packageName, "${commandType.typeName.simpleName}State")
 
     fun evolve(eventType: AvroPoetType, noop: Boolean): KotlinFunSpec = buildFun("evolve") {
       addParameter("event", eventType.typeName)

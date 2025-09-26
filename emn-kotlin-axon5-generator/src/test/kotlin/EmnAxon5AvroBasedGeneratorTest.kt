@@ -34,7 +34,7 @@ class EmnAxon5AvroBasedGeneratorTest {
 
     val files = generator.generate(definitions, declaration)
 
-    files.filter { it -> it. className.simpleName.endsWith("Test") }
+    files.filter { it -> it. className.simpleName.endsWith("State") }
       .forEach { logger.info { it.code } }
 
   }

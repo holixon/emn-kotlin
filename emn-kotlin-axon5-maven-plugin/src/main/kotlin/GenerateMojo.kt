@@ -82,6 +82,13 @@ class GenerateMojo : AbstractContextAwareMojo() {
   )
   private var includes : Array<String> = EmnKotlinAxon5MavenPlugin.DEFAULT_INCLUDES
 
+  @Parameter(
+    property = "generateConcreteStateImpl",
+    required = true,
+    defaultValue = "false"
+  )
+  private var generateConcreteStateImpl : Boolean = false
+
   private val SPI_REGISTRY = load()
 
   override fun execute() {
@@ -118,7 +125,8 @@ class GenerateMojo : AbstractContextAwareMojo() {
       rootPackageName = "io.holixon.emn.example.faculty",
       instanceCreator = instanceCreator,
       generateCommandSlices = true,
-      generateCommandSliceTests = true
+      generateCommandSliceTests = true,
+      generateConcreteStateImpl = generateConcreteStateImpl,
     )
 
     val generator = EmnAxon5AvroBasedGenerator.create(

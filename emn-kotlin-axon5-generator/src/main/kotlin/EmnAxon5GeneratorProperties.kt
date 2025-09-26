@@ -30,6 +30,8 @@ interface EmnAxon5GeneratorProperties : AvroKotlinGeneratorProperties {
    */
   val generateCommandSliceTests: Boolean
 
+  val generateConcreteStateImpl: Boolean
+
   /**
    * If true, the instancio wi used for object creation, allowing to specify only relevant values.
    */
@@ -47,5 +49,6 @@ data class DefaultEmnAxon5GeneratorProperties(
   override val nowSupplier: () -> Instant = { Instant.now() },
   override val generateCommandSlices: Boolean = true,
   override val generateCommandSliceTests: Boolean = true,
+  override val generateConcreteStateImpl: Boolean = true,
   override val instanceCreator: String = "none"
 ) : EmnAxon5GeneratorProperties
