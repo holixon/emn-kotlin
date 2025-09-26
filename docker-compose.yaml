@@ -1,0 +1,20 @@
+services:
+  axon-server:
+    image: axoniq/axonserver:2025.2.0-SNAPSHOT
+    ports:
+      - "8024:8024"
+      - "8124:8124"
+    environment:
+      axoniq.axonserver.standalone-dcb: true
+      axoniq_axonserver_hostname: axon-server
+    volumes:
+      - data:/axonserver/data
+      - events:/axonserver/events
+
+volumes:
+  db:
+    driver: local
+  data:
+    driver: local
+  events:
+    driver: local

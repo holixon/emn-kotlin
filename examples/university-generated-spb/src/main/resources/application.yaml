@@ -1,0 +1,7 @@
+# University Demo Application Configuration
+axon:
+  server:
+    enabled: true
+#  converter:
+#    events: avro
+#    messages: avro
