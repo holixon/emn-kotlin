@@ -1,13 +1,8 @@
 package io.holixon.emn.generation.processor
 
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import com.squareup.kotlinpoet.MemberName
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.holixon.emn.generation.EventTagAnnotation
-import io.holixon.emn.generation.TargetEntityIdAnnotation
-import io.holixon.emn.generation.conflictingAggregatesFound
-import io.holixon.emn.generation.getAvroTypeDefinitionRef
-import io.holixon.emn.generation.noAggregateFoundLogger
+import io.holixon.emn.generation.*
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.model.CommandType
 import io.holixon.emn.model.EventType
@@ -16,13 +11,8 @@ import io.toolisticon.kotlin.avro.generator.processor.ConstructorPropertyFromRec
 import io.toolisticon.kotlin.avro.generator.spi.SchemaDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordField
 import io.toolisticon.kotlin.avro.value.CanonicalName
-import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.builder.KotlinConstructorPropertySpecBuilder
-import io.toolisticon.kotlin.generation.spec.KotlinAnnotationSpec
-import io.toolisticon.kotlin.generation.spec.KotlinAnnotationSpecSupplier
 import io.toolisticon.kotlin.generation.tag
-import org.axonframework.eventsourcing.annotations.EventTag
-import org.axonframework.modelling.annotation.TargetEntityId
 
 private val logger = KotlinLogging.logger {}
 

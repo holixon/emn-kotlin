@@ -3,6 +3,7 @@ package io.holixon.emn.example.faculty.write.enrollstudent
 import io.holixon.emn.example.faculty.EnrollStudentInFaculty
 import io.holixon.emn.example.faculty.StudentEnrolledInFaculty
 import org.axonframework.eventsourcing.annotations.reflection.EntityCreator
+import org.axonframework.spring.stereotype.EventSourced
 
 class EnrollStudentInFacultyState @EntityCreator constructor() : EnrollStudentCommandHandler.State {
   override fun evolve(event: StudentEnrolledInFaculty): EnrollStudentCommandHandler.State {

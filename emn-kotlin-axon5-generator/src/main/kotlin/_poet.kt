@@ -26,12 +26,12 @@ import io.toolisticon.kotlin.generation.poet.CodeBlockBuilder.Companion.codeBloc
 import io.toolisticon.kotlin.generation.spec.KotlinAnnotationSpec
 import io.toolisticon.kotlin.generation.spec.KotlinAnnotationSpecSupplier
 import io.toolisticon.kotlin.generation.support.CodeBlockArray
-import org.axonframework.commandhandling.annotation.CommandHandler
-import org.axonframework.eventsourcing.EventSourcingHandler
-import org.axonframework.eventsourcing.annotation.EventSourcedEntity
+import org.axonframework.commandhandling.annotations.CommandHandler
+import org.axonframework.eventsourcing.annotations.EventSourcedEntity
+import org.axonframework.eventsourcing.annotations.EventSourcingHandler
 import org.axonframework.eventsourcing.annotations.EventTag
-import org.axonframework.modelling.annotation.InjectEntity
-import org.axonframework.modelling.annotation.TargetEntityId
+import org.axonframework.modelling.annotations.InjectEntity
+import org.axonframework.modelling.annotations.TargetEntityId
 import java.util.function.Supplier
 
 data class InjectEntityAnnotation(val idProperty: String? = null) : KotlinAnnotationSpecSupplier {

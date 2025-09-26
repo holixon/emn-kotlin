@@ -1,10 +1,16 @@
 package io.holixon.emn.example.faculty.write.createcourse
 
 import io.holixon.emn.example.faculty.CourseCreated
+import io.holixon.emn.example.faculty.CourseId
 import io.holixon.emn.example.faculty.CreateCourse
 import io.holixon.emn.example.faculty.DuplicateCourse
+import io.holixon.emn.example.faculty.FacultyTags.COURSE
 import org.axonframework.eventsourcing.annotations.reflection.EntityCreator
+import org.axonframework.spring.stereotype.EventSourced
+import org.springframework.stereotype.Component
 
+
+@EventSourced(idType = CourseId::class, tagKey = COURSE)
 class CreateCourseState @EntityCreator constructor() : CreateCourseCommandHandler.State {
   private var created: Boolean = false
 

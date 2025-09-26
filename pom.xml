@@ -19,7 +19,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <axon.version>5.0.0-M3</axon.version>
+    <axon.version>5.0.0-SNAPSHOT</axon.version>
     <instancio.version>5.5.1</instancio.version>
   </properties>
 
@@ -31,6 +31,7 @@
     <module>emn-kotlin-axon5-maven-plugin</module>
     <module>examples/university</module>
     <module>examples/university-generated</module>
+    <module>examples/university-generated-spb</module>
   </modules>
 
   <!-- this is the maven root, all dependencies have to be declared in the concrete modules, using emn-kotlin-parent -->

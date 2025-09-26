@@ -4,10 +4,10 @@ import jakarta.annotation.Nonnull
 import org.axonframework.configuration.Configuration
 import org.axonframework.eventhandling.conversion.EventConverter
 import org.axonframework.eventsourcing.EventSourcedEntityFactory
-import org.axonframework.eventsourcing.annotation.EventSourcedEntityFactoryDefinition
-import org.axonframework.eventsourcing.annotation.reflection.AnnotationBasedEventSourcedEntityFactory
+import org.axonframework.eventsourcing.annotations.EventSourcedEntityFactoryDefinition
+import org.axonframework.eventsourcing.annotations.reflection.AnnotationBasedEventSourcedEntityFactory
 import org.axonframework.messaging.MessageTypeResolver
-import org.axonframework.messaging.annotation.ParameterResolverFactory
+import org.axonframework.messaging.annotations.ParameterResolverFactory
 
 class SealedClassEventSourcedFactoryDefinition<ENTITY, ID> : EventSourcedEntityFactoryDefinition<ENTITY, ID> {
 
