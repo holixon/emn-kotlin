@@ -24,20 +24,17 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
     builder: KotlinConstructorPropertySpecBuilder
   ): KotlinConstructorPropertySpecBuilder = builder.apply {
 
-    val emnContext: EmnGenerationContext = context.tag()!!
+    val emnContext: EmnGenerationContext = context.emnContext
     val recordType = input.memberOf
-    val emnElementType = emnContext.getEmnType(recordType)
 
-
-
-    when (emnElementType) {
+    when (val emnElementType = emnContext.getEmnType(recordType)) {
       is EventType -> {
         val aggregateLanes = emnContext.definitions.aggregates(emnElementType).distinct()
         aggregateLanes.applyIfExactlyOne(
           logger.noAggregateFoundLogger(emnElementType),
           logger.conflictingAggregatesFound(emnElementType)
         ) { aggregateLane ->
-          var aggregateIdCanonicalName = aggregateLane.idSchema.getAvroTypeDefinitionRef()?.content?.let {
+          val aggregateIdCanonicalName = aggregateLane.idSchema.getAvroTypeDefinitionRef()?.content?.let {
             CanonicalName.parse(it)
           }
           if (input.schema.canonicalName == aggregateIdCanonicalName && aggregateLane.name != null) {
@@ -53,7 +50,7 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
           logger.noAggregateFoundLogger(emnElementType),
           logger.conflictingAggregatesFound(emnElementType)
         ) { aggregateLane ->
-          var aggregateIdCanonicalName = aggregateLane.idSchema.getAvroTypeDefinitionRef()?.content?.let {
+          val aggregateIdCanonicalName = aggregateLane.idSchema.getAvroTypeDefinitionRef()?.content?.let {
             CanonicalName.parse(it)
           }
           val aggregateName = aggregateLane.name

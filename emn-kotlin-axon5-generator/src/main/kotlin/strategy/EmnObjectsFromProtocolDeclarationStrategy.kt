@@ -2,6 +2,7 @@ package io.holixon.emn.generation.strategy
 
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
+import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator
 import io.holixon.emn.generation.emnContext
 import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
 import io.toolisticon.kotlin.avro.generator.AvroKotlinGenerator
@@ -27,7 +28,7 @@ class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDe
     val tagClassName = emnContext.getTagClassName()
 
     val tagFile = buildFile(tagClassName) {
-      addAnnotation(GeneratedAnnotation(value = AvroKotlinGenerator.NAME).date(context.properties.nowSupplier()))
+      addAnnotation(context.emnContext.generatedAnnotation)
       addType(buildObject(tagClassName) {
         emnContext.definitions.aggregates().mapNotNull { it.name }
           .distinct().forEach { name ->

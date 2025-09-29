@@ -23,6 +23,7 @@ open class EmnAxon5AvroBasedGenerator(
   }
 
   companion object {
+    val NAME = EmnAxon5AvroBasedGenerator::class.qualifiedName!!
     val CONTEXT_UPPER_BOUND = EmnGenerationContext::class
 
     /**

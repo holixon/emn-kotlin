@@ -50,8 +50,9 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
     }
 
     val className = input.commandHandlerFixtureTestClassName
-    val fileBuilder = fileBuilder(className).addTag(TestFileSpec)
-    fileBuilder.addAnnotation(GeneratedAnnotation(value = AvroKotlinGenerator.NAME).date(context.properties.nowSupplier()))
+    val fileBuilder = fileBuilder(className)
+      .addTag(TestFileSpec)
+      .addAnnotation(context.generatedAnnotation)
 
     val commandHandlerTestClass = buildClass(className) {
       addConstructorProperty("fixture", AXON_FIXTURE).makePrivate()

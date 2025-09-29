@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.MemberName
+import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator
 import io.holixon.emn.generation.EmnAxon5GeneratorProperties
 import io.holixon.emn.generation.hasAvroTypeDefinitionRef
 import io.holixon.emn.generation.isCommandSliceWithAvroTypeDefinitionRef
@@ -24,6 +25,7 @@ import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.simpleName
 import io.toolisticon.kotlin.generation.PackageName
 import io.toolisticon.kotlin.generation.spi.context.KotlinCodeGenerationContextBase
 import io.toolisticon.kotlin.generation.spi.registry.KotlinCodeGenerationSpiList
+import io.toolisticon.kotlin.generation.support.GeneratedAnnotation
 import kotlin.reflect.KClass
 
 /**
@@ -239,6 +241,10 @@ class EmnGenerationContext(
       packageName = properties.rootPackageName,
       simpleName = simpleName(properties.emnName + "Tags")
     )
+  }
+
+  val generatedAnnotation by lazy {
+    GeneratedAnnotation(value = EmnAxon5AvroBasedGenerator.NAME).date(properties.nowSupplier())
   }
 
   // region [overrides]

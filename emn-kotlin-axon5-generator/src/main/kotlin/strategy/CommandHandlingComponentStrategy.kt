@@ -80,9 +80,9 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
     val stateClassName = ClassName(input.commandHandlerClassName.packageName, "${commandPoetType.typeName.simpleName}State")
 
     val commandHandlerFile = fileBuilder(commandHandlerClassName)
-      .addAnnotation(GeneratedAnnotation(value = AvroKotlinGenerator.NAME).date(context.properties.nowSupplier()))
+      .addAnnotation(context.generatedAnnotation)
     val stateFile = fileBuilder(stateClassName)
-      .addAnnotation(GeneratedAnnotation(value = AvroKotlinGenerator.NAME).date(context.properties.nowSupplier()))
+      .addAnnotation(context.generatedAnnotation)
 
     val commandHandlerClass = classBuilder(commandHandlerClassName).apply {
       if (context.properties.annotateForSpringBoot) {
