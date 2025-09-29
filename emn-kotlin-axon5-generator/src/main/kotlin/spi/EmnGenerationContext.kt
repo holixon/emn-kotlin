@@ -10,7 +10,6 @@ import io.holixon.emn.generation.EmnAxon5GeneratorProperties
 import io.holixon.emn.generation.hasAvroTypeDefinitionRef
 import io.holixon.emn.generation.isCommandSliceWithAvroTypeDefinitionRef
 import io.holixon.emn.generation.model.*
-import io.holixon.emn.generation.model.Specification
 import io.holixon.emn.model.*
 import io.konform.validation.Validation
 import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
@@ -55,14 +54,30 @@ class EmnGenerationContext(
             }
           }
 
-        // Checks that all referenced id types are actually declared in the used protocol.
-        ctx.definitions.aggregates().filter { it.hasAvroTypeDefinitionRef() }
+        val aggregateIdSchemaRefs = ctx.definitions.aggregates().filter { it.hasAvroTypeDefinitionRef() }
           .map { it.id to CanonicalName.parse(it.schemaReference()) }
-          .forEach { (id, fqn) ->
-            constrain("Aggregate '$id' references Avro id type '${fqn.fqn}', but it is not declared in protocol '${ctx.protocolDeclarationContext.protocol.canonicalName.fqn}'") {
-              ctx.protocolTypesByFqn.containsKey(fqn)
+
+        // Checks that all referenced id types are actually declared in the used protocol.
+        aggregateIdSchemaRefs.forEach { (id, fqn) ->
+          constrain("Aggregate '$id' references Avro id type '${fqn.fqn}', but it is not declared in protocol '${ctx.protocolDeclarationContext.protocol.canonicalName.fqn}'") {
+            ctx.protocolTypesByFqn.containsKey(fqn)
+          }
+        }
+
+        // checks if all id types are value types (single property with name='value')
+        aggregateIdSchemaRefs.map { (id, fqn) -> id to ctx.protocolTypesByFqn[fqn]!! }
+          .forEach { (id, schemaType) ->
+            constrain("Aggregate '$id' references Avro id type '${schemaType.schema.canonicalName.fqn}', but it is not a valid id-type (single property with name='value'), was=${(schemaType as RecordType).fields.map { it.name }}.") {
+              schemaType.fields.size == 1 && schemaType.fields[0].name.value == "value"
             }
           }
+
+        // checks if all error types are valid (single property with name='message')
+        ctx.protocolDeclarationContext.avroTypes.values.filterIsInstance<io.toolisticon.kotlin.avro.model.ErrorType>().forEach { error ->
+          constrain("Exceptions declared in avro protocol must have exactly one string field name='message', but '${error.canonicalName.fqn}' has fields ${error.fields.map { f -> f.name }}.") {
+            error.fields.size == 1 && error.fields[0].name.value == "message"
+          }
+        }
       }
 
       EmnGenerationContext::definitions {
@@ -117,7 +132,6 @@ class EmnGenerationContext(
   val protocolDeclarationContext by lazy {
     checkNotNull(tag(ProtocolDeclarationContext::class)) { "ProtocolDeclarationContext not found in tags, this is a misconfiguration." }
   }
-
 
   val protocolTypesByFqn: Map<CanonicalName, AvroNamedType> by lazy {
     protocolDeclarationContext.avroTypes.values
