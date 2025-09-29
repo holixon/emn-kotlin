@@ -11,9 +11,7 @@
 
   <artifactId>emn-kotlin-parent</artifactId>
   <name>pom: ${project.artifactId}</name>
-  <description
-  >Parent for emn-kotlin summarizing used libraries and versions.
-  </description>
+  <description>Parent for emn-kotlin summarizing used libraries and versions.</description>
   <packaging>pom</packaging>
 
   <properties>
