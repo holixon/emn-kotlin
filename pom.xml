@@ -19,7 +19,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <axon.version>5.0.0-SNAPSHOT</axon.version>
+    <axon.version>5.0.0-preview</axon.version>
     <instancio.version>5.5.1</instancio.version>
   </properties>
 

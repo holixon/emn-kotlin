@@ -9,6 +9,11 @@ import org.junit.jupiter.api.extension.ParameterResolver
  * Fixture JUnit parameter resolver.
  */
 class AxonTestFixtureParameterResolver : ParameterResolver {
-  override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext) = parameterContext.parameter.type == AxonTestFixture::class.java
-  override fun resolveParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext?) = AxonTestFixture.with(UniversityAxonGeneratedApplication().configurer())!!
+  override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext) =
+    parameterContext.parameter.type == AxonTestFixture::class.java
+
+  override fun resolveParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): AxonTestFixture = AxonTestFixture.with(
+    UniversityAxonGeneratedApplication().configurer(),
+    { it.disableAxonServer() }
+  )
 }
