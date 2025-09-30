@@ -29,9 +29,7 @@
     <module>emn-parser</module>
     <module>emn-kotlin-axon5-generator</module>
     <module>emn-kotlin-axon5-maven-plugin</module>
-    <module>examples/university</module>
-    <module>examples/university-generated</module>
-    <module>examples/university-generated-spb</module>
+    <!-- Examples are in the profile -->
   </modules>
 
   <!-- this is the maven root, all dependencies have to be declared in the concrete modules, using emn-kotlin-parent -->
@@ -52,6 +50,22 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>examples</id>
+      <activation>
+        <property>
+          <name>!skipExamples</name>
+        </property>
+      </activation>
+      <modules>
+        <module>examples/university</module>
+        <module>examples/university-generated</module>
+        <module>examples/university-generated-spb</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <licenses>
     <license>
