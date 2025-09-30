@@ -12,7 +12,7 @@
   <groupId>io.holixon.emn.generation</groupId>
   <artifactId>emn-kotlin-axon5-generator</artifactId>
   <name>emn-kotlin-axon5-generator</name>
-  <description>Generate Axon5 Command and Eventhandler based on EMN.</description>
+  <description>Generate Axon5 components based on EMN.</description>
 
   <properties>
   <ktfmt.version>0.58</ktfmt.version>

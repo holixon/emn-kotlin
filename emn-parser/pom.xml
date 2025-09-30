@@ -12,6 +12,7 @@
   <groupId>io.holixon.emn</groupId>
   <artifactId>emn-parser</artifactId>
   <name>${project.artifactId}</name>
+  <description>EMN Parser</description>
 
   <dependencies>
     <dependency>
