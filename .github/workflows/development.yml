@@ -27,7 +27,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version-file: .java-version
           distribution: zulu
           cache: maven
           server-id: ossrh
@@ -48,16 +48,16 @@ jobs:
 
       # Get GPG private key into GPG
       - name: Import GPG Owner Trust
-        run: echo ${{ secrets.GPG_OWNERTRUST }} | base64 --decode | gpg --import-ownertrust
+        run: echo "${{ secrets.GPG_OWNERTRUST }}" | base64 --decode | gpg --import-ownertrust
         if: github.ref == 'refs/heads/develop'
 
       - name: Import GPG key
-        run: echo ${{ secrets.GPG_SECRET_KEYS }} | base64 --decode | gpg --import --no-tty --batch --yes
+        run: echo "${{ secrets.GPG_SECRET_KEYS }}" | base64 --decode | gpg --import --no-tty --batch --yes --always-trust
         if: github.ref == 'refs/heads/develop'
 
       # Publish release
       - name: Deploy a new release version to Maven Central
-        run: ./mvnw clean deploy -B -ntp -DskipTests -DskipExamples -Prelease -Dgpg.keyname="${{ secrets.GPG_KEYNAME }}"
+        run: ./mvnw clean deploy -B -ntp -DskipTests -DskipExamples -Prelease -Dgpg.keyname="${{ secrets.GPG_KEYNAME }}" -DkeepStagingRepositoryOnCloseRuleFailure=true
         env:
           OSS_CENTRAL_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           OSS_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
