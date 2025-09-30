@@ -30,6 +30,9 @@ jobs:
           java-version: 21
           distribution: zulu
           cache: maven
+          server-id: ossrh
+          server-username: OSS_CENTRAL_USERNAME # env variable for Maven Central
+          server-password: OSS_CENTRAL_PASSWORD # env variable for Maven Central
 
       # Prepare
       - name: Prepare Maven Wrapper
@@ -43,14 +46,20 @@ jobs:
       - name: Run itest
         run: ./mvnw integration-test failsafe:verify -Pitest -U -B -T4 -ntp
 
-#      - name: Upload coverage to Codecov
-#        if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
-#        uses: codecov/codecov-action@v1.0.2
-#        with:
-#          token: ${{secrets.CODECOV_TOKEN}}
+      # Get GPG private key into GPG
+      - name: Import GPG Owner Trust
+        run: echo ${{ secrets.GPG_OWNERTRUST }} | base64 --decode | gpg --import-ownertrust
+        if: github.ref == 'refs/heads/develop'
 
-#      - name: Upload test coverage to Codacy
-#        if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
-#        run: bash <(curl -Ls https://coverage.codacy.com/get.sh)
-#        env:
-#          CODACY_PROJECT_TOKEN: "${{secrets.CODACY_PROJECT_TOKEN}}"
+      - name: Import GPG key
+        run: echo ${{ secrets.GPG_SECRET_KEYS }} | base64 --decode | gpg --import --no-tty --batch --yes
+        if: github.ref == 'refs/heads/develop'
+
+      # Publish release
+      - name: Deploy a new release version to Maven Central
+        run: ./mvnw clean deploy -B -ntp -DskipTests -DskipExamples -Prelease -Dgpg.keyname="${{ secrets.GPG_KEYNAME }}"
+        env:
+          OSS_CENTRAL_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          OSS_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        if: github.ref == 'refs/heads/develop'
