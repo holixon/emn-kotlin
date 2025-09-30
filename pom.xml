@@ -77,9 +77,7 @@
   <scm>
     <connection>scm:git:git@github.com:holixon/emn-kotlin.git</connection>
     <url>scm:git:git@github.com:holixon/emn-kotlin.git</url>
-    <developerConnection
-    >scm:git:git@github.com:holixon/emn-kotlin.git
-    </developerConnection>
+    <developerConnection>scm:git:git@github.com:holixon/emn-kotlin.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
