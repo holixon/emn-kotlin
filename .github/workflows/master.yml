@@ -23,7 +23,7 @@ jobs:
           java-version-file: .java-version
           cache: maven
           distribution: zulu
-          server-id: ossrh
+          server-id: central
           server-username: OSS_CENTRAL_USERNAME # env variable for Maven Central
           server-password: OSS_CENTRAL_PASSWORD # env variable for Maven Central
 
