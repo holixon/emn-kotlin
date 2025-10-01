@@ -27,6 +27,7 @@ import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
 import io.toolisticon.kotlin.generation.support.GeneratedAnnotation
 import org.axonframework.eventhandling.gateway.EventAppender
+import org.axonframework.eventsourcing.annotations.EventSourcingHandler
 import org.axonframework.eventsourcing.annotations.reflection.EntityCreator
 
 private val logger = KotlinLogging.logger {}
@@ -146,6 +147,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
         })
         eventTypesToHandle.forEach { (eventType, noop) ->
           addFunction(buildFun("evolve") {
+            addAnnotation(EventSourcingHandler::class)
             addParameter("event", eventType.typeName)
             returns(stateClassName)
             if (noop) {
