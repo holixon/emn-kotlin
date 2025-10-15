@@ -15,7 +15,7 @@
   <description>Generate Axon5 components based on EMN.</description>
 
   <properties>
-  <ktfmt.version>0.58</ktfmt.version>
+  <ktfmt.version>0.59</ktfmt.version>
   </properties>
 
   <dependencies>
