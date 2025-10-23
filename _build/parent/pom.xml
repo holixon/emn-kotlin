@@ -16,7 +16,7 @@
 
   <properties>
     <avro-kotlin.version>1.12.6.1</avro-kotlin.version>
-    <kotlin-code-generation.version>0.3.1</kotlin-code-generation.version>
+    <kotlin-code-generation.version>0.3.2</kotlin-code-generation.version>
   </properties>
 
   <dependencyManagement>
