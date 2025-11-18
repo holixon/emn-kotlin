@@ -180,4 +180,96 @@ internal class Dom4jExtensionsSpecificationTest {
     assertThat(specification.thenStage.values[0]).isInstanceOf(Event::class.java)
     assertThat((specification.thenStage.values[0] as Event).id).isEqualTo("event-2")
   }
+
+  @Test
+  fun `givenStage returns null when given stage is not present`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <!-- No given stage -->
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val typesById = mapOf<String, FlowNodeType>()
+
+    val givenStage = doc.rootElement.givenStage(typesById)
+    assertThat(givenStage).isNull()
+  }
+
+  @Test
+  fun `whenStage returns null when when stage is not present`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <!-- No when stage -->
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val typesById = mapOf<String, FlowNodeType>()
+
+    val whenStage = doc.rootElement.whenStage(typesById)
+    assertThat(whenStage).isNull()
+  }
+
+  @Test
+  fun `thenStage returns null when then stage is not present`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <!-- No then stage -->
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val typesById = mapOf<String, FlowNodeType>()
+
+    val thenStage = doc.rootElement.thenStage(typesById)
+    assertThat(thenStage).isNull()
+  }
+
+  @Test
+  fun `toSpecification handles missing stages`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:specification id="spec-1" name="Test Specification" scenario="test-scenario" sliceRef="slice-1">
+          <!-- No stages -->
+        </emn:specification>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val specElement = doc.rootElement.emnElement("specification")
+
+    // Create a map of types for the test
+    val typesById = mapOf<String, FlowNodeType>()
+
+    // Create a timeline with a slice for the test
+    val slice = Slice(id = "slice-1", name = "Test Slice", flowElements = emptyList())
+    val timeline = Timeline(
+      sliceSet = listOf(slice),
+      laneSet = LaneSet(),
+      nodes = emptyList(),
+      messages = emptyList()
+    )
+    val timelines = listOf(timeline)
+
+    val specification = specElement!!.toSpecification(typesById, timelines)
+
+    // Check basic properties
+    assertThat(specification.id).isEqualTo("spec-1")
+    assertThat(specification.name).isEqualTo("Test Specification")
+    assertThat(specification.scenario).isEqualTo("test-scenario")
+
+    // Check slice reference
+    assertThat(specification.slice).isNotNull
+    assertThat(specification.slice!!.id).isEqualTo("slice-1")
+
+    // Check stages are null
+    assertThat(specification.givenStage).isNull()
+    assertThat(specification.whenStage).isNull()
+    assertThat(specification.thenStage).isNull()
+  }
 }

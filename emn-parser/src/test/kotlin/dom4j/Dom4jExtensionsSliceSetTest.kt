@@ -61,4 +61,22 @@ internal class Dom4jExtensionsSliceSetTest {
 
     Assertions.assertThat(slices).isEmpty()
   }
+
+  @Test
+  fun `sliceSet returns empty list when slice set element is empty`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:sliceSet>
+          <!-- Empty slice set -->
+        </emn:sliceSet>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+
+    val slices = doc.rootElement.sliceSet()
+
+    Assertions.assertThat(slices).isEmpty()
+  }
 }

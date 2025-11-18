@@ -157,4 +157,96 @@ internal class Dom4jExtensionsLaneTest {
     assertThat(laneSet.triggerLaneSet).isEmpty()
     assertThat(laneSet.conceptLaneSet).isEmpty()
   }
+
+  @Test
+  fun `laneSet returns lane set with empty trigger and concept lanes when lane sets are empty`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:laneSet id="laneSet-1" name="Lane Set">
+          <emn:flowNodeRef>interaction-node</emn:flowNodeRef>
+          <emn:triggerLaneSet>
+            <!-- Empty trigger lane set -->
+          </emn:triggerLaneSet>
+          <emn:conceptLaneSet>
+            <!-- Empty concept lane set -->
+          </emn:conceptLaneSet>
+        </emn:laneSet>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val laneSet = doc.rootElement.laneSet()
+
+    // Interaction lane should be populated
+    assertThat(laneSet.interactionLane.id).isEqualTo("laneSet-1")
+    assertThat(laneSet.interactionLane.name).isEqualTo("Lane Set")
+    assertThat(laneSet.interactionLane.flowElements).hasSize(1)
+    assertThat(laneSet.interactionLane.flowElements[0].id).isEqualTo("interaction-node")
+
+    // Trigger and concept lane sets should be empty
+    assertThat(laneSet.triggerLaneSet).isEmpty()
+    assertThat(laneSet.conceptLaneSet).isEmpty()
+  }
+
+  @Test
+  fun `triggerLanes and conceptLanes returns empty list when lane set is empty`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:laneSet id="laneSet-1" name="Lane Set">
+          <!-- No trigger lane set -->
+          <!-- No concept lane set -->
+        </emn:laneSet>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val laneSet = doc.rootElement.emnElement("laneSet")
+
+    val triggerLanes = laneSet!!.triggerLanes()
+    assertThat(triggerLanes).isEmpty()
+    val conceptLanes = laneSet.conceptLanes()
+    assertThat(conceptLanes).isEmpty()
+  }
+
+  @Test
+  fun `triggerLanes returns empty list when trigger lane set is empty`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:laneSet id="laneSet-1" name="Lane Set">
+          <emn:triggerLaneSet>
+            <!-- Empty trigger lane set -->
+          </emn:triggerLaneSet>
+        </emn:laneSet>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val laneSet = doc.rootElement.emnElement("laneSet")
+
+    val triggerLanes = laneSet!!.triggerLanes()
+    assertThat(triggerLanes).isEmpty()
+  }
+
+  @Test
+  fun `conceptLanes returns empty list when concept lane set is empty`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:laneSet id="laneSet-1" name="Lane Set">
+          <emn:conceptLaneSet>
+            <!-- Empty concept lane set -->
+          </emn:conceptLaneSet>
+        </emn:laneSet>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val laneSet = doc.rootElement.emnElement("laneSet")
+
+    val conceptLanes = laneSet!!.conceptLanes()
+    assertThat(conceptLanes).isEmpty()
+  }
 }
