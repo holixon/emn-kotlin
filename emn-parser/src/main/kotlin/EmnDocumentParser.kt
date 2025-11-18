@@ -1,20 +1,10 @@
 package io.holixon.emn
 
 import io.holixon.emn.dom4j.*
-import io.holixon.emn.dom4j.ElementNames.AUTOMATION_TYPE
-import io.holixon.emn.dom4j.ElementNames.COMMAND_TYPE
 import io.holixon.emn.dom4j.ElementNames.DEFINITIONS
-import io.holixon.emn.dom4j.ElementNames.ERROR_TYPE
-import io.holixon.emn.dom4j.ElementNames.EVENT_TYPE
-import io.holixon.emn.dom4j.ElementNames.EXTERNAL_EVENT_TYPE
-import io.holixon.emn.dom4j.ElementNames.EXTERNAL_SYSTEM_TYPE
-import io.holixon.emn.dom4j.ElementNames.INFORMATION_FLOW_TYPE
-import io.holixon.emn.dom4j.ElementNames.QUERY_TYPE
 import io.holixon.emn.dom4j.ElementNames.SPECIFICATION
 import io.holixon.emn.dom4j.ElementNames.TIMELINE
-import io.holixon.emn.dom4j.ElementNames.TRANSLATION_TYPE
 import io.holixon.emn.dom4j.ElementNames.TYPES
-import io.holixon.emn.dom4j.ElementNames.VIEW_TYPE
 import io.holixon.emn.model.*
 import org.dom4j.Document
 import org.dom4j.io.SAXReader
@@ -47,100 +37,16 @@ class EmnDocumentParser {
     /*
      * Parse types
      */
-    root.emnElement(TYPES)
-      ?.elements()
-      ?.forEach { element ->
-        when (element.name) {
-          VIEW_TYPE -> nodeTypes.add(
-            ViewType(
-              id = element.id(),
-              name = element.name(),
-              schema = element.schema()
-            )
-          )
+    val typeElements = root.emnElement(TYPES)?.emnElements()
 
-          COMMAND_TYPE -> nodeTypes.add(
-            CommandType(
-              id = element.id(),
-              name = element.name(),
-              schema = element.schema()
-            )
-          )
+    typeElements?.toFlowTypes()?.forEach { noteType -> nodeTypes.add(noteType) }
+    typeElements?.toInformationFlowType()?.forEach { informationFlowType -> informationFlowTypes.add(informationFlowType) }
 
-          EVENT_TYPE -> nodeTypes.add(
-            EventType(
-              id = element.id(),
-              name = element.name(),
-              schema = element.schema()
-            )
-          )
-
-          QUERY_TYPE -> nodeTypes.add(
-            QueryType(
-              id = element.id(),
-              name = element.name(),
-              schema = element.schema()
-            )
-          )
-
-          ERROR_TYPE -> nodeTypes.add(
-            ErrorType(
-              id = element.id(),
-              name = element.name(),
-              schema = element.schema()
-            )
-          )
-
-          EXTERNAL_EVENT_TYPE -> nodeTypes.add(
-            ExternalEventType(
-              id = element.id(),
-              name = element.name(),
-              schema = element.schema()
-            )
-          )
-
-          EXTERNAL_SYSTEM_TYPE -> nodeTypes.add(
-            ExternalSystemType(
-              id = element.id(),
-              name = element.name(),
-              schema = element.schema()
-            )
-          )
-
-          TRANSLATION_TYPE -> nodeTypes.add(
-            TranslationType(
-              id = element.id(),
-              name = element.name(),
-              schema = element.schema()
-            )
-          )
-
-          AUTOMATION_TYPE -> nodeTypes.add(
-            AutomationType(
-              id = element.id(),
-              name = element.name(),
-              schema = element.schema()
-            )
-          )
-
-          INFORMATION_FLOW_TYPE -> informationFlowTypes.add(
-            InformationFlowType(
-              id = element.id(),
-              name = element.name(),
-              source = FlowNodeTypeReference(element.sourceRef()),
-              target = FlowNodeTypeReference(element.targetRef())
-            )
-          )
-
-          else -> println("Unknown EMN element '${element.name}'")
-        }
-      }
-
-    /**
+    /*
      * Patch message types
      */
     val typesById = nodeTypes.associateBy { it.id }
-    val messageFlowTypesById = informationFlowTypes.associateBy { it.id }
+    val informationFlowTypesById = informationFlowTypes.associateBy { it.id }
 
     val flowTypes = informationFlowTypes.map { messageFlowType ->
       val sourceElement =
@@ -159,19 +65,8 @@ class EmnDocumentParser {
     /*
      Parse timelines
      */
-    val timelines = mutableListOf<Timeline>()
-    root.emnElements(TIMELINE).forEach { element ->
-      timelines.add(
-        Timeline(
-          sliceSet = element.sliceSet(),
-          laneSet = element.laneSet(),
-          nodes = listOf(),
-          messages = listOf(),
-        ).let { timeline ->
-          val (nodes, messages) = element.extractFlowElements(typesById, messageFlowTypesById)
-          timeline.copy(nodes = nodes, messages = messages)
-        }
-      )
+    val timelines = root.emnElements(TIMELINE).map { element ->
+      element.toTimeline(typesById, informationFlowTypesById)
     }
 
     /*
@@ -208,24 +103,12 @@ class EmnDocumentParser {
       )
     }
 
-    val specifications = mutableListOf<Specification>()
-    root.emnElements(SPECIFICATION)
-      .forEach { element ->
-      specifications.add(
-        Specification(
-          id = element.id(),
-          name = element.name(),
-          scenario = element.scenario(),
-          slice = element.sliceRef()?.let { sliceRef -> timelines.map { it.sliceSet }
-            .flatten()
-            .first { it.id == sliceRef }
-                                          },
-          givenStage = element.givenStage(typesById),
-          whenStage = element.whenStage(typesById),
-          thenStage = element.thenStage(typesById),
-        )
-      )
-    }
+    /*
+     * Parse specifications
+     */
+    val specifications = root
+      .emnElements(SPECIFICATION)
+      .map { element -> element.toSpecification(typesById, timelines) }
 
     return Definitions(
       nodeTypes = nodeTypes,
