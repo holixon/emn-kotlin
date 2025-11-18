@@ -53,6 +53,12 @@ fun Element.isEmn(): Boolean =
 fun Element.emnElements(localName: String): List<Element> = this.elements(localName).filter { it.isEmn() }
 
 /**
+ * Retrieves a list of all child elements defined in EMN namespace.
+ * @return list of elements.
+ */
+fun Element.emnElements(): List<Element> = this.elements().filter { it.isEmn() }
+
+/**
  * Retrieves a list of elements matching local name and defined in EMN namespace.
  * @param localName local name of the element.
  * @return list of elements.
@@ -132,7 +138,7 @@ fun Element.sourceRef(): String = requireNotNull(attributeValue(SOURCE_REF)) { "
 fun Element.targetRef(): String = requireNotNull(attributeValue(TARGET_REF)) { "Message flow must define a '$TARGET_REF' attribute, but $this has none." }
 
 fun Element.triggerLanes(): List<TriggerLane> {
-  return this.element(TRIGGER_LANE_SET)?.elements(TRIGGER_LANE)?.map { triggerLane ->
+  return this.emnElement(TRIGGER_LANE_SET)?.emnElements(TRIGGER_LANE)?.map { triggerLane ->
     TriggerLane(
       id = triggerLane.id(),
       name = triggerLane.name(),
@@ -142,7 +148,7 @@ fun Element.triggerLanes(): List<TriggerLane> {
 }
 
 fun Element.conceptLanes(): List<ConceptLane> {
-  return this.element(CONCEPT_LANE_SET)?.elements(CONCEPT_LANE)?.map { conceptLane ->
+  return this.emnElement(CONCEPT_LANE_SET)?.emnElements(CONCEPT_LANE)?.map { conceptLane ->
     ConceptLane(
       id = conceptLane.id(),
       name = conceptLane.name(),
@@ -153,11 +159,11 @@ fun Element.conceptLanes(): List<ConceptLane> {
 }
 
 fun Element.flowNodeReferences(): List<FlowNodeReference> {
-  return this.elements(FLOW_NODE_REF)?.map { ref -> FlowNodeReference(ref.textTrim) } ?: emptyList()
+  return this.emnElements(FLOW_NODE_REF).map { ref -> FlowNodeReference(ref.textTrim) }
 }
 
 fun Element.sliceSet(): List<Slice> {
-  return this.element(SLICE_SET)?.elements(SLICE)?.map { slice ->
+  return this.emnElement(SLICE_SET)?.emnElements(SLICE)?.map { slice ->
     Slice(
       id = slice.id(),
       name = slice.name(),
@@ -167,7 +173,7 @@ fun Element.sliceSet(): List<Slice> {
 }
 
 fun Element.laneSet(): LaneSet {
-  return this.element(LANE_SET)?.let { laneSet ->
+  return this.emnElement(LANE_SET)?.let { laneSet ->
     LaneSet(
       triggerLaneSet = laneSet.triggerLanes(),
       interactionLane = InteractionLane(
@@ -186,7 +192,7 @@ fun Element.scenario(): String? = attributeValue(SCENARIO)
 fun Element.sliceRef(): String? = attributeValue(SLICE_REF)
 
 fun Element.givenStage(typesById: Map<String, FlowNodeType>): GivenStage? {
-  return this.element(STAGE_GIVEN)?.let { givenStageElement ->
+  return this.emnElement(STAGE_GIVEN)?.let { givenStageElement ->
     GivenStage(
       id = givenStageElement.id(),
       stateName = givenStageElement.attributeValue(STATE_NAME),
@@ -196,7 +202,7 @@ fun Element.givenStage(typesById: Map<String, FlowNodeType>): GivenStage? {
 }
 
 fun Element.whenStage(typesById: Map<String, FlowNodeType>): WhenStage? {
-  return this.element(STAGE_WHEN)?.let { whenStageElement ->
+  return this.emnElement(STAGE_WHEN)?.let { whenStageElement ->
     WhenStage(
       id = whenStageElement.id(),
       values = whenStageElement.elementValues(typesById = typesById)
@@ -205,7 +211,7 @@ fun Element.whenStage(typesById: Map<String, FlowNodeType>): WhenStage? {
 }
 
 fun Element.thenStage(typesById: Map<String, FlowNodeType>): ThenStage? {
-  return this.element(STAGE_THEN)?.let { thenStageElement ->
+  return this.emnElement(STAGE_THEN)?.let { thenStageElement ->
     ThenStage(
       id = thenStageElement.id(),
       values = thenStageElement.elementValues(typesById = typesById)
@@ -214,11 +220,11 @@ fun Element.thenStage(typesById: Map<String, FlowNodeType>): ThenStage? {
 }
 
 fun Element.elementValues(typesById: Map<String, FlowNodeType>): List<FlowNode> {
-  return this.elements().toFlowNodes(typesById = typesById)
+  return this.emnElements().toFlowNodes(typesById = typesById)
 }
 
 fun Element.elementValue(): ElementValue? {
-  val valueElement = this.element(VALUE)
+  val valueElement = this.emnElement(VALUE)
   return if (valueElement != null) {
     val valueFormat = valueElement.attributeValue(VALUE_FORMAT) ?: APPLICATION_JSON
     if (valueElement.hasContent()) {
@@ -243,8 +249,8 @@ fun Element.id(): String = requireNotNull(attributeValue(ID)) { "Element must de
 
 
 fun Element.name(): String = attributeValue(NAME) ?: ""
-fun Element.schema(): Schema? = this.element(SCHEMA)?.toSchema()
-fun Element.idSchema(): Schema? = this.element(ID_SCHEMA)?.toSchema()
+fun Element.schema(): Schema? = this.emnElement(SCHEMA)?.toSchema()
+fun Element.idSchema(): Schema? = this.emnElement(ID_SCHEMA)?.toSchema()
 
 fun Element.toSchema(): Schema? {
   return if (this.hasContent()) {
@@ -277,7 +283,7 @@ fun Element.extractFlowElements(
   val nodes = mutableListOf<FlowNode>()
   val informationFlows = mutableListOf<InformationFlow>()
 
-  val allFlowElements = this.elements().filterNot { it.name == SLICE_SET || it.name == LANE_SET }
+  val allFlowElements = this.emnElements().filterNot { it.name == SLICE_SET || it.name == LANE_SET }
   nodes.addAll(allFlowElements.toFlowNodes(typesById = typesById))
   informationFlows.addAll(allFlowElements.toInformationFlows())
 
