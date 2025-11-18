@@ -129,12 +129,30 @@ fun List<Element>.toFlowNodes(typesById: Map<String, FlowNodeType>): List<FlowNo
 }
 
 
+/**
+ * Gets the schema format attribute value from the element.
+ * @return the schema format or APPLICATION_JSON as default if not specified
+ */
 fun Element.schemaFormat(): String = attributeValue(SCHEMA_FORMAT) ?: APPLICATION_JSON
 
+/**
+ * Gets the resource attribute value from the element.
+ * @return the resource value or null if not specified
+ */
 fun Element.resource(): String? = attributeValue(RESOURCE)
 
+/**
+ * Gets the source reference attribute value from the element.
+ * @return the source reference value
+ * @throws IllegalArgumentException if the source reference attribute is not present
+ */
 fun Element.sourceRef(): String = requireNotNull(attributeValue(SOURCE_REF)) { "Message flow must define a '$SOURCE_REF' attribute, but $this has none." }
 
+/**
+ * Gets the target reference attribute value from the element.
+ * @return the target reference value
+ * @throws IllegalArgumentException if the target reference attribute is not present
+ */
 fun Element.targetRef(): String = requireNotNull(attributeValue(TARGET_REF)) { "Message flow must define a '$TARGET_REF' attribute, but $this has none." }
 
 fun Element.triggerLanes(): List<TriggerLane> {
@@ -187,8 +205,16 @@ fun Element.laneSet(): LaneSet {
 }
 
 
+/**
+ * Gets the scenario attribute value from the element.
+ * @return the scenario value or null if not specified
+ */
 fun Element.scenario(): String? = attributeValue(SCENARIO)
 
+/**
+ * Gets the slice reference attribute value from the element.
+ * @return the slice reference value or null if not specified
+ */
 fun Element.sliceRef(): String? = attributeValue(SLICE_REF)
 
 fun Element.givenStage(typesById: Map<String, FlowNodeType>): GivenStage? {
@@ -245,26 +271,51 @@ fun Element.elementValue(): ElementValue? {
 }
 
 
+/**
+ * Gets the ID attribute value from the element.
+ * @return the ID value
+ * @throws IllegalArgumentException if the ID attribute is not present
+ */
 fun Element.id(): String = requireNotNull(attributeValue(ID)) { "Element must define '$ID' attribute, but $this has none." }
 
-
+/**
+ * Gets the name attribute value from the element.
+ * @return the name value or empty string if not specified
+ */
 fun Element.name(): String = attributeValue(NAME) ?: ""
+/**
+ * Gets the schema element from the current element and converts it to a Schema object.
+ * @return the Schema object or null if no schema element is present
+ */
 fun Element.schema(): Schema? = this.emnElement(SCHEMA)?.toSchema()
+
+/**
+ * Gets the ID schema element from the current element and converts it to a Schema object.
+ * @return the Schema object or null if no ID schema element is present
+ */
 fun Element.idSchema(): Schema? = this.emnElement(ID_SCHEMA)?.toSchema()
 
+/**
+ * Converts the current element to a Schema object.
+ * If the element has non-empty content, it creates an EmbeddedSchema with the content.
+ * If the element has a resource attribute, it creates a ResourceSchema with the resource.
+ *
+ * @return the Schema object or null if neither content nor resource is present
+ */
 fun Element.toSchema(): Schema? {
-  return if (this.hasContent()) {
-    // embedded schema
-    EmbeddedSchema(schemaFormat = this.schemaFormat(), content = this.textTrim)
-  } else {
-    // resource
-    val resource = this.resource()
-    if (resource != null) {
-      ResourceSchema(schemaFormat = this.schemaFormat(), resource = resource)
-    } else {
-      null
-    }
+  // Check for resource first
+  val resource = this.resource()
+  if (resource != null) {
+    return ResourceSchema(schemaFormat = this.schemaFormat(), resource = resource)
   }
+
+  // Then check for non-empty content
+  if (this.hasContent() && this.textTrim.isNotEmpty()) {
+    return EmbeddedSchema(schemaFormat = this.schemaFormat(), content = this.textTrim)
+  }
+
+  // Neither resource nor content
+  return null
 }
 
 
