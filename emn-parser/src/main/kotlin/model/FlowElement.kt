@@ -11,19 +11,19 @@ sealed class FlowElement(
 
 }
 
-data class MessageFlow(
-  override val id: String,
-  override val typeReference: MessageFlowType,
-  val source: FlowNode,
-  val target: FlowNode
+data class InformationFlow(
+    override val id: String,
+    override val typeReference: InformationFlowType,
+    val source: FlowNode,
+    val target: FlowNode
 ) : FlowElement(id = id, typeReference = typeReference, value = null)
 
 sealed class FlowNode(
   override val id: String,
   override val typeReference: FlowNodeType,
   override val value: ElementValue?,
-  open val incoming: MutableList<MessageFlow> = mutableListOf(),
-  open val outgoing: MutableList<MessageFlow> = mutableListOf(),
+  open val incoming: MutableList<InformationFlow> = mutableListOf(),
+  open val outgoing: MutableList<InformationFlow> = mutableListOf(),
 ) : FlowElement(id = id, typeReference = typeReference, value = value)
 
 class Command(id: String, typeReference: CommandType, value: ElementValue?) : FlowNode(id = id, typeReference = typeReference, value = value) {

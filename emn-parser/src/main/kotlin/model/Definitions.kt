@@ -1,10 +1,10 @@
 package io.holixon.emn.model
 
 data class Definitions(
-  val nodeTypes: List<FlowNodeType>,
-  val flowTypes: List<MessageFlowType>,
-  val timelines: List<Timeline>,
-  val specifications: List<Specification>
+    val nodeTypes: List<FlowNodeType>,
+    val flowTypes: List<InformationFlowType>,
+    val timelines: List<Timeline>,
+    val specifications: List<Specification>
 ) {
   val typeDefinitions: List<FlowElementType> by lazy {
     nodeTypes + flowTypes
@@ -35,20 +35,20 @@ data class Definitions(
   }
 
   /**
-   * Retrieves all aggregates in all timelines.
+   * Retrieves all concepts in all timelines.
    */
-  fun aggregates(): List<AggregateLane> {
+  fun concepts(): List<ConceptLane> {
     return timelines.flatMap {
-      it.laneSet.aggregateLaneSet
+      it.laneSet.conceptLaneSet
     }
   }
 
   /**
-   * Retrieves all aggregates the event is created in.
+   * Retrieves all concepts the event is created in.
    */
-  fun aggregates(event: Event): List<AggregateLane> {
+  fun concepts(event: Event): List<ConceptLane> {
     return timelines(event).flatMap { t ->
-      t.laneSet.aggregateLaneSet.filter { a ->
+      t.laneSet.conceptLaneSet.filter { a ->
         a.flowElements.events().contains(event)
       }
     }
@@ -57,9 +57,9 @@ data class Definitions(
   /**
    * Delivers all aggregates the events of given event type are created in.
    */
-  fun aggregates(eventType: EventType): List<AggregateLane> {
+  fun concepts(eventType: EventType): List<ConceptLane> {
     return timelines(eventType).flatMap { t ->
-      t.laneSet.aggregateLaneSet.filter { a ->
+      t.laneSet.conceptLaneSet.filter { a ->
         a.flowElements.events().any { e -> e.typeReference == eventType }
       }
     }
@@ -68,19 +68,19 @@ data class Definitions(
   /**
    * Delivers all aggregates responsible for receiving this command.
    */
-  fun aggregates(command: Command): List<AggregateLane> {
+  fun concepts(command: Command): List<ConceptLane> {
     return command.possibleEvents().flatMap { e ->
-      aggregates(e)
+      concepts(e)
     }
   }
 
   /**
    * Delivers all aggregates responsible for receiving all commands of this type.
    */
-  fun aggregates(commandType: CommandType): List<AggregateLane> {
+  fun concepts(commandType: CommandType): List<ConceptLane> {
     return timelines
       .flatMap { t -> t.flowElements.commands().filter { e -> e.typeReference == commandType } }
-      .flatMap { c -> aggregates(c) }
+      .flatMap { c -> concepts(c) }
   }
 }
 

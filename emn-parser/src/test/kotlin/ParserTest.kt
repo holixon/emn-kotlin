@@ -48,9 +48,9 @@ class ParserTest {
 
   private fun assert_events_belong_to_aggregates(result: Definitions, verbose: Boolean = false) {
     result.getFlowElement<Event>().forEach { event ->
-      assertThat(result.aggregates(event)).isNotEmpty
+      assertThat(result.concepts(event)).isNotEmpty
       if (verbose) {
-        println("Event: ${event.typeReference.name}, aggregates: ${result.aggregates(event).map { it.name to it.idSchema }}")
+        println("Event: ${event.typeReference.name}, aggregates: ${result.concepts(event).map { it.name to it.idSchema }}")
       }
     }
   }
@@ -77,7 +77,7 @@ class ParserTest {
     assertThat(result.timelines).isNotEmpty
 
     assertThat(result.timelines[0].laneSet.triggerLaneSet).isNotNull
-    assertThat(result.timelines[0].laneSet.aggregateLaneSet).isNotNull
+    assertThat(result.timelines[0].laneSet.conceptLaneSet).isNotNull
 
     for (lane in result.timelines[0].laneSet.triggerLaneSet) {
       if (verbose) {
@@ -90,7 +90,7 @@ class ParserTest {
     }
     assertThat(result.timelines[0].laneSet.interactionLane.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
 
-    for (lane in result.timelines[0].laneSet.aggregateLaneSet) {
+    for (lane in result.timelines[0].laneSet.conceptLaneSet) {
       if (verbose) {
         println("Aggregate lane: ${lane.id}, ${lane.name}")
       }
