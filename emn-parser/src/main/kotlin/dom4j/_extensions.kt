@@ -337,6 +337,26 @@ fun Element.sourceRef(): String = requireNotNull(attributeValue(SOURCE_REF)) { "
 fun Element.targetRef(): String = requireNotNull(attributeValue(TARGET_REF)) { "Message flow must define a '$TARGET_REF' attribute, but $this has none." }
 
 /**
+ * Extracts a lane set from the current element.
+ * Looks for a lane set element and extracts trigger lanes, interaction lane, and concept lanes.
+ *
+ * @return lane set model element or an empty lane set if no lane set element is found
+ */
+fun Element.laneSet(): LaneSet {
+  return this.emnElement(LANE_SET)?.let { laneSet ->
+    LaneSet(
+      triggerLaneSet = laneSet.triggerLanes(),
+      interactionLane = InteractionLane(
+        id = laneSet.id(),
+        name = laneSet.name(),
+        flowElements = laneSet.flowNodeReferences(),
+      ),
+      conceptLaneSet = laneSet.conceptLanes(),
+    )
+  } ?: LaneSet()
+}
+
+/**
  * Extracts trigger lanes from the current element.
  * Looks for a trigger lane set element and extracts all trigger lanes within it.
  *
@@ -394,27 +414,6 @@ fun Element.sliceSet(): List<Slice> {
     )
   } ?: emptyList()
 }
-
-/**
- * Extracts a lane set from the current element.
- * Looks for a lane set element and extracts trigger lanes, interaction lane, and concept lanes.
- *
- * @return lane set model element or an empty lane set if no lane set element is found
- */
-fun Element.laneSet(): LaneSet {
-  return this.emnElement(LANE_SET)?.let { laneSet ->
-    LaneSet(
-      triggerLaneSet = laneSet.triggerLanes(),
-      interactionLane = InteractionLane(
-        id = laneSet.id(),
-        name = laneSet.name(),
-        flowElements = laneSet.flowNodeReferences(),
-      ),
-      conceptLaneSet = laneSet.conceptLanes(),
-    )
-  } ?: LaneSet()
-}
-
 
 /**
  * Gets the scenario attribute value from the element.
