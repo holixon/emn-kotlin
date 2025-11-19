@@ -18,7 +18,6 @@ import io.holixon.emn.dom4j.ElementNames.COMMAND
 import io.holixon.emn.dom4j.ElementNames.COMMAND_TYPE
 import io.holixon.emn.dom4j.ElementNames.CONCEPT_LANE
 import io.holixon.emn.dom4j.ElementNames.CONCEPT_LANE_SET
-import io.holixon.emn.dom4j.ElementNames.INTERACTION_LANE
 import io.holixon.emn.dom4j.ElementNames.ERROR
 import io.holixon.emn.dom4j.ElementNames.ERROR_TYPE
 import io.holixon.emn.dom4j.ElementNames.EVENT
@@ -31,6 +30,7 @@ import io.holixon.emn.dom4j.ElementNames.FLOW_NODE_REF
 import io.holixon.emn.dom4j.ElementNames.ID_SCHEMA
 import io.holixon.emn.dom4j.ElementNames.INFORMATION_FLOW
 import io.holixon.emn.dom4j.ElementNames.INFORMATION_FLOW_TYPE
+import io.holixon.emn.dom4j.ElementNames.INTERACTION_LANE
 import io.holixon.emn.dom4j.ElementNames.LANE_SET
 import io.holixon.emn.dom4j.ElementNames.QUERY
 import io.holixon.emn.dom4j.ElementNames.QUERY_TYPE
@@ -341,45 +341,39 @@ fun Element.targetRef(): String = requireNotNull(attributeValue(TARGET_REF)) { "
  * Extracts a lane set from the current element.
  * Looks for a lane set element and extracts trigger lanes, interaction lane, and concept lanes.
  *
- * @return lane set model element or an empty lane set if no lane set element is found
+ * @return lane set model element
+ * @throws IllegalArgumentException if no lane set element is found
  */
 fun Element.laneSet(): LaneSet {
-  return this.emnElement(LANE_SET)?.let { laneSet ->
-    val interactionLaneElement = laneSet.emnElement(INTERACTION_LANE)
-    LaneSet(
-      triggerLaneSet = laneSet.triggerLanes(),
-      interactionLane = laneSet.interactionLane(),
-      conceptLaneSet = laneSet.conceptLanes(),
-    )
-  } ?: LaneSet()
+  val laneSetElement = requireNotNull(this.emnElement(LANE_SET)) { "Element must contain a lane set, but $this has none." }
+  return LaneSet(
+    triggerLaneSet = laneSetElement.triggerLanes(),
+    interactionLane = laneSetElement.interactionLane(),
+    conceptLaneSet = laneSetElement.conceptLanes(),
+  )
 }
 
 /**
  * Extracts an interaction lane from the current element.
  * Looks for an interaction lane element and extracts its ID, name, and flow elements.
- * If no interaction lane element is found, creates a default interaction lane using the current element's ID and name.
  *
- * @return interaction lane model element
+ * @return interaction lane model element or null if no interaction lane element is found
  */
-fun Element.interactionLane(): InteractionLane {
+fun Element.interactionLane(): InteractionLane? {
   return this.emnElement(INTERACTION_LANE)?.let { interactionLane ->
     InteractionLane(
       id = interactionLane.id(),
       name = interactionLane.name(),
       flowElements = interactionLane.flowNodeReferences(),
     )
-  } ?: InteractionLane(
-    id = this.id(),
-    name = this.name(),
-    flowElements = listOf(),
-  )
+  }
 }
 
 /**
  * Extracts trigger lanes from the current element.
  * Looks for a trigger lane set element and extracts all trigger lanes within it.
  *
- * @return list of trigger lane model elements or empty list if no trigger lane set is found
+ * @return list of trigger lane model elements or empty list if no trigger lane set element is found
  */
 fun Element.triggerLanes(): List<TriggerLane> {
   return this.emnElement(TRIGGER_LANE_SET)?.emnElements(TRIGGER_LANE)?.map { triggerLane ->
@@ -395,7 +389,7 @@ fun Element.triggerLanes(): List<TriggerLane> {
  * Extracts concept lanes from the current element.
  * Looks for a concept lane set element and extracts all concept lanes within it.
  *
- * @return list of concept lane model elements or empty list if no concept lane set is found
+ * @return list of concept lane model elements or empty list if no concept lane set element is found
  */
 fun Element.conceptLanes(): List<ConceptLane> {
   return this.emnElement(CONCEPT_LANE_SET)?.emnElements(CONCEPT_LANE)?.map { conceptLane ->

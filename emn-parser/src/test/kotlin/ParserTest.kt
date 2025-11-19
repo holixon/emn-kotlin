@@ -88,7 +88,7 @@ class ParserTest {
     if (verbose) {
       println("Interaction lane: ${result.timelines[0].laneSet.interactionLane}")
     }
-    assertThat(result.timelines[0].laneSet.interactionLane.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
+    assertThat(result.timelines[0].laneSet.interactionLane?.flowElements?.filterIsInstance<FlowNodeReference>() ?: emptyList()).isEmpty()
 
     for (lane in result.timelines[0].laneSet.conceptLaneSet) {
       if (verbose) {

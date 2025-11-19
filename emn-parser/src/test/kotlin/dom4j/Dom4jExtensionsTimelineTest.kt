@@ -58,7 +58,7 @@ internal class Dom4jExtensionsTimelineTest {
     assertThat(result.sliceSet[0].flowElements[0].id).isEqualTo("node-1")
 
     // Check lane set
-    assertThat(result.laneSet.interactionLane.id).isEqualTo("interaction-1")
+    assertThat(result.laneSet.interactionLane!!.id).isEqualTo("interaction-1")
     assertThat(result.laneSet.interactionLane.name).isEqualTo("Interaction")
     assertThat(result.laneSet.interactionLane.flowElements).hasSize(1)
     assertThat(result.laneSet.interactionLane.flowElements[0].id).isEqualTo("interaction-node")
@@ -94,6 +94,10 @@ internal class Dom4jExtensionsTimelineTest {
             </emn:slice>
           </emn:sliceSet>
           <emn:laneSet id="laneSet-1" name="Lane Set">
+            <emn:triggerLaneSet>
+              <emn:triggerLane id="triggerLane-1" name="Trigger Lane" />
+            </emn:triggerLaneSet>
+            <emn:interactionLane id="interaction-1" name="Interaction" />
             <emn:conceptLaneSet>
               <emn:conceptLane id="conceptLane-1" name="Concept Lane">
                 <emn:flowNodeRef>event-1</emn:flowNodeRef>

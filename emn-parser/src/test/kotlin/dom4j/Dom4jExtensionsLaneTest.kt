@@ -122,10 +122,10 @@ internal class Dom4jExtensionsLaneTest {
     val laneSet = doc.rootElement.laneSet()
 
     // Interaction lane
-    assertThat(laneSet.interactionLane.id).isEqualTo("interaction-1")
-    assertThat(laneSet.interactionLane.name).isEqualTo("Interaction Lane")
-    assertThat(laneSet.interactionLane.flowElements).hasSize(1)
-    assertThat(laneSet.interactionLane.flowElements[0].id).isEqualTo("interaction-node")
+    assertThat(laneSet.interactionLane!!.id).isEqualTo("interaction-1")
+    assertThat(laneSet.interactionLane!!.name).isEqualTo("Interaction Lane")
+    assertThat(laneSet.interactionLane!!.flowElements).hasSize(1)
+    assertThat(laneSet.interactionLane!!.flowElements[0].id).isEqualTo("interaction-node")
 
     // Trigger lane set
     assertThat(laneSet.triggerLaneSet).hasSize(1)
@@ -143,7 +143,7 @@ internal class Dom4jExtensionsLaneTest {
   }
 
   @Test
-  fun `laneSet returns empty lane set when no lane set element exists`() {
+  fun `laneSet throws exception when no lane set element exists`() {
     val xml = """
       <?xml version="1.0" encoding="UTF-8"?>
       <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
@@ -151,17 +151,15 @@ internal class Dom4jExtensionsLaneTest {
     """.trimIndent()
 
     val doc = SAXReader().read(StringReader(xml))
-    val laneSet = doc.rootElement.laneSet()
 
-    assertThat(laneSet.interactionLane.id).isEqualTo("UNSET")
-    assertThat(laneSet.interactionLane.name).isNull()
-    assertThat(laneSet.interactionLane.flowElements).isEmpty()
-    assertThat(laneSet.triggerLaneSet).isEmpty()
-    assertThat(laneSet.conceptLaneSet).isEmpty()
+    org.assertj.core.api.Assertions.assertThatThrownBy {
+      doc.rootElement.laneSet()
+    }.isInstanceOf(IllegalArgumentException::class.java)
+      .hasMessageContaining("Element must contain a lane set")
   }
 
   @Test
-  fun `laneSet returns lane set with empty trigger and concept lanes when lane sets are empty`() {
+  fun `laneSet accepts lane set with empty trigger and concept lanes when lane set elements are present`() {
     val xml = """
       <?xml version="1.0" encoding="UTF-8"?>
       <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
@@ -183,10 +181,10 @@ internal class Dom4jExtensionsLaneTest {
     val laneSet = doc.rootElement.laneSet()
 
     // Interaction lane should be populated
-    assertThat(laneSet.interactionLane.id).isEqualTo("interaction-1")
-    assertThat(laneSet.interactionLane.name).isEqualTo("Interaction Lane")
-    assertThat(laneSet.interactionLane.flowElements).hasSize(1)
-    assertThat(laneSet.interactionLane.flowElements[0].id).isEqualTo("interaction-node")
+    assertThat(laneSet.interactionLane!!.id).isEqualTo("interaction-1")
+    assertThat(laneSet.interactionLane!!.name).isEqualTo("Interaction Lane")
+    assertThat(laneSet.interactionLane!!.flowElements).hasSize(1)
+    assertThat(laneSet.interactionLane!!.flowElements[0].id).isEqualTo("interaction-node")
 
     // Trigger and concept lane sets should be empty
     assertThat(laneSet.triggerLaneSet).isEmpty()
@@ -194,13 +192,106 @@ internal class Dom4jExtensionsLaneTest {
   }
 
   @Test
-  fun `triggerLanes and conceptLanes returns empty list when lane set is empty`() {
+  fun `laneSet accepts lane set without interaction lane`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:laneSet id="laneSet-1" name="Lane Set">
+          <emn:triggerLaneSet>
+            <!-- Empty trigger lane set -->
+          </emn:triggerLaneSet>
+          <emn:conceptLaneSet>
+            <!-- Empty concept lane set -->
+          </emn:conceptLaneSet>
+        </emn:laneSet>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val laneSet = doc.rootElement.laneSet()
+
+    // Interaction lane should be null
+    assertThat(laneSet.interactionLane).isNull()
+
+    // Trigger and concept lane sets should be empty
+    assertThat(laneSet.triggerLaneSet).isEmpty()
+    assertThat(laneSet.conceptLaneSet).isEmpty()
+  }
+
+  @Test
+  fun `laneSet accepts lane set without trigger lane set`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:laneSet id="laneSet-1" name="Lane Set">
+          <emn:interactionLane id="interaction-1" name="Interaction Lane">
+            <emn:flowNodeRef>interaction-node</emn:flowNodeRef>
+          </emn:interactionLane>
+          <emn:conceptLaneSet>
+            <!-- Empty concept lane set -->
+          </emn:conceptLaneSet>
+        </emn:laneSet>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val laneSet = doc.rootElement.laneSet()
+
+    // Interaction lane should be populated
+    assertThat(laneSet.interactionLane!!.id).isEqualTo("interaction-1")
+    assertThat(laneSet.interactionLane!!.name).isEqualTo("Interaction Lane")
+    assertThat(laneSet.interactionLane!!.flowElements).hasSize(1)
+    assertThat(laneSet.interactionLane!!.flowElements[0].id).isEqualTo("interaction-node")
+
+    // Trigger lane set should be empty
+    assertThat(laneSet.triggerLaneSet).isEmpty()
+
+    // Concept lane set should be empty
+    assertThat(laneSet.conceptLaneSet).isEmpty()
+  }
+
+  @Test
+  fun `laneSet accepts lane set without concept lane set`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:laneSet id="laneSet-1" name="Lane Set">
+          <emn:triggerLaneSet>
+            <!-- Empty trigger lane set -->
+          </emn:triggerLaneSet>
+          <emn:interactionLane id="interaction-1" name="Interaction Lane">
+            <emn:flowNodeRef>interaction-node</emn:flowNodeRef>
+          </emn:interactionLane>
+        </emn:laneSet>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val laneSet = doc.rootElement.laneSet()
+
+    // Interaction lane should be populated
+    assertThat(laneSet.interactionLane!!.id).isEqualTo("interaction-1")
+    assertThat(laneSet.interactionLane!!.name).isEqualTo("Interaction Lane")
+    assertThat(laneSet.interactionLane!!.flowElements).hasSize(1)
+    assertThat(laneSet.interactionLane!!.flowElements[0].id).isEqualTo("interaction-node")
+
+    // Trigger lane set should be empty
+    assertThat(laneSet.triggerLaneSet).isEmpty()
+
+    // Concept lane set should be empty
+    assertThat(laneSet.conceptLaneSet).isEmpty()
+  }
+
+  @Test
+  fun `triggerLanes returns empty list when trigger lane set is missing`() {
     val xml = """
       <?xml version="1.0" encoding="UTF-8"?>
       <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
         <emn:laneSet id="laneSet-1" name="Lane Set">
           <!-- No trigger lane set -->
-          <!-- No concept lane set -->
+          <emn:conceptLaneSet>
+            <!-- Empty concept lane set -->
+          </emn:conceptLaneSet>
         </emn:laneSet>
       </emn:definitions>
     """.trimIndent()
@@ -210,7 +301,26 @@ internal class Dom4jExtensionsLaneTest {
 
     val triggerLanes = laneSet!!.triggerLanes()
     assertThat(triggerLanes).isEmpty()
-    val conceptLanes = laneSet.conceptLanes()
+  }
+
+  @Test
+  fun `conceptLanes returns empty list when concept lane set is missing`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:laneSet id="laneSet-1" name="Lane Set">
+          <emn:triggerLaneSet>
+            <!-- Empty trigger lane set -->
+          </emn:triggerLaneSet>
+          <!-- No concept lane set -->
+        </emn:laneSet>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val laneSet = doc.rootElement.emnElement("laneSet")
+
+    val conceptLanes = laneSet!!.conceptLanes()
     assertThat(conceptLanes).isEmpty()
   }
 
@@ -232,6 +342,24 @@ internal class Dom4jExtensionsLaneTest {
 
     val triggerLanes = laneSet!!.triggerLanes()
     assertThat(triggerLanes).isEmpty()
+  }
+
+  @Test
+  fun `interactionLane returns null when interaction lane is missing`() {
+    val xml = """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
+        <emn:laneSet id="laneSet-1" name="Lane Set">
+          <!-- No interaction lane -->
+        </emn:laneSet>
+      </emn:definitions>
+    """.trimIndent()
+
+    val doc = SAXReader().read(StringReader(xml))
+    val laneSet = doc.rootElement.emnElement("laneSet")
+
+    val interactionLane = laneSet!!.interactionLane()
+    assertThat(interactionLane).isNull()
   }
 
   @Test
