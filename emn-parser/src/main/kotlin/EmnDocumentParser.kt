@@ -81,26 +81,28 @@ class EmnDocumentParser {
               .map { e -> nodesById.getValue(e.id) }
           )
         },
-        laneSet = timeline.laneSet.copy(
-          triggerLaneSet = timeline.laneSet.triggerLaneSet.map { triggerLane ->
-            triggerLane.copy(
-              flowElements = triggerLane.flowElements.filterIsInstance<FlowNodeReference>()
-                .map { e -> nodesById.getValue(e.id) }
-            )
-          },
-          interactionLane = timeline.laneSet.interactionLane?.let { interactionLane ->
-              interactionLane.copy(
-                flowElements = interactionLane.flowElements.filterIsInstance<FlowNodeReference>()
+        laneSet = timeline.laneSet?.let { laneSet ->
+          laneSet.copy(
+            triggerLaneSet = laneSet.triggerLaneSet.map { triggerLane ->
+              triggerLane.copy(
+                flowElements = triggerLane.flowElements.filterIsInstance<FlowNodeReference>()
                   .map { e -> nodesById.getValue(e.id) }
               )
             },
-          conceptLaneSet = timeline.laneSet.conceptLaneSet.map { aggregateLane ->
-            aggregateLane.copy(
-              flowElements = aggregateLane.flowElements.filterIsInstance<FlowNodeReference>()
-                .map { e -> nodesById.getValue(e.id) }
-            )
-          }
-        )
+            interactionLane = laneSet.interactionLane?.let { interactionLane ->
+                interactionLane.copy(
+                  flowElements = interactionLane.flowElements.filterIsInstance<FlowNodeReference>()
+                    .map { e -> nodesById.getValue(e.id) }
+                )
+              },
+            conceptLaneSet = laneSet.conceptLaneSet.map { aggregateLane ->
+              aggregateLane.copy(
+                flowElements = aggregateLane.flowElements.filterIsInstance<FlowNodeReference>()
+                  .map { e -> nodesById.getValue(e.id) }
+              )
+            }
+          )
+        }
       )
     }
 

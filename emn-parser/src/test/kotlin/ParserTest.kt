@@ -50,7 +50,7 @@ class ParserTest {
     result.getFlowElement<Event>().forEach { event ->
       assertThat(result.concepts(event)).isNotEmpty
       if (verbose) {
-        println("Event: ${event.typeReference.name}, aggregates: ${result.concepts(event).map { it.name to it.idSchema }}")
+        println("Event: ${event.typeReference.name}, Concepts: ${result.concepts(event).map { it.name to it.idSchema }}")
       }
     }
   }
@@ -75,24 +75,24 @@ class ParserTest {
     }
 
     assertThat(result.timelines).isNotEmpty
+    assertThat(result.timelines[0].laneSet).isNotNull
+    assertThat(result.timelines[0].laneSet!!.triggerLaneSet).isNotNull
+    assertThat(result.timelines[0].laneSet!!.conceptLaneSet).isNotNull
 
-    assertThat(result.timelines[0].laneSet.triggerLaneSet).isNotNull
-    assertThat(result.timelines[0].laneSet.conceptLaneSet).isNotNull
-
-    for (lane in result.timelines[0].laneSet.triggerLaneSet) {
+    for (lane in result.timelines[0].laneSet!!.triggerLaneSet) {
       if (verbose) {
         println("Trigger lane: ${lane.id}, ${lane.name}")
       }
       assertThat(lane.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
     }
     if (verbose) {
-      println("Interaction lane: ${result.timelines[0].laneSet.interactionLane}")
+      println("Interaction lane: ${result.timelines[0].laneSet!!.interactionLane}")
     }
-    assertThat(result.timelines[0].laneSet.interactionLane?.flowElements?.filterIsInstance<FlowNodeReference>() ?: emptyList()).isEmpty()
+    assertThat(result.timelines[0].laneSet?.interactionLane?.flowElements?.filterIsInstance<FlowNodeReference>() ?: emptyList()).isEmpty()
 
-    for (lane in result.timelines[0].laneSet.conceptLaneSet) {
+    for (lane in result.timelines[0].laneSet!!.conceptLaneSet) {
       if (verbose) {
-        println("Aggregate lane: ${lane.id}, ${lane.name}")
+        println("Concept lane: ${lane.id}, ${lane.name}")
       }
       assertThat(lane.flowElements.filterIsInstance<FlowNodeReference>()).isEmpty()
     }

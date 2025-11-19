@@ -39,7 +39,7 @@ data class Definitions(
    */
   fun concepts(): List<ConceptLane> {
     return timelines.flatMap {
-      it.laneSet.conceptLaneSet
+      it.laneSet?.conceptLaneSet ?: emptyList()
     }
   }
 
@@ -48,9 +48,9 @@ data class Definitions(
    */
   fun concepts(event: Event): List<ConceptLane> {
     return timelines(event).flatMap { t ->
-      t.laneSet.conceptLaneSet.filter { a ->
+      t.laneSet?.conceptLaneSet?.filter { a ->
         a.flowElements.events().contains(event)
-      }
+      } ?: emptyList()
     }
   }
 
@@ -59,9 +59,9 @@ data class Definitions(
    */
   fun concepts(eventType: EventType): List<ConceptLane> {
     return timelines(eventType).flatMap { t ->
-      t.laneSet.conceptLaneSet.filter { a ->
+      t.laneSet?.conceptLaneSet?.filter { a ->
         a.flowElements.events().any { e -> e.typeReference == eventType }
-      }
+      } ?: emptyList()
     }
   }
 
@@ -83,5 +83,3 @@ data class Definitions(
       .flatMap { c -> concepts(c) }
   }
 }
-
-

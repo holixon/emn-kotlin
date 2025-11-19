@@ -58,24 +58,24 @@ internal class Dom4jExtensionsTimelineTest {
     assertThat(result.sliceSet[0].flowElements[0].id).isEqualTo("node-1")
 
     // Check lane set
-    assertThat(result.laneSet.interactionLane!!.id).isEqualTo("interaction-1")
-    assertThat(result.laneSet.interactionLane.name).isEqualTo("Interaction")
-    assertThat(result.laneSet.interactionLane.flowElements).hasSize(1)
-    assertThat(result.laneSet.interactionLane.flowElements[0].id).isEqualTo("interaction-node")
+    assertThat(result.laneSet!!.interactionLane!!.id).isEqualTo("interaction-1")
+    assertThat(result.laneSet!!.interactionLane!!.name).isEqualTo("Interaction")
+    assertThat(result.laneSet!!.interactionLane!!.flowElements).hasSize(1)
+    assertThat(result.laneSet!!.interactionLane!!.flowElements[0].id).isEqualTo("interaction-node")
 
     // Check trigger lane set
-    assertThat(result.laneSet.triggerLaneSet).hasSize(1)
-    assertThat(result.laneSet.triggerLaneSet[0].id).isEqualTo("triggerLane-1")
-    assertThat(result.laneSet.triggerLaneSet[0].name).isEqualTo("Trigger Lane")
-    assertThat(result.laneSet.triggerLaneSet[0].flowElements).hasSize(1)
-    assertThat(result.laneSet.triggerLaneSet[0].flowElements[0].id).isEqualTo("trigger-node")
+    assertThat(result.laneSet!!.triggerLaneSet).hasSize(1)
+    assertThat(result.laneSet!!.triggerLaneSet[0].id).isEqualTo("triggerLane-1")
+    assertThat(result.laneSet!!.triggerLaneSet[0].name).isEqualTo("Trigger Lane")
+    assertThat(result.laneSet!!.triggerLaneSet[0].flowElements).hasSize(1)
+    assertThat(result.laneSet!!.triggerLaneSet[0].flowElements[0].id).isEqualTo("trigger-node")
 
     // Check concept lane set
-    assertThat(result.laneSet.conceptLaneSet).hasSize(1)
-    assertThat(result.laneSet.conceptLaneSet[0].id).isEqualTo("conceptLane-1")
-    assertThat(result.laneSet.conceptLaneSet[0].name).isEqualTo("Concept Lane")
-    assertThat(result.laneSet.conceptLaneSet[0].flowElements).hasSize(1)
-    assertThat(result.laneSet.conceptLaneSet[0].flowElements[0].id).isEqualTo("concept-node")
+    assertThat(result.laneSet!!.conceptLaneSet).hasSize(1)
+    assertThat(result.laneSet!!.conceptLaneSet[0].id).isEqualTo("conceptLane-1")
+    assertThat(result.laneSet!!.conceptLaneSet[0].name).isEqualTo("Concept Lane")
+    assertThat(result.laneSet!!.conceptLaneSet[0].flowElements).hasSize(1)
+    assertThat(result.laneSet!!.conceptLaneSet[0].flowElements[0].id).isEqualTo("concept-node")
 
     // Check nodes and messages
     assertThat(result.nodes).isEmpty()

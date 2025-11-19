@@ -121,11 +121,13 @@ internal class Dom4jExtensionsLaneTest {
     val doc = SAXReader().read(StringReader(xml))
     val laneSet = doc.rootElement.laneSet()
 
+    assertThat(laneSet).isNotNull
+    requireNotNull(laneSet)
     // Interaction lane
     assertThat(laneSet.interactionLane!!.id).isEqualTo("interaction-1")
-    assertThat(laneSet.interactionLane!!.name).isEqualTo("Interaction Lane")
-    assertThat(laneSet.interactionLane!!.flowElements).hasSize(1)
-    assertThat(laneSet.interactionLane!!.flowElements[0].id).isEqualTo("interaction-node")
+    assertThat(laneSet.interactionLane.name).isEqualTo("Interaction Lane")
+    assertThat(laneSet.interactionLane.flowElements).hasSize(1)
+    assertThat(laneSet.interactionLane.flowElements[0].id).isEqualTo("interaction-node")
 
     // Trigger lane set
     assertThat(laneSet.triggerLaneSet).hasSize(1)
@@ -140,22 +142,6 @@ internal class Dom4jExtensionsLaneTest {
     assertThat(laneSet.conceptLaneSet[0].name).isEqualTo("Concept Lane")
     assertThat(laneSet.conceptLaneSet[0].flowElements).hasSize(1)
     assertThat(laneSet.conceptLaneSet[0].flowElements[0].id).isEqualTo("concept-node")
-  }
-
-  @Test
-  fun `laneSet throws exception when no lane set element exists`() {
-    val xml = """
-      <?xml version="1.0" encoding="UTF-8"?>
-      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
-      </emn:definitions>
-    """.trimIndent()
-
-    val doc = SAXReader().read(StringReader(xml))
-
-    org.assertj.core.api.Assertions.assertThatThrownBy {
-      doc.rootElement.laneSet()
-    }.isInstanceOf(IllegalArgumentException::class.java)
-      .hasMessageContaining("Element must contain a lane set")
   }
 
   @Test
@@ -179,12 +165,13 @@ internal class Dom4jExtensionsLaneTest {
 
     val doc = SAXReader().read(StringReader(xml))
     val laneSet = doc.rootElement.laneSet()
-
+    assertThat(laneSet).isNotNull
+    requireNotNull(laneSet)
     // Interaction lane should be populated
     assertThat(laneSet.interactionLane!!.id).isEqualTo("interaction-1")
-    assertThat(laneSet.interactionLane!!.name).isEqualTo("Interaction Lane")
-    assertThat(laneSet.interactionLane!!.flowElements).hasSize(1)
-    assertThat(laneSet.interactionLane!!.flowElements[0].id).isEqualTo("interaction-node")
+    assertThat(laneSet.interactionLane.name).isEqualTo("Interaction Lane")
+    assertThat(laneSet.interactionLane.flowElements).hasSize(1)
+    assertThat(laneSet.interactionLane.flowElements[0].id).isEqualTo("interaction-node")
 
     // Trigger and concept lane sets should be empty
     assertThat(laneSet.triggerLaneSet).isEmpty()
@@ -209,7 +196,8 @@ internal class Dom4jExtensionsLaneTest {
 
     val doc = SAXReader().read(StringReader(xml))
     val laneSet = doc.rootElement.laneSet()
-
+    assertThat(laneSet).isNotNull
+    requireNotNull(laneSet)
     // Interaction lane should be null
     assertThat(laneSet.interactionLane).isNull()
 
@@ -236,7 +224,8 @@ internal class Dom4jExtensionsLaneTest {
 
     val doc = SAXReader().read(StringReader(xml))
     val laneSet = doc.rootElement.laneSet()
-
+    assertThat(laneSet).isNotNull
+    requireNotNull(laneSet)
     // Interaction lane should be populated
     assertThat(laneSet.interactionLane!!.id).isEqualTo("interaction-1")
     assertThat(laneSet.interactionLane!!.name).isEqualTo("Interaction Lane")
@@ -268,12 +257,13 @@ internal class Dom4jExtensionsLaneTest {
 
     val doc = SAXReader().read(StringReader(xml))
     val laneSet = doc.rootElement.laneSet()
-
+    assertThat(laneSet).isNotNull
+    requireNotNull(laneSet)
     // Interaction lane should be populated
     assertThat(laneSet.interactionLane!!.id).isEqualTo("interaction-1")
-    assertThat(laneSet.interactionLane!!.name).isEqualTo("Interaction Lane")
-    assertThat(laneSet.interactionLane!!.flowElements).hasSize(1)
-    assertThat(laneSet.interactionLane!!.flowElements[0].id).isEqualTo("interaction-node")
+    assertThat(laneSet.interactionLane.name).isEqualTo("Interaction Lane")
+    assertThat(laneSet.interactionLane.flowElements).hasSize(1)
+    assertThat(laneSet.interactionLane.flowElements[0].id).isEqualTo("interaction-node")
 
     // Trigger lane set should be empty
     assertThat(laneSet.triggerLaneSet).isEmpty()

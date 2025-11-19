@@ -341,16 +341,16 @@ fun Element.targetRef(): String = requireNotNull(attributeValue(TARGET_REF)) { "
  * Extracts a lane set from the current element.
  * Looks for a lane set element and extracts trigger lanes, interaction lane, and concept lanes.
  *
- * @return lane set model element
- * @throws IllegalArgumentException if no lane set element is found
+ * @return lane set model element or null if no lane set element is found
  */
-fun Element.laneSet(): LaneSet {
-  val laneSetElement = requireNotNull(this.emnElement(LANE_SET)) { "Element must contain a lane set, but $this has none." }
-  return LaneSet(
-    triggerLaneSet = laneSetElement.triggerLanes(),
-    interactionLane = laneSetElement.interactionLane(),
-    conceptLaneSet = laneSetElement.conceptLanes(),
-  )
+fun Element.laneSet(): LaneSet? {
+  return this.emnElement(LANE_SET)?.let { laneSetElement ->
+    LaneSet(
+      triggerLaneSet = laneSetElement.triggerLanes(),
+      interactionLane = laneSetElement.interactionLane(),
+      conceptLaneSet = laneSetElement.conceptLanes(),
+    )
+  }
 }
 
 /**
