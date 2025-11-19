@@ -101,12 +101,14 @@ internal class Dom4jExtensionsLaneTest {
       <?xml version="1.0" encoding="UTF-8"?>
       <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
         <emn:laneSet id="laneSet-1" name="Lane Set">
-          <emn:flowNodeRef>interaction-node</emn:flowNodeRef>
           <emn:triggerLaneSet>
             <emn:triggerLane id="triggerLane-1" name="Trigger Lane">
               <emn:flowNodeRef>trigger-node</emn:flowNodeRef>
             </emn:triggerLane>
           </emn:triggerLaneSet>
+          <emn:interactionLane id="interaction-1" name="Interaction Lane">
+            <emn:flowNodeRef>interaction-node</emn:flowNodeRef>
+          </emn:interactionLane>
           <emn:conceptLaneSet>
             <emn:conceptLane id="conceptLane-1" name="Concept Lane">
               <emn:flowNodeRef>concept-node</emn:flowNodeRef>
@@ -120,8 +122,8 @@ internal class Dom4jExtensionsLaneTest {
     val laneSet = doc.rootElement.laneSet()
 
     // Interaction lane
-    assertThat(laneSet.interactionLane.id).isEqualTo("laneSet-1")
-    assertThat(laneSet.interactionLane.name).isEqualTo("Lane Set")
+    assertThat(laneSet.interactionLane.id).isEqualTo("interaction-1")
+    assertThat(laneSet.interactionLane.name).isEqualTo("Interaction Lane")
     assertThat(laneSet.interactionLane.flowElements).hasSize(1)
     assertThat(laneSet.interactionLane.flowElements[0].id).isEqualTo("interaction-node")
 
@@ -164,10 +166,12 @@ internal class Dom4jExtensionsLaneTest {
       <?xml version="1.0" encoding="UTF-8"?>
       <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL">
         <emn:laneSet id="laneSet-1" name="Lane Set">
-          <emn:flowNodeRef>interaction-node</emn:flowNodeRef>
           <emn:triggerLaneSet>
             <!-- Empty trigger lane set -->
           </emn:triggerLaneSet>
+          <emn:interactionLane id="interaction-1" name="Interaction Lane">
+            <emn:flowNodeRef>interaction-node</emn:flowNodeRef>
+          </emn:interactionLane>
           <emn:conceptLaneSet>
             <!-- Empty concept lane set -->
           </emn:conceptLaneSet>
@@ -179,8 +183,8 @@ internal class Dom4jExtensionsLaneTest {
     val laneSet = doc.rootElement.laneSet()
 
     // Interaction lane should be populated
-    assertThat(laneSet.interactionLane.id).isEqualTo("laneSet-1")
-    assertThat(laneSet.interactionLane.name).isEqualTo("Lane Set")
+    assertThat(laneSet.interactionLane.id).isEqualTo("interaction-1")
+    assertThat(laneSet.interactionLane.name).isEqualTo("Interaction Lane")
     assertThat(laneSet.interactionLane.flowElements).hasSize(1)
     assertThat(laneSet.interactionLane.flowElements[0].id).isEqualTo("interaction-node")
 

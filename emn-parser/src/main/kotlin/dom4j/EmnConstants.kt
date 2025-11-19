@@ -33,6 +33,7 @@ object ElementNames {
   const val LANE_SET = "laneSet"
   const val TRIGGER_LANE_SET = "triggerLaneSet"
   const val TRIGGER_LANE = "triggerLane"
+  const val INTERACTION_LANE = "interactionLane"
   const val CONCEPT_LANE_SET = "conceptLaneSet"
   const val CONCEPT_LANE = "conceptLane"
 

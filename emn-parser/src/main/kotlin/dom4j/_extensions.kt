@@ -18,6 +18,7 @@ import io.holixon.emn.dom4j.ElementNames.COMMAND
 import io.holixon.emn.dom4j.ElementNames.COMMAND_TYPE
 import io.holixon.emn.dom4j.ElementNames.CONCEPT_LANE
 import io.holixon.emn.dom4j.ElementNames.CONCEPT_LANE_SET
+import io.holixon.emn.dom4j.ElementNames.INTERACTION_LANE
 import io.holixon.emn.dom4j.ElementNames.ERROR
 import io.holixon.emn.dom4j.ElementNames.ERROR_TYPE
 import io.holixon.emn.dom4j.ElementNames.EVENT
@@ -344,16 +345,34 @@ fun Element.targetRef(): String = requireNotNull(attributeValue(TARGET_REF)) { "
  */
 fun Element.laneSet(): LaneSet {
   return this.emnElement(LANE_SET)?.let { laneSet ->
+    val interactionLaneElement = laneSet.emnElement(INTERACTION_LANE)
     LaneSet(
       triggerLaneSet = laneSet.triggerLanes(),
-      interactionLane = InteractionLane(
-        id = laneSet.id(),
-        name = laneSet.name(),
-        flowElements = laneSet.flowNodeReferences(),
-      ),
+      interactionLane = laneSet.interactionLane(),
       conceptLaneSet = laneSet.conceptLanes(),
     )
   } ?: LaneSet()
+}
+
+/**
+ * Extracts an interaction lane from the current element.
+ * Looks for an interaction lane element and extracts its ID, name, and flow elements.
+ * If no interaction lane element is found, creates a default interaction lane using the current element's ID and name.
+ *
+ * @return interaction lane model element
+ */
+fun Element.interactionLane(): InteractionLane {
+  return this.emnElement(INTERACTION_LANE)?.let { interactionLane ->
+    InteractionLane(
+      id = interactionLane.id(),
+      name = interactionLane.name(),
+      flowElements = interactionLane.flowNodeReferences(),
+    )
+  } ?: InteractionLane(
+    id = this.id(),
+    name = this.name(),
+    flowElements = listOf(),
+  )
 }
 
 /**
