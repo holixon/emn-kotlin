@@ -30,17 +30,13 @@ class EmnDocumentParser {
     val root = document.rootElement // <definitions>
     requireNotNull(root)
     require(root.name == DEFINITIONS && root.isEmn()) { "Can't parse emn:definitions, this is probably not a EMN file" }
-
-    val nodeTypes = mutableListOf<FlowNodeType>()
-    val informationFlowTypes = mutableListOf<InformationFlowType>()
-
+    
     /*
      * Parse types
      */
     val typeElements = root.emnElement(TYPES)?.emnElements()
-
-    typeElements?.toFlowTypes()?.forEach { noteType -> nodeTypes.add(noteType) }
-    typeElements?.toInformationFlowType()?.forEach { informationFlowType -> informationFlowTypes.add(informationFlowType) }
+    val nodeTypes = typeElements?.toFlowTypes() ?: emptyList()
+    val informationFlowTypes = typeElements?.toInformationFlowType() ?: emptyList()
 
     /*
      * Patch message types
