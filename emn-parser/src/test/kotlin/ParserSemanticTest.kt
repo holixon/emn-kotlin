@@ -33,7 +33,7 @@ class ParserSemanticTest {
         assertThatThrownBy {
             parser.parseDefinitions(document)
         }.isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessageContaining("Required value was null")
+            .hasMessageContaining("Expected type reference 'non-existent-type' to exist in types, but it was not found.")
     }
 
     @Test
@@ -58,7 +58,7 @@ class ParserSemanticTest {
         assertThatThrownBy {
             parser.parseDefinitions(document)
         }.isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessageContaining("Unknown source non-existent-source")
+            .hasMessageContaining("Expected source type with id 'non-existent-source' to exist, but it was not found.")
     }
 
     @Test
@@ -85,7 +85,7 @@ class ParserSemanticTest {
         assertThatThrownBy {
             parser.parseDefinitions(document)
         }.isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessageContaining("Unknown source non-existent-source")
+            .hasMessageContaining("Expected source element with id 'non-existent-source' to exist, but it was not found.")
     }
 
     @Test
@@ -111,8 +111,8 @@ class ParserSemanticTest {
         // The parser should throw an exception when the type doesn't match the element
         assertThatThrownBy {
             parser.parseDefinitions(document)
-        }.isInstanceOf(ClassCastException::class.java)
-            .hasMessageContaining("cannot be cast to class io.holixon.emn.model.CommandType")
+        }.isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("Expected type reference 'event-type-1' to be of type CommandType, but it was EventType")
     }
 
     @Test
@@ -147,8 +147,8 @@ class ParserSemanticTest {
         // The parser should throw an exception when it can't resolve a lane reference
         assertThatThrownBy {
             parser.parseDefinitions(document)
-        }.isInstanceOf(NoSuchElementException::class.java)
-            .hasMessageContaining("Key non-existent-node is missing in the map")
+        }.isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("Expected node with id 'non-existent-node' referenced in trigger lane 'trigger-lane-1' to exist, but it was not found.")
     }
 
     @Test
@@ -177,7 +177,7 @@ class ParserSemanticTest {
         // The parser should throw an exception when it can't resolve a slice reference
         assertThatThrownBy {
             parser.parseDefinitions(document)
-        }.isInstanceOf(NoSuchElementException::class.java)
-            .hasMessageContaining("Key non-existent-node is missing in the map")
+        }.isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("Expected node with id 'non-existent-node' referenced in slice 'slice-1' to exist, but it was not found.")
     }
 }

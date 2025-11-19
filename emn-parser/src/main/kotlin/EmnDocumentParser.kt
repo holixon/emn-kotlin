@@ -29,8 +29,8 @@ class EmnDocumentParser {
 
     val root = document.rootElement // <definitions>
     requireNotNull(root)
-    require(root.name == DEFINITIONS && root.isEmn()) { "Can't parse emn:definitions, this is probably not a EMN file" }
-    
+    require(root.name == DEFINITIONS && root.isEmn()) { "Expected root element to be 'emn:definitions', but it was '${root.qualifiedName}'." }
+
     /*
      * Parse types
      */
@@ -46,9 +46,9 @@ class EmnDocumentParser {
 
     val flowTypes = informationFlowTypes.map { messageFlowType ->
       val sourceElement =
-        requireNotNull(typesById[messageFlowType.source.id]) { "Unknown source ${messageFlowType.source.id}" }
+        requireNotNull(typesById[messageFlowType.source.id]) { "Expected source type with id '${messageFlowType.source.id}' to exist, but it was not found." }
       val targetElement =
-        requireNotNull(typesById[messageFlowType.target.id]) { "Unknown target ${messageFlowType.target.id}" }
+        requireNotNull(typesById[messageFlowType.target.id]) { "Expected target type with id '${messageFlowType.target.id}' to exist, but it was not found." }
       val patchedMessageFlowType = messageFlowType.copy(
         source = sourceElement,
         target = targetElement,
@@ -74,7 +74,7 @@ class EmnDocumentParser {
         sliceSet = timeline.sliceSet.map { slice ->
           slice.copy(
             flowElements = slice.flowElements.filterIsInstance<FlowNodeReference>()
-              .map { e -> nodesById.getValue(e.id) }
+              .map { e -> nodesById[e.id] ?: throw IllegalArgumentException("Expected node with id '${e.id}' referenced in slice '${slice.id}' to exist, but it was not found.") }
           )
         },
         laneSet = timeline.laneSet?.let { laneSet ->
@@ -82,19 +82,19 @@ class EmnDocumentParser {
             triggerLaneSet = laneSet.triggerLaneSet.map { triggerLane ->
               triggerLane.copy(
                 flowElements = triggerLane.flowElements.filterIsInstance<FlowNodeReference>()
-                  .map { e -> nodesById.getValue(e.id) }
+                  .map { e -> nodesById[e.id] ?: throw IllegalArgumentException("Expected node with id '${e.id}' referenced in trigger lane '${triggerLane.id}' to exist, but it was not found.") }
               )
             },
             interactionLane = laneSet.interactionLane?.let { interactionLane ->
                 interactionLane.copy(
                   flowElements = interactionLane.flowElements.filterIsInstance<FlowNodeReference>()
-                    .map { e -> nodesById.getValue(e.id) }
+                    .map { e -> nodesById[e.id] ?: throw IllegalArgumentException("Expected node with id '${e.id}' referenced in interaction lane '${interactionLane.id}' to exist, but it was not found.") }
                 )
               },
             conceptLaneSet = laneSet.conceptLaneSet.map { aggregateLane ->
               aggregateLane.copy(
                 flowElements = aggregateLane.flowElements.filterIsInstance<FlowNodeReference>()
-                  .map { e -> nodesById.getValue(e.id) }
+                  .map { e -> nodesById[e.id] ?: throw IllegalArgumentException("Expected node with id '${e.id}' referenced in concept lane '${aggregateLane.id}' to exist, but it was not found.") }
               )
             }
           )

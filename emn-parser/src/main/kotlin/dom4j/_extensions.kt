@@ -580,8 +580,13 @@ fun Element.toSchema(): Schema? {
  * @throws IllegalStateException if the referenced type is not found in the map
  */
 inline fun <reified T : FlowNodeType> Element.typeReference(types: Map<String, FlowNodeType>): T {
-  val type = requireNotNull(types[requireNotNull(attributeValue(TYPE_REF)) { "Element must define a '$TYPE_REF' attribute, but $this has none." }])
-  return type as T
+  val typeRef = requireNotNull(attributeValue(TYPE_REF)) { "Element must define a '$TYPE_REF' attribute, but $this has none." }
+  val type = requireNotNull(types[typeRef]) { "Expected type reference '$typeRef' to exist in types, but it was not found." }
+  return try {
+    type as T
+  } catch (e: ClassCastException) {
+    throw IllegalArgumentException("Expected type reference '$typeRef' to be of type ${T::class.simpleName}, but it was ${type::class.simpleName}.", e)
+  }
 }
 
 /**
@@ -622,11 +627,11 @@ fun Element.extractFlowElements(
 
   val flows = informationFlows.map { messageFlow ->
     val sourceElement =
-      requireNotNull(elementsById[messageFlow.source.id]) { "Unknown source ${messageFlow.source.id}" }
+      requireNotNull(elementsById[messageFlow.source.id]) { "Expected source element with id '${messageFlow.source.id}' to exist, but it was not found." }
     val targetElement =
-      requireNotNull(elementsById[messageFlow.target.id]) { "Unknown target ${messageFlow.target.id}" }
+      requireNotNull(elementsById[messageFlow.target.id]) { "Expected target element with id '${messageFlow.target.id}' to exist, but it was not found." }
     val messageFlowType =
-      requireNotNull(informationFlowTypesById[messageFlow.typeReference.id]) { "Unknown type ${messageFlow.typeReference.id}" }
+      requireNotNull(informationFlowTypesById[messageFlow.typeReference.id]) { "Expected flow type with id '${messageFlow.typeReference.id}' to exist, but it was not found." }
     val patchedMessageFlowType = messageFlow.copy(
       source = sourceElement,
       target = targetElement,
