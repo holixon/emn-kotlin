@@ -20,7 +20,7 @@
 
   <properties>
     <axon.version>5.0.0-preview</axon.version>
-    <instancio.version>5.6.0</instancio.version>
+    <instancio.version>6.0.0</instancio.version>
   </properties>
 
   <modules>
