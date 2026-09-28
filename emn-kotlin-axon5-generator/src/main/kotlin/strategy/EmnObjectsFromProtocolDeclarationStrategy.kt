@@ -2,10 +2,8 @@ package io.holixon.emn.generation.strategy
 
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.KModifier
-import io.holixon.emn.generation.EmnAxon5AvroBasedGenerator
 import io.holixon.emn.generation.emnContext
 import io.toolisticon.kotlin.avro.declaration.ProtocolDeclaration
-import io.toolisticon.kotlin.avro.generator.AvroKotlinGenerator
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
 import io.toolisticon.kotlin.avro.generator.strategy.AvroFileSpecListFromProtocolDeclarationStrategy
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFile
@@ -14,7 +12,6 @@ import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.constantName
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.propertyName
 import io.toolisticon.kotlin.generation.poet.FormatSpecifier
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
-import io.toolisticon.kotlin.generation.support.GeneratedAnnotation
 
 @OptIn(ExperimentalKotlinPoetApi::class)
 class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDeclarationStrategy() {
@@ -30,7 +27,7 @@ class EmnObjectsFromProtocolDeclarationStrategy : AvroFileSpecListFromProtocolDe
     val tagFile = buildFile(tagClassName) {
       addAnnotation(context.emnContext.generatedAnnotation)
       addType(buildObject(tagClassName) {
-        emnContext.definitions.aggregates().mapNotNull { it.name }
+        emnContext.definitions.concepts().mapNotNull { it.name }
           .distinct().forEach { name ->
             this.addProperty(constantName(name), String::class) {
               addModifiers(KModifier.CONST)

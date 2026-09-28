@@ -6,7 +6,7 @@
   exporter="Hand crafted"
   exporterVersion="1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../doc/EMN.xsd"
 >
   <emn:types>
     <emn:viewType id="view_type_page_24" name="Page 24">
@@ -154,44 +154,44 @@
       <emn:outgoing>flow_type_29</emn:outgoing>
       <emn:outgoing>flow_type_38</emn:outgoing>
     </emn:queryType>
-    <emn:messageFlowType id="flow_type_1" sourceRef="view_type_page_24" targetRef="command_type_create_course"/>
-    <emn:messageFlowType id="flow_type_2" sourceRef="command_type_create_course" targetRef="error_type_course_not_created"/>
-    <emn:messageFlowType id="flow_type_3" sourceRef="command_type_create_course" targetRef="event_type_course_created"/>
-    <emn:messageFlowType id="flow_type_4" sourceRef="event_type_course_created" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_5" sourceRef="query_type_courses" targetRef="view_type_page_27"/>
-    <emn:messageFlowType id="flow_type_6" sourceRef="query_type_courses" targetRef="view_type_page_26"/>
-    <emn:messageFlowType id="flow_type_7" sourceRef="query_type_courses" targetRef="view_type_page_30"/>
-    <emn:messageFlowType id="flow_type_8" sourceRef="view_type_page_25" targetRef="command_type_enroll_student"/>
-    <emn:messageFlowType id="flow_type_9" sourceRef="command_type_enroll_student" targetRef="error_type_student_not_enrolled"/>
-    <emn:messageFlowType id="flow_type_10" sourceRef="command_type_enroll_student" targetRef="event_type_student_enrolled"/>
-    <emn:messageFlowType id="flow_type_11" sourceRef="error_type_student_not_enrolled" targetRef="query_type_student_details"/>
-    <emn:messageFlowType id="flow_type_12" sourceRef="event_type_student_enrolled" targetRef="query_type_students"/>
-    <emn:messageFlowType id="flow_type_13" sourceRef="event_type_student_enrolled" targetRef="query_type_student_details"/>
-    <emn:messageFlowType id="flow_type_14" sourceRef="query_type_students" targetRef="view_type_page_28"/>
-    <emn:messageFlowType id="flow_type_15" sourceRef="query_type_student_details" targetRef="view_type_page_29"/>
-    <emn:messageFlowType id="flow_type_16" sourceRef="view_type_page_26" targetRef="command_type_rename_course"/>
-    <emn:messageFlowType id="flow_type_17" sourceRef="command_type_rename_course" targetRef="error_type_course_not_renamed"/>
-    <emn:messageFlowType id="flow_type_18" sourceRef="command_type_rename_course" targetRef="event_type_course_renamed"/>
-    <emn:messageFlowType id="flow_type_19" sourceRef="error_type_course_not_renamed" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_20" sourceRef="event_type_course_renamed" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_28" sourceRef="event_type_course_renamed" targetRef="query_type_student_details"/>
-    <emn:messageFlowType id="flow_type_21" sourceRef="view_type_page_30" targetRef="command_type_change_course_capacity"/>
-    <emn:messageFlowType id="flow_type_22" sourceRef="command_type_change_course_capacity" targetRef="error_type_course_capacity_not_changed"/>
-    <emn:messageFlowType id="flow_type_23" sourceRef="error_type_course_capacity_not_changed" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_24" sourceRef="command_type_change_course_capacity" targetRef="event_type_course_capacity_changed"/>
-    <emn:messageFlowType id="flow_type_25" sourceRef="event_type_course_capacity_changed" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_26" sourceRef="command_type_change_course_capacity" targetRef="event_type_student_unsubscribed"/>
-    <emn:messageFlowType id="flow_type_27" sourceRef="event_type_student_unsubscribed" targetRef="query_type_student_details"/>
-    <emn:messageFlowType id="flow_type_29" sourceRef="query_type_student_details" targetRef="view_type_page_31"/>
-    <emn:messageFlowType id="flow_type_30" sourceRef="view_type_page_31" targetRef="command_type_subscribe_student"/>
-    <emn:messageFlowType id="flow_type_31" sourceRef="view_type_page_31" targetRef="command_type_unsubscribe_student"/>
-    <emn:messageFlowType id="flow_type_32" sourceRef="command_type_subscribe_student" targetRef="error_type_student_not_subscribed"/>
-    <emn:messageFlowType id="flow_type_33" sourceRef="command_type_subscribe_student" targetRef="event_type_student_subscribed"/>
-    <emn:messageFlowType id="flow_type_34" sourceRef="event_type_student_subscribed" targetRef="query_type_student_details"/>
-    <emn:messageFlowType id="flow_type_35" sourceRef="event_type_student_subscribed" targetRef="query_type_courses"/>
-    <emn:messageFlowType id="flow_type_36" sourceRef="command_type_unsubscribe_student" targetRef="error_type_student_not_unsubscribed"/>
-    <emn:messageFlowType id="flow_type_37" sourceRef="command_type_unsubscribe_student" targetRef="event_type_student_unsubscribed"/>
-    <emn:messageFlowType id="flow_type_38" sourceRef="query_type_student_details" targetRef="view_type_page_33"/>
+    <emn:informationFlowType id="flow_type_1" sourceRef="view_type_page_24" targetRef="command_type_create_course"/>
+    <emn:informationFlowType id="flow_type_2" sourceRef="command_type_create_course" targetRef="error_type_course_not_created"/>
+    <emn:informationFlowType id="flow_type_3" sourceRef="command_type_create_course" targetRef="event_type_course_created"/>
+    <emn:informationFlowType id="flow_type_4" sourceRef="event_type_course_created" targetRef="query_type_courses"/>
+    <emn:informationFlowType id="flow_type_5" sourceRef="query_type_courses" targetRef="view_type_page_27"/>
+    <emn:informationFlowType id="flow_type_6" sourceRef="query_type_courses" targetRef="view_type_page_26"/>
+    <emn:informationFlowType id="flow_type_7" sourceRef="query_type_courses" targetRef="view_type_page_30"/>
+    <emn:informationFlowType id="flow_type_8" sourceRef="view_type_page_25" targetRef="command_type_enroll_student"/>
+    <emn:informationFlowType id="flow_type_9" sourceRef="command_type_enroll_student" targetRef="error_type_student_not_enrolled"/>
+    <emn:informationFlowType id="flow_type_10" sourceRef="command_type_enroll_student" targetRef="event_type_student_enrolled"/>
+    <emn:informationFlowType id="flow_type_11" sourceRef="error_type_student_not_enrolled" targetRef="query_type_student_details"/>
+    <emn:informationFlowType id="flow_type_12" sourceRef="event_type_student_enrolled" targetRef="query_type_students"/>
+    <emn:informationFlowType id="flow_type_13" sourceRef="event_type_student_enrolled" targetRef="query_type_student_details"/>
+    <emn:informationFlowType id="flow_type_14" sourceRef="query_type_students" targetRef="view_type_page_28"/>
+    <emn:informationFlowType id="flow_type_15" sourceRef="query_type_student_details" targetRef="view_type_page_29"/>
+    <emn:informationFlowType id="flow_type_16" sourceRef="view_type_page_26" targetRef="command_type_rename_course"/>
+    <emn:informationFlowType id="flow_type_17" sourceRef="command_type_rename_course" targetRef="error_type_course_not_renamed"/>
+    <emn:informationFlowType id="flow_type_18" sourceRef="command_type_rename_course" targetRef="event_type_course_renamed"/>
+    <emn:informationFlowType id="flow_type_19" sourceRef="error_type_course_not_renamed" targetRef="query_type_courses"/>
+    <emn:informationFlowType id="flow_type_20" sourceRef="event_type_course_renamed" targetRef="query_type_courses"/>
+    <emn:informationFlowType id="flow_type_28" sourceRef="event_type_course_renamed" targetRef="query_type_student_details"/>
+    <emn:informationFlowType id="flow_type_21" sourceRef="view_type_page_30" targetRef="command_type_change_course_capacity"/>
+    <emn:informationFlowType id="flow_type_22" sourceRef="command_type_change_course_capacity" targetRef="error_type_course_capacity_not_changed"/>
+    <emn:informationFlowType id="flow_type_23" sourceRef="error_type_course_capacity_not_changed" targetRef="query_type_courses"/>
+    <emn:informationFlowType id="flow_type_24" sourceRef="command_type_change_course_capacity" targetRef="event_type_course_capacity_changed"/>
+    <emn:informationFlowType id="flow_type_25" sourceRef="event_type_course_capacity_changed" targetRef="query_type_courses"/>
+    <emn:informationFlowType id="flow_type_26" sourceRef="command_type_change_course_capacity" targetRef="event_type_student_unsubscribed"/>
+    <emn:informationFlowType id="flow_type_27" sourceRef="event_type_student_unsubscribed" targetRef="query_type_student_details"/>
+    <emn:informationFlowType id="flow_type_29" sourceRef="query_type_student_details" targetRef="view_type_page_31"/>
+    <emn:informationFlowType id="flow_type_30" sourceRef="view_type_page_31" targetRef="command_type_subscribe_student"/>
+    <emn:informationFlowType id="flow_type_31" sourceRef="view_type_page_31" targetRef="command_type_unsubscribe_student"/>
+    <emn:informationFlowType id="flow_type_32" sourceRef="command_type_subscribe_student" targetRef="error_type_student_not_subscribed"/>
+    <emn:informationFlowType id="flow_type_33" sourceRef="command_type_subscribe_student" targetRef="event_type_student_subscribed"/>
+    <emn:informationFlowType id="flow_type_34" sourceRef="event_type_student_subscribed" targetRef="query_type_student_details"/>
+    <emn:informationFlowType id="flow_type_35" sourceRef="event_type_student_subscribed" targetRef="query_type_courses"/>
+    <emn:informationFlowType id="flow_type_36" sourceRef="command_type_unsubscribe_student" targetRef="error_type_student_not_unsubscribed"/>
+    <emn:informationFlowType id="flow_type_37" sourceRef="command_type_unsubscribe_student" targetRef="event_type_student_unsubscribed"/>
+    <emn:informationFlowType id="flow_type_38" sourceRef="query_type_student_details" targetRef="view_type_page_33"/>
 
   </emn:types>
 
@@ -223,8 +223,8 @@
         <emn:flowNodeRef>query_students</emn:flowNodeRef>
         <emn:flowNodeRef>query_student_details</emn:flowNodeRef>
       </emn:interactionLane>
-      <emn:aggregateLaneSet>
-        <emn:aggregateLane id="aggregate_course" name="Course">
+      <emn:conceptLaneSet>
+        <emn:conceptLane id="aggregate_course" name="Course">
           <emn:flowNodeRef>event_course_created</emn:flowNodeRef>
           <emn:flowNodeRef>event_course_capacity_changed</emn:flowNodeRef>
           <emn:flowNodeRef>event_course_renamed</emn:flowNodeRef>
@@ -232,8 +232,8 @@
           <emn:flowNodeRef>error_course_not_created</emn:flowNodeRef>
           <emn:flowNodeRef>error_course_not_renamed</emn:flowNodeRef>
           <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.CourseId</emn:idSchema>
-        </emn:aggregateLane>
-        <emn:aggregateLane id="aggregate_student" name="Student">
+        </emn:conceptLane>
+        <emn:conceptLane id="aggregate_student" name="Student">
           <emn:flowNodeRef>event_student_enrolled</emn:flowNodeRef>
           <emn:flowNodeRef>event_student_subscribed</emn:flowNodeRef>
           <emn:flowNodeRef>event_student_unsubscribed</emn:flowNodeRef>
@@ -241,8 +241,8 @@
           <emn:flowNodeRef>error_student_not_subscribed</emn:flowNodeRef>
           <emn:flowNodeRef>error_student_not_unsubscribed</emn:flowNodeRef>
           <emn:idSchema schemaFormat="avro-type-reference">io.holixon.emn.example.faculty.StudentId</emn:idSchema>
-        </emn:aggregateLane>
-      </emn:aggregateLaneSet>
+        </emn:conceptLane>
+      </emn:conceptLaneSet>
     </emn:laneSet>
 
     <emn:sliceSet>
@@ -417,44 +417,44 @@
       <emn:outgoing>flow_29</emn:outgoing>
       <emn:outgoing>flow_38</emn:outgoing>
     </emn:query>
-    <emn:messageFlow typeRef="flow_type_1" id="flow_1" sourceRef="view_page_24" targetRef="command_create_course"/>
-    <emn:messageFlow typeRef="flow_type_2" id="flow_2" sourceRef="command_create_course" targetRef="error_course_not_created"/>
-    <emn:messageFlow typeRef="flow_type_3" id="flow_3" sourceRef="command_create_course" targetRef="event_course_created"/>
-    <emn:messageFlow typeRef="flow_type_4" id="flow_4" sourceRef="event_course_created" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_5" id="flow_5" sourceRef="query_courses" targetRef="view_page_27"/>
-    <emn:messageFlow typeRef="flow_type_6" id="flow_6" sourceRef="query_courses" targetRef="view_page_26"/>
-    <emn:messageFlow typeRef="flow_type_7" id="flow_7" sourceRef="query_courses" targetRef="view_page_30"/>
-    <emn:messageFlow typeRef="flow_type_8" id="flow_8" sourceRef="view_page_25" targetRef="command_enroll_student"/>
-    <emn:messageFlow typeRef="flow_type_9" id="flow_9" sourceRef="command_enroll_student" targetRef="error_student_not_enrolled"/>
-    <emn:messageFlow typeRef="flow_type_10" id="flow_10" sourceRef="command_enroll_student" targetRef="event_student_enrolled"/>
-    <emn:messageFlow typeRef="flow_type_11" id="flow_11" sourceRef="error_student_not_enrolled" targetRef="query_student_details"/>
-    <emn:messageFlow typeRef="flow_type_12" id="flow_12" sourceRef="event_student_enrolled" targetRef="query_students"/>
-    <emn:messageFlow typeRef="flow_type_13" id="flow_13" sourceRef="event_student_enrolled" targetRef="query_student_details"/>
-    <emn:messageFlow typeRef="flow_type_14" id="flow_14" sourceRef="query_students" targetRef="view_page_28"/>
-    <emn:messageFlow typeRef="flow_type_15" id="flow_15" sourceRef="query_student_details" targetRef="view_page_29"/>
-    <emn:messageFlow typeRef="flow_type_16" id="flow_16" sourceRef="view_page_26" targetRef="command_rename_course"/>
-    <emn:messageFlow typeRef="flow_type_17" id="flow_17" sourceRef="command_rename_course" targetRef="error_course_not_renamed"/>
-    <emn:messageFlow typeRef="flow_type_18" id="flow_18" sourceRef="command_rename_course" targetRef="event_course_renamed"/>
-    <emn:messageFlow typeRef="flow_type_19" id="flow_19" sourceRef="error_course_not_renamed" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_20" id="flow_20" sourceRef="event_course_renamed" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_21" id="flow_28" sourceRef="event_course_renamed" targetRef="query_student_details"/>
-    <emn:messageFlow typeRef="flow_type_22" id="flow_21" sourceRef="view_page_30" targetRef="command_change_course_capacity"/>
-    <emn:messageFlow typeRef="flow_type_22" id="flow_22" sourceRef="command_change_course_capacity" targetRef="error_course_capacity_not_changed"/>
-    <emn:messageFlow typeRef="flow_type_23" id="flow_23" sourceRef="error_course_capacity_not_changed" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_24" id="flow_24" sourceRef="command_change_course_capacity" targetRef="event_course_capacity_changed"/>
-    <emn:messageFlow typeRef="flow_type_25" id="flow_25" sourceRef="event_course_capacity_changed" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_26" id="flow_26" sourceRef="command_change_course_capacity" targetRef="event_student_unsubscribed"/>
-    <emn:messageFlow typeRef="flow_type_27" id="flow_27" sourceRef="event_student_unsubscribed" targetRef="query_student_details"/>
-    <emn:messageFlow typeRef="flow_type_29" id="flow_29" sourceRef="query_student_details" targetRef="view_page_31"/>
-    <emn:messageFlow typeRef="flow_type_30" id="flow_30" sourceRef="view_page_31" targetRef="command_subscribe_student"/>
-    <emn:messageFlow typeRef="flow_type_31" id="flow_31" sourceRef="view_page_31" targetRef="command_unsubscribe_student"/>
-    <emn:messageFlow typeRef="flow_type_32" id="flow_32" sourceRef="command_subscribe_student" targetRef="error_student_not_subscribed"/>
-    <emn:messageFlow typeRef="flow_type_33" id="flow_33" sourceRef="command_subscribe_student" targetRef="event_student_subscribed"/>
-    <emn:messageFlow typeRef="flow_type_34" id="flow_34" sourceRef="event_student_subscribed" targetRef="query_student_details"/>
-    <emn:messageFlow typeRef="flow_type_35" id="flow_35" sourceRef="event_student_subscribed" targetRef="query_courses"/>
-    <emn:messageFlow typeRef="flow_type_36" id="flow_36" sourceRef="command_unsubscribe_student" targetRef="error_student_not_unsubscribed"/>
-    <emn:messageFlow typeRef="flow_type_37" id="flow_37" sourceRef="command_unsubscribe_student" targetRef="event_student_unsubscribed"/>
-    <emn:messageFlow typeRef="flow_type_38" id="flow_38" sourceRef="query_student_details" targetRef="view_page_33"/>
+    <emn:informationFlow typeRef="flow_type_1" id="flow_1" sourceRef="view_page_24" targetRef="command_create_course"/>
+    <emn:informationFlow typeRef="flow_type_2" id="flow_2" sourceRef="command_create_course" targetRef="error_course_not_created"/>
+    <emn:informationFlow typeRef="flow_type_3" id="flow_3" sourceRef="command_create_course" targetRef="event_course_created"/>
+    <emn:informationFlow typeRef="flow_type_4" id="flow_4" sourceRef="event_course_created" targetRef="query_courses"/>
+    <emn:informationFlow typeRef="flow_type_5" id="flow_5" sourceRef="query_courses" targetRef="view_page_27"/>
+    <emn:informationFlow typeRef="flow_type_6" id="flow_6" sourceRef="query_courses" targetRef="view_page_26"/>
+    <emn:informationFlow typeRef="flow_type_7" id="flow_7" sourceRef="query_courses" targetRef="view_page_30"/>
+    <emn:informationFlow typeRef="flow_type_8" id="flow_8" sourceRef="view_page_25" targetRef="command_enroll_student"/>
+    <emn:informationFlow typeRef="flow_type_9" id="flow_9" sourceRef="command_enroll_student" targetRef="error_student_not_enrolled"/>
+    <emn:informationFlow typeRef="flow_type_10" id="flow_10" sourceRef="command_enroll_student" targetRef="event_student_enrolled"/>
+    <emn:informationFlow typeRef="flow_type_11" id="flow_11" sourceRef="error_student_not_enrolled" targetRef="query_student_details"/>
+    <emn:informationFlow typeRef="flow_type_12" id="flow_12" sourceRef="event_student_enrolled" targetRef="query_students"/>
+    <emn:informationFlow typeRef="flow_type_13" id="flow_13" sourceRef="event_student_enrolled" targetRef="query_student_details"/>
+    <emn:informationFlow typeRef="flow_type_14" id="flow_14" sourceRef="query_students" targetRef="view_page_28"/>
+    <emn:informationFlow typeRef="flow_type_15" id="flow_15" sourceRef="query_student_details" targetRef="view_page_29"/>
+    <emn:informationFlow typeRef="flow_type_16" id="flow_16" sourceRef="view_page_26" targetRef="command_rename_course"/>
+    <emn:informationFlow typeRef="flow_type_17" id="flow_17" sourceRef="command_rename_course" targetRef="error_course_not_renamed"/>
+    <emn:informationFlow typeRef="flow_type_18" id="flow_18" sourceRef="command_rename_course" targetRef="event_course_renamed"/>
+    <emn:informationFlow typeRef="flow_type_19" id="flow_19" sourceRef="error_course_not_renamed" targetRef="query_courses"/>
+    <emn:informationFlow typeRef="flow_type_20" id="flow_20" sourceRef="event_course_renamed" targetRef="query_courses"/>
+    <emn:informationFlow typeRef="flow_type_21" id="flow_28" sourceRef="event_course_renamed" targetRef="query_student_details"/>
+    <emn:informationFlow typeRef="flow_type_22" id="flow_21" sourceRef="view_page_30" targetRef="command_change_course_capacity"/>
+    <emn:informationFlow typeRef="flow_type_22" id="flow_22" sourceRef="command_change_course_capacity" targetRef="error_course_capacity_not_changed"/>
+    <emn:informationFlow typeRef="flow_type_23" id="flow_23" sourceRef="error_course_capacity_not_changed" targetRef="query_courses"/>
+    <emn:informationFlow typeRef="flow_type_24" id="flow_24" sourceRef="command_change_course_capacity" targetRef="event_course_capacity_changed"/>
+    <emn:informationFlow typeRef="flow_type_25" id="flow_25" sourceRef="event_course_capacity_changed" targetRef="query_courses"/>
+    <emn:informationFlow typeRef="flow_type_26" id="flow_26" sourceRef="command_change_course_capacity" targetRef="event_student_unsubscribed"/>
+    <emn:informationFlow typeRef="flow_type_27" id="flow_27" sourceRef="event_student_unsubscribed" targetRef="query_student_details"/>
+    <emn:informationFlow typeRef="flow_type_29" id="flow_29" sourceRef="query_student_details" targetRef="view_page_31"/>
+    <emn:informationFlow typeRef="flow_type_30" id="flow_30" sourceRef="view_page_31" targetRef="command_subscribe_student"/>
+    <emn:informationFlow typeRef="flow_type_31" id="flow_31" sourceRef="view_page_31" targetRef="command_unsubscribe_student"/>
+    <emn:informationFlow typeRef="flow_type_32" id="flow_32" sourceRef="command_subscribe_student" targetRef="error_student_not_subscribed"/>
+    <emn:informationFlow typeRef="flow_type_33" id="flow_33" sourceRef="command_subscribe_student" targetRef="event_student_subscribed"/>
+    <emn:informationFlow typeRef="flow_type_34" id="flow_34" sourceRef="event_student_subscribed" targetRef="query_student_details"/>
+    <emn:informationFlow typeRef="flow_type_35" id="flow_35" sourceRef="event_student_subscribed" targetRef="query_courses"/>
+    <emn:informationFlow typeRef="flow_type_36" id="flow_36" sourceRef="command_unsubscribe_student" targetRef="error_student_not_unsubscribed"/>
+    <emn:informationFlow typeRef="flow_type_37" id="flow_37" sourceRef="command_unsubscribe_student" targetRef="event_student_unsubscribed"/>
+    <emn:informationFlow typeRef="flow_type_38" id="flow_38" sourceRef="query_student_details" targetRef="view_page_33"/>
 
   </emn:timeline>
 </emn:definitions>
