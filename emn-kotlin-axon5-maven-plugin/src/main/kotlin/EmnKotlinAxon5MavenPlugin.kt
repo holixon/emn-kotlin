@@ -1,6 +1,8 @@
 package io.holixon.emn.generation.maven
 
-import com.facebook.ktfmt.format.Formatter
+import org.jetbrains.kotlinx.ktfmt.format.FileType
+import org.jetbrains.kotlinx.ktfmt.format.Formatter
+import org.jetbrains.kotlinx.ktfmt.format.KotlinCode
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpec
 import org.apache.maven.shared.model.fileset.FileSet
 import org.apache.maven.shared.model.fileset.util.FileSetManager
@@ -46,7 +48,7 @@ object EmnKotlinAxon5MavenPlugin {
   fun KotlinFileSpec.writeToFormatted(outputDirectory: File): File {
     val file = this.get().writeTo(outputDirectory)
 
-    val formattedCode = Formatter.format(KTFMT_FORMAT, file.readText())
+    val formattedCode = Formatter.format(KTFMT_FORMAT, KotlinCode(file.readText(), FileType.REGULAR))
 
     file.writeText(formattedCode)
 
