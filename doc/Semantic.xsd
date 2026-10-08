@@ -75,8 +75,8 @@
 
   </xsd:complexType>
 
-  <xsd:element name="messageFlowType" type="tMessageFlowType" substitutionGroup="flowElementType"/>
-  <xsd:complexType name="tMessageFlowType">
+  <xsd:element name="informationFlowType" type="tInformationFlowType" substitutionGroup="flowElementType"/>
+  <xsd:complexType name="tInformationFlowType">
     <xsd:complexContent>
       <xsd:extension base="tFlowElementType">
         <!--
@@ -225,8 +225,8 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:element name="messageFlow" type="tMessageFlow" substitutionGroup="flowElement"/>
-  <xsd:complexType name="tMessageFlow">
+  <xsd:element name="informationFlow" type="tInformationFlow" substitutionGroup="flowElement"/>
+  <xsd:complexType name="tInformationFlow">
     <xsd:complexContent>
       <xsd:extension base="tFlowElement">
         <!--
@@ -379,7 +379,7 @@
         <xsd:sequence>
           <xsd:element ref="triggerLaneSet" minOccurs="0"/>
           <xsd:element ref="interactionLane" minOccurs="0"/>
-          <xsd:element ref="aggregateLaneSet" minOccurs="0"/>
+          <xsd:element ref="conceptLaneSet" minOccurs="0"/>
         </xsd:sequence>
         <xsd:attribute name="name" type="xsd:string"/>
       </xsd:extension>
@@ -425,19 +425,19 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:element name="aggregateLaneSet" type="tAggregateLaneSet"/>
-  <xsd:complexType name="tAggregateLaneSet">
+  <xsd:element name="conceptLaneSet" type="tConceptLaneSet"/>
+  <xsd:complexType name="tConceptLaneSet">
     <xsd:complexContent>
       <xsd:extension base="tBaseElement">
         <xsd:sequence>
-          <xsd:element ref="aggregateLane" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="conceptLane" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
 
-  <xsd:element name="aggregateLane" type="tAggregateLane"/>
-  <xsd:complexType name="tAggregateLane">
+  <xsd:element name="conceptLane" type="tConceptLane"/>
+  <xsd:complexType name="tConceptLane">
     <xsd:complexContent>
       <xsd:extension base="tLane">
         <xsd:sequence>

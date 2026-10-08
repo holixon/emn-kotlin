@@ -2,6 +2,7 @@ package io.holixon.emn.generation
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
+import io.holixon.emn.dom4j.Defaults.APPLICATION_JSON
 import io.holixon.emn.generation.spi.EmnGenerationContext
 import io.holixon.emn.model.*
 import io.toolisticon.kotlin.avro.generator.spi.ProtocolDeclarationContext
@@ -23,7 +24,7 @@ fun Slice.isCommandSliceWithAvroTypeDefinitionRef(): Boolean {
     .containsAll(sliceCommands.first().possibleEvents()) // all events are in the slice
 }
 
-fun AggregateLane.hasAvroTypeDefinitionRef() = this.idSchema.getAvroTypeDefinitionRef() != null
+fun ConceptLane.hasAvroTypeDefinitionRef() = this.idSchema.getAvroTypeDefinitionRef() != null
 
 fun FlowNode.hasAvroTypeDefinitionRef() = this.typeReference.hasAvroTypeDefinitionRef()
 
@@ -41,7 +42,7 @@ fun Schema?.getAvroTypeDefinitionRef(): EmbeddedSchema? {
 
 fun ElementValue?.getEmbeddedJsonValueAsMap(objectMapper: ObjectMapper): Map<String, Any>? {
   return this?.let {
-    if (this.valueFormat == "application/json" && this is EmbeddedValue) {
+    if (this.valueFormat == APPLICATION_JSON && this is EmbeddedValue) {
       objectMapper.readValue(
         this.content,
         objectMapper.typeFactory.constructMapType(Map::class.java, String::class.java, Any::class.java)

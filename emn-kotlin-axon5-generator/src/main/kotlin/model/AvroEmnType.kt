@@ -23,11 +23,11 @@ sealed interface AvroEmnType<A : AvroType> {
 }
 
 data class AvroEmnIdType(
-  val aggregateLane: AggregateLane,
+  val conceptLane: ConceptLane,
   override val poetType: AvroPoetType
 ) : AvroEmnType<AvroRecordType> {
-  override val id: String = aggregateLane.id
-  override val name: String = simpleName(aggregateLane.name!!)
+  override val id: String = conceptLane.id
+  override val name: String = simpleName(conceptLane.name!!)
   override val avroType: AvroRecordType = poetType.avroType as AvroRecordType
   override val fqn: CanonicalName = avroType.canonicalName
 
@@ -126,5 +126,5 @@ value class AvroEmnTypes(private val values: List<AvroEmnType<*>>) : List<AvroEm
   operator fun get(nodeType: EventType): AvroEmnEventType = events.single { it.nodeType.id == nodeType.id }
   operator fun get(nodeType: ErrorType): AvroEmnErrorType = errors.single { it.nodeType.id == nodeType.id }
   operator fun get(nodeType: QueryType): AvroEmnQueryType = queries.single { it.nodeType.id == nodeType.id }
-  operator fun get(aggregateLane: AggregateLane): AvroEmnIdType = ids.single { it.id == aggregateLane.id }
+  operator fun get(conceptLane: ConceptLane): AvroEmnIdType = ids.single { it.id == conceptLane.id }
 }

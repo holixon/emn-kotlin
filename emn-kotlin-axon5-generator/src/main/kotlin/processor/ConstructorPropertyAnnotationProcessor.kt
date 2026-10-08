@@ -12,7 +12,6 @@ import io.toolisticon.kotlin.avro.generator.spi.SchemaDeclarationContext
 import io.toolisticon.kotlin.avro.model.RecordField
 import io.toolisticon.kotlin.avro.value.CanonicalName
 import io.toolisticon.kotlin.generation.builder.KotlinConstructorPropertySpecBuilder
-import io.toolisticon.kotlin.generation.tag
 
 private val logger = KotlinLogging.logger {}
 
@@ -29,7 +28,7 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
 
     when (val emnElementType = emnContext.getEmnType(recordType)) {
       is EventType -> {
-        val aggregateLanes = emnContext.definitions.aggregates(emnElementType).distinct()
+        val aggregateLanes = emnContext.definitions.concepts(emnElementType).distinct()
         aggregateLanes.applyIfExactlyOne(
           logger.noAggregateFoundLogger(emnElementType),
           logger.conflictingAggregatesFound(emnElementType)
@@ -45,7 +44,7 @@ class ConstructorPropertyAnnotationProcessor : ConstructorPropertyFromRecordFiel
       }
 
       is CommandType -> {
-        val aggregateLanes = emnContext.definitions.aggregates(emnElementType).distinct()
+        val aggregateLanes = emnContext.definitions.concepts(emnElementType).distinct()
         aggregateLanes.applyIfExactlyOne(
           logger.noAggregateFoundLogger(emnElementType),
           logger.conflictingAggregatesFound(emnElementType)
