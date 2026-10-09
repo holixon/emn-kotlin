@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.holixon.emn._</groupId>
+    <artifactId>emn-kotlin-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../../_build/parent/pom.xml</relativePath>
+  </parent>
+
+  <groupId>io.holixon.emn.generation</groupId>
+  <artifactId>emn-kotlin-axon5</artifactId>
+  <name>emn-kotlin-axon5</name>
+  <description>Generate Axon5 components based on EMN.</description>
+
+  <properties>
+  <ktfmt.version>0.61</ktfmt.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.holixon.emn.generation</groupId>
+      <artifactId>emn-schema-exporter-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.holixon.emn</groupId>
+      <artifactId>emn-parser</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.toolisticon.kotlin.generation</groupId>
+      <artifactId>kotlin-code-generation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.toolisticon.kotlin.avro</groupId>
+      <artifactId>avro-kotlin-generator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.pwall.json</groupId>
+      <artifactId>json-kotlin-schema-codegen</artifactId>
+      <version>0.123</version>
+    </dependency>
+    <dependency>
+      <groupId>org.axonframework</groupId>
+      <artifactId>axon-messaging</artifactId>
+      <version>${axon.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.axonframework</groupId>
+      <artifactId>axon-eventsourcing</artifactId>
+      <version>${axon.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.konform</groupId>
+      <artifactId>konform-jvm</artifactId>
+      <version>0.11.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.facebook</groupId>
+      <artifactId>ktfmt</artifactId>
+      <version>${ktfmt.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.instancio</groupId>
+      <artifactId>instancio-junit</artifactId>
+      <version>${instancio.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <testResources>
+      <testResource>
+        <directory>${kp.generatedTestResources}</directory>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-emn-resources</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${kp.generatedTestResources}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.root.dir}/_emn/</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -19,7 +19,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <axon.version>5.0.0-preview</axon.version>
+    <axon.version>5.3.2</axon.version>
     <instancio.version>5.6.0</instancio.version>
   </properties>
 
@@ -27,8 +27,9 @@
     <module>_build/parent</module>
 
     <module>emn-parser</module>
-    <module>emn-kotlin-axon5-generator</module>
-    <module>emn-kotlin-axon5-maven-plugin</module>
+    <module>emn-verify</module>
+    <module>emn-kotlin</module>
+    <module>emn-schema-exporter</module>
     <!-- Examples are in the profile -->
   </modules>
 
@@ -60,9 +61,7 @@
         </property>
       </activation>
       <modules>
-        <module>examples/university</module>
-        <module>examples/university-generated</module>
-        <module>examples/university-generated-spb</module>
+        <module>examples</module>
       </modules>
     </profile>
   </profiles>

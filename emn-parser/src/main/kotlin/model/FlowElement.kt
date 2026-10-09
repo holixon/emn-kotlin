@@ -59,6 +59,13 @@ class Event(id: String, typeReference: EventType, value: ElementValue?) :
   val eventType: EventType = typeReference
 }
 
+class EventSequence(
+  id: String,
+  val definitionReference: EventSequenceDefinition,
+  val variables: List<Variable>,
+  value: ElementValue?,
+) : FlowNode(id = id, typeReference = definitionReference.typeReference, value = value)
+
 class ExternalEvent(id: String, typeReference: ExternalEventType, value: ElementValue?) :
   FlowNode(id = id, typeReference = typeReference, value = value)
 

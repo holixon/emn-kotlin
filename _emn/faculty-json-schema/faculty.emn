@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emn:definitions xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL" xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1p59kc5" targetNamespace="https://holixon.io/schema/emn" exporter="Hand crafted" exporterVersion="1.0.0" xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../doc/EMN.xsd https://holixon.io/spec/EMN/20241231/DI ../../doc/EMNDI.xsd">
+  <emn:types>
+    <emn:schemaDefinition id="CourseId" name="CourseId">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+          "type": "string"
+        }
+      </emn:schema>
+    </emn:schemaDefinition>
+    <emn:schemaDefinition id="StudentId" name="StudentId">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "string"
+        }
+      </emn:schema>
+    </emn:schemaDefinition>
+    <emn:viewType id="ViewType_page_24" name="Page 24" />
+    <emn:commandType id="CommandType_create_course" name="Create Course">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "object",
+        "required": [
+        "courseId",
+        "name",
+        "capacity"
+        ],
+        "properties": {
+        "courseId": {
+        "$ref": "CourseId"
+        },
+        "name": {
+        "type": "string"
+        },
+        "capacity": {
+        "type": "integer"
+        }
+        }
+        }
+      </emn:schema>
+    </emn:commandType>
+    <emn:eventType id="EventType_course_created" name="Course Created">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "object",
+        "required": [
+        "courseId",
+        "name",
+        "capacity"
+        ],
+        "properties": {
+        "courseId": {
+        "$ref": "CourseId"
+        },
+        "name": {
+        "type": "string"
+        },
+        "capacity": {
+        "type": "integer"
+        }
+        }
+        }
+      </emn:schema>
+    </emn:eventType>
+    <emn:informationFlowType id="informationFlowType_15lrebs" name="informationFlow" sourceRef="CommandType_create_course" targetRef="EventType_course_created" />
+    <emn:informationFlowType id="informationFlowType_16lrebs" name="informationFlow" sourceRef="ViewType_page_24" targetRef="CommandType_create_course" />
+    <emn:eventType id="EventType_02v07ad" name="Initial Event" />
+    <emn:queryType id="QueryType_courses" name="Courses">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "array",
+        "items": {
+        "type": "object",
+        "required": [
+        "courseId",
+        "name",
+        "capacity"
+        ],
+        "properties": {
+        "courseId": {
+        "$ref": "CourseId"
+        },
+        "name": {
+        "type": "string"
+        },
+        "capacity": {
+        "type": "integer"
+        }
+        }
+        }
+        }
+      </emn:schema>
+    </emn:queryType>
+    <emn:informationFlowType id="informationFlowType_0h7ooc6" name="informationFlow" sourceRef="EventType_02v07ad" targetRef="QueryType_courses" />
+    <emn:viewType id="ViewType_page_27" name="Page 27" />
+    <emn:informationFlowType id="informationFlowType_059omg6" name="informationFlow" sourceRef="EventType_course_created" targetRef="QueryType_courses" />
+    <emn:informationFlowType id="informationFlowType_1eq7typ" name="informationFlow" sourceRef="QueryType_courses" targetRef="ViewType_page_27" />
+    <emn:viewType id="ViewType_page_25" name="Page 25" />
+    <emn:commandType id="CommandType_enroll_student" name="Enroll Student">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "object",
+        "required": [
+        "studentId",
+        "firstName",
+        "lastName"
+        ],
+        "properties": {
+        "studentId": {
+        "$ref": "StudentId"
+        },
+        "firstName": {
+        "type": "string"
+        },
+        "lastName": {
+        "type": "string"
+        }
+        }
+        }
+      </emn:schema>
+    </emn:commandType>
+    <emn:informationFlowType id="informationFlowType_147td8q" name="informationFlow" sourceRef="ViewType_page_25" targetRef="CommandType_enroll_student" />
+    <emn:eventType id="EventType_student_enrolled" name="Student Enrolled">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "object",
+        "required": [
+        "studentId",
+        "firstName",
+        "lastName"
+        ],
+        "properties": {
+        "studentId": {
+        "$ref": "StudentId"
+        },
+        "firstName": {
+        "type": "string"
+        },
+        "lastName": {
+        "type": "string"
+        }
+        }
+        }
+      </emn:schema>
+    </emn:eventType>
+    <emn:informationFlowType id="informationFlowType_098lr75" name="informationFlow" sourceRef="CommandType_enroll_student" targetRef="EventType_student_enrolled" />
+    <emn:eventType id="EventType_02lce3c" name="Initial Event" />
+    <emn:queryType id="QueryType_students" name="Students">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "array",
+        "items": {
+        "type": "object",
+        "required": [
+        "studentId",
+        "firstName",
+        "lastName"
+        ],
+        "properties": {
+        "studentId": {
+        "$ref": "StudentId"
+        },
+        "firstName": {
+        "type": "string"
+        },
+        "lastName": {
+        "type": "string"
+        }
+        }
+        }
+        }
+      </emn:schema>
+    </emn:queryType>
+    <emn:informationFlowType id="informationFlowType_0mqywd0" name="informationFlow" sourceRef="EventType_02lce3c" targetRef="QueryType_students" />
+    <emn:viewType id="ViewType_page_28" name="Page 28" />
+    <emn:informationFlowType id="informationFlowType_1siqqvn" name="informationFlow" sourceRef="EventType_student_enrolled" targetRef="QueryType_students" />
+    <emn:informationFlowType id="informationFlowType_18gqizi" name="informationFlow" sourceRef="QueryType_students" targetRef="ViewType_page_28" />
+    <emn:viewType id="ViewType_1yybliu" name="Page 26" />
+    <emn:commandType id="CommandType_rename_course" name="Rename Course">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "object",
+        "required": [
+        "courseId",
+        "name"
+        ],
+        "properties": {
+        "courseId": {
+        "$ref": "CourseId"
+        },
+        "name": {
+        "type": "string"
+        }
+        }
+        }
+      </emn:schema>
+    </emn:commandType>
+    <emn:eventType id="EventType_course_renamed" name="Course Renamed">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "object",
+        "required": [
+        "courseId",
+        "name"
+        ],
+        "properties": {
+        "courseId": {
+        "$ref": "CourseId"
+        },
+        "name": {
+        "type": "string"
+        }
+        }
+        }
+      </emn:schema>
+    </emn:eventType>
+    <emn:informationFlowType id="informationFlowType_06zmu93" name="informationFlow" sourceRef="CommandType_rename_course" targetRef="EventType_course_renamed" />
+    <emn:informationFlowType id="informationFlowType_0a31qig" name="informationFlow" sourceRef="ViewType_1yybliu" targetRef="CommandType_rename_course" />
+    <emn:informationFlowType id="informationFlowType_171i7uq" name="informationFlow" sourceRef="QueryType_courses" targetRef="ViewType_1yybliu" />
+    <emn:errorType id="ErrorType_duplicate_course" name="Duplicate course">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "object",
+        "required": [
+        "message"
+        ],
+        "properties": {
+        "message": {
+        "type": "string"
+        }
+        }
+        }
+      </emn:schema>
+    </emn:errorType>
+    <emn:errorType id="ErrorType_course_does_not_exist" name="Course does not exist">
+      <emn:schema schemaFormat="application/schema+json">
+        {
+        "type": "object",
+        "required": [
+        "message"
+        ],
+        "properties": {
+        "message": {
+        "type": "string"
+        }
+        }
+        }
+      </emn:schema>
+    </emn:errorType>
+  </emn:types>
+  <emn:timeline id="timeline_1" name="Faculty">
+    <emn:laneSet id="lanes_1">
+      <emn:triggerLaneSet>
+        <emn:triggerLane id="triggerLane_admin" name="Admin">
+          <emn:flowNodeRef>View_page_24</emn:flowNodeRef>
+          <emn:flowNodeRef>View_page27_1</emn:flowNodeRef>
+          <emn:flowNodeRef>View_page_28</emn:flowNodeRef>
+          <emn:flowNodeRef>View_page_26</emn:flowNodeRef>
+        </emn:triggerLane>
+        <emn:triggerLane id="trigger_student" name="Student">
+          <emn:flowNodeRef>View_page_25</emn:flowNodeRef>
+        </emn:triggerLane>
+      </emn:triggerLaneSet>
+      <emn:interactionLane id="interaction_1" name="Interaction">
+        <emn:flowNodeRef>Query_courses_1</emn:flowNodeRef>
+        <emn:flowNodeRef>Command_create_course_1</emn:flowNodeRef>
+        <emn:flowNodeRef>Command_enroll_student</emn:flowNodeRef>
+        <emn:flowNodeRef>Query_students</emn:flowNodeRef>
+        <emn:flowNodeRef>Command_rename_course</emn:flowNodeRef>
+      </emn:interactionLane>
+      <emn:conceptLaneSet>
+        <emn:conceptLane id="aggregateLane_student" name="Student">
+          <emn:flowNodeRef>Event_student_enrolled</emn:flowNodeRef>
+          <emn:idSchema reference="StudentId" schemaFormat="application/schema+json" />
+        </emn:conceptLane>
+        <emn:conceptLane id="aggregateLane_course" name="Course">
+          <emn:flowNodeRef>Event_course_created</emn:flowNodeRef>
+          <emn:flowNodeRef>Event_course_renamed</emn:flowNodeRef>
+          <emn:idSchema reference="CourseId" schemaFormat="application/schema+json" />
+        </emn:conceptLane>
+      </emn:conceptLaneSet>
+    </emn:laneSet>
+    <emn:sliceSet id="SliceSet_04hjrft">
+      <emn:slice id="Slice_0toflhc" name="Create Course">
+        <emn:flowNodeRef>Command_create_course_1</emn:flowNodeRef>
+        <emn:flowNodeRef>Event_course_created</emn:flowNodeRef>
+        <emn:flowNodeRef>View_page_24</emn:flowNodeRef>
+      </emn:slice>
+      <emn:slice id="Slice_11op9nr" name="Display Courses">
+        <emn:flowNodeRef>Query_courses_1</emn:flowNodeRef>
+        <emn:flowNodeRef>View_page27_1</emn:flowNodeRef>
+      </emn:slice>
+      <emn:slice id="Slice_1thdbc8" name="Enroll Student">
+        <emn:flowNodeRef>Command_enroll_student</emn:flowNodeRef>
+        <emn:flowNodeRef>Event_student_enrolled</emn:flowNodeRef>
+        <emn:flowNodeRef>View_page_25</emn:flowNodeRef>
+      </emn:slice>
+      <emn:slice id="Slice_0xkmauv" name="View Students">
+        <emn:flowNodeRef>Query_students</emn:flowNodeRef>
+        <emn:flowNodeRef>View_page_28</emn:flowNodeRef>
+      </emn:slice>
+      <emn:slice id="Slice_0xnxibu" name="Rename Course">
+        <emn:flowNodeRef>Command_rename_course</emn:flowNodeRef>
+        <emn:flowNodeRef>Event_course_renamed</emn:flowNodeRef>
+        <emn:flowNodeRef>View_page_26</emn:flowNodeRef>
+      </emn:slice>
+    </emn:sliceSet>
+    <emn:view id="View_page_24" typeRef="ViewType_page_24" />
+    <emn:command id="Command_create_course_1" typeRef="CommandType_create_course">
+      <emn:value>
+        {
+        "courseId": "course-4711",
+        },
+        "name": "Physics I",
+        "capacity": 25
+        }
+      </emn:value>
+    </emn:command>
+    <emn:informationFlow id="Flow_0ytn02p" typeRef="informationFlowType_16lrebs" sourceRef="View_page_24" targetRef="Command_create_course_1" />
+    <emn:event id="Event_course_created" typeRef="EventType_course_created">
+      <emn:value>
+        {
+        "courseId": "course-4711",
+        "name": "Physics I",
+        "capacity": 25
+        }
+      </emn:value>
+    </emn:event>
+    <emn:informationFlow id="Flow_0gbfqub" typeRef="informationFlowType_15lrebs" sourceRef="Command_create_course_1" targetRef="Event_course_created" />
+    <emn:query id="Query_courses_1" typeRef="QueryType_courses">
+      <emn:value>
+        [
+        {
+        "courseId": "course-4711",
+        "name": "Physics I",
+        "capacity": 25
+        }
+        ]
+      </emn:value>
+    </emn:query>
+    <emn:view id="View_page27_1" typeRef="ViewType_page_27" />
+    <emn:informationFlow id="Flow_1b9v137" typeRef="informationFlowType_1eq7typ" sourceRef="Query_courses_1" targetRef="View_page27_1" />
+    <emn:informationFlow id="Flow_1etqwcf" typeRef="informationFlowType_059omg6" sourceRef="Event_course_created" targetRef="Query_courses_1" />
+    <emn:view id="View_page_25" typeRef="ViewType_page_25" />
+    <emn:command id="Command_enroll_student" typeRef="CommandType_enroll_student">
+      <emn:value>
+        {
+        "studentId": "student-0815",
+        "firstName": "Ada",
+        "lastName": "Lovelace"
+        }
+      </emn:value>
+    </emn:command>
+    <emn:informationFlow id="Flow_1snpycr" typeRef="informationFlowType_147td8q" sourceRef="View_page_25" targetRef="Command_enroll_student" />
+    <emn:event id="Event_student_enrolled" typeRef="EventType_student_enrolled">
+      <emn:value>
+        {
+        "studentId": "student-0815",
+        "firstName": "Ada",
+        "lastName": "Lovelace"
+        }
+      </emn:value>
+    </emn:event>
+    <emn:informationFlow id="Flow_11fr4m1" typeRef="informationFlowType_098lr75" sourceRef="Command_enroll_student" targetRef="Event_student_enrolled" />
+    <emn:query id="Query_students" typeRef="QueryType_students">
+      <emn:value>
+        [
+        {
+        "studentId": "student-0815",
+        "firstName": "Ada",
+        "lastName": "Lovelace"
+        }
+        ]
+      </emn:value>
+    </emn:query>
+    <emn:view id="View_page_28" typeRef="ViewType_page_28" />
+    <emn:informationFlow id="Flow_0lfdiju" typeRef="informationFlowType_18gqizi" sourceRef="Query_students" targetRef="View_page_28" />
+    <emn:informationFlow id="Flow_03ygtcq" typeRef="informationFlowType_1siqqvn" sourceRef="Event_student_enrolled" targetRef="Query_students" />
+    <emn:view id="View_page_26" typeRef="ViewType_1yybliu" />
+    <emn:command id="Command_rename_course" typeRef="CommandType_rename_course">
+      <emn:value>
+        {
+        "courseId": "course-4711",
+        "name": "Physics II"
+        }
+      </emn:value>
+    </emn:command>
+    <emn:informationFlow id="Flow_0mufuw6" typeRef="informationFlowType_0a31qig" sourceRef="View_page_26" targetRef="Command_rename_course" />
+    <emn:event id="Event_course_renamed" typeRef="EventType_course_renamed">
+      <emn:value>
+        {
+        "courseId": "course-4711"
+        },
+        "name": "Physics II"
+        }
+      </emn:value>
+    </emn:event>
+    <emn:informationFlow id="Flow_1xr2kq6" typeRef="informationFlowType_06zmu93" sourceRef="Command_rename_course" targetRef="Event_course_renamed" />
+    <emn:informationFlow id="Flow_1gi8c1f" typeRef="informationFlowType_171i7uq" sourceRef="Query_courses_1" targetRef="View_page_26" />
+  </emn:timeline>
+  <emn:specification id="Specification_create_course_success" name="Create course" scenario="As an admin I want to create course" sliceRef="Slice_0toflhc">
+    <emn:given id="Specification_18vdxuw_given" stateName="No course exists" />
+    <emn:when id="Specification_18vdxuw_when">
+      <emn:command id="Command_04yfs5h" typeRef="CommandType_create_course">
+        <emn:value>
+          {
+          "courseId": "course-4711",
+          "capacity": 25,
+          "name": "Physics I"
+          }
+        </emn:value>
+      </emn:command>
+    </emn:when>
+    <emn:then id="Specification_18vdxuw_then">
+      <emn:event id="Event_0wny2nt" typeRef="EventType_course_created">
+        <emn:value>
+          {
+          "courseId": "course-4711",
+          "capacity": 25,
+          "name": "Physics I"
+          }
+        </emn:value>
+      </emn:event>
+    </emn:then>
+  </emn:specification>
+  <emn:specification id="Specification_create_course_error" name="Don&#39;t create course" sliceRef="Slice_0toflhc">
+    <emn:given id="Specification_1quqjt0_given" stateName="Course exists">
+      <emn:event id="Event_1hq514a" typeRef="EventType_course_created">
+        <emn:value>
+          {
+          "courseId": "course-4711",
+          "capacity": 25,
+          "name": "Physics I"
+          }
+        </emn:value>
+      </emn:event>
+    </emn:given>
+    <emn:when id="Specification_1quqjt0_when">
+      <emn:command id="Command_04gsa49" typeRef="CommandType_create_course">
+        <emn:value>
+          {
+          "courseId": "course-4711",
+          "capacity": 25,
+          "name": "Physics I"
+          }
+        </emn:value>
+      </emn:command>
+    </emn:when>
+    <emn:then id="Specification_1quqjt0_then">
+      <emn:error id="Error_1h6wufi" typeRef="ErrorType_duplicate_course">
+        <emn:value>
+          {
+          "message": "Course with id=course-4711 already exists."
+          }
+        </emn:value>
+      </emn:error>
+    </emn:then>
+  </emn:specification>
+  <emn:specification id="Specification_1gtvjcl" name="Rename course" scenario="If I rename a course, the course will get a new name" sliceRef="Slice_0xnxibu">
+    <emn:given id="Specification_1gtvjcl_given">
+      <emn:event id="Event_1oza6ao" typeRef="EventType_course_created">
+        <emn:value>
+          {
+          "courseId": "course-4711",
+          "name": "Physics I",
+          "capacity": 25
+          }
+        </emn:value>
+      </emn:event>
+    </emn:given>
+    <emn:when id="Specification_1gtvjcl_when">
+      <emn:command id="Command_1tlkgbx" typeRef="CommandType_rename_course">
+        <emn:value>
+          {
+          "courseId": "course-4711",
+          "name": "Physics II"
+          }
+        </emn:value>
+      </emn:command>
+    </emn:when>
+    <emn:then id="Specification_1gtvjcl_then">
+      <emn:event id="Event_1tuemla" typeRef="EventType_course_renamed">
+        <emn:value>
+          {
+          "courseId": "course-4711",
+          "name": "Physics II"
+          }
+        </emn:value>
+      </emn:event>
+    </emn:then>
+  </emn:specification>
+  <emn:specification id="Specification_1ote18y" name="Rename course to the same name" scenario="If I rename a course and the same name is provided, nothing happens" sliceRef="Slice_0xnxibu">
+    <emn:given id="Given_0uun07f">
+      <emn:event id="Event_0ge116t" typeRef="EventType_course_created">
+        <emn:value>
+          {
+          "courseId": "course-4711",
+          "name": "Physics I",
+          "capacity": 25
+          }
+        </emn:value>
+      </emn:event>
+    </emn:given>
+    <emn:when id="When_0wrpria">
+      <emn:command id="Command_04u3bw3" typeRef="CommandType_rename_course">
+        <emn:value>
+          {
+          "courseId": "course-4711",
+          "name": "Physics I"
+          }
+        </emn:value>
+      </emn:command>
+    </emn:when>
+    <emn:then id="Then_1tkg7df" />
+  </emn:specification>
+  <emn:specification id="Specification_0wjemf5" name="Rename non-existing course" scenario="If I rename a course that does not exists, an error is thrown" sliceRef="Slice_0xnxibu">
+    <emn:given id="Given_0z7eshb" />
+    <emn:when id="When_0t6n42q">
+      <emn:command id="Command_18yqilx" typeRef="CommandType_rename_course">
+        <emn:value>
+          {
+          "courseId": "course-4711",
+          "name": "Physics I"
+          }
+        </emn:value>
+      </emn:command>
+    </emn:when>
+    <emn:then id="Then_1dezz9r">
+      <emn:error id="Error_0q2v7fo" typeRef="ErrorType_course_does_not_exist">
+        <emn:value>
+          {
+          "message": "Course with id=course-4711 does not exist."
+          }
+        </emn:value>
+      </emn:error>
+    </emn:then>
+  </emn:specification>
+  <emndi:EMNDiagram id="EMNDiagram_1">
+    <emndi:EMNPlane id="EMNPlane_1" emnElement="timeline_1">
+      <emndi:EMNShape id="AggregateLane_1w15s4u_di" emnElement="aggregateLane_course" isHorizontal="true">
+        <dc:Bounds x="200" y="600" width="2470" height="160" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="aggregateLane_1_di" emnElement="aggregateLane_student" isHorizontal="true">
+        <dc:Bounds x="200" y="440" width="2470" height="160" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="interaction_1_di" emnElement="interaction_1" isHorizontal="true">
+        <dc:Bounds x="200" y="280" width="2470" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_0xnxibu_di" emnElement="Slice_0xnxibu">
+        <dc:Bounds x="1940" y="-85" width="360" height="890" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_0xkmauv_di" emnElement="Slice_0xkmauv">
+        <dc:Bounds x="1390" y="-90" width="450" height="880" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_1thdbc8_di" emnElement="Slice_1thdbc8">
+        <dc:Bounds x="1050" y="-90" width="270" height="880" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_11op9nr_di" emnElement="Slice_11op9nr">
+        <dc:Bounds x="630" y="-90" width="320" height="880" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_0toflhc_di" emnElement="Slice_0toflhc">
+        <dc:Bounds x="250" y="-90" width="270" height="880" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="TriggerLane_17dix3f_di" emnElement="trigger_student" isHorizontal="true">
+        <dc:Bounds x="200" y="-55" width="2470" height="160" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="triggerLane_1_di" emnElement="triggerLane_admin" isHorizontal="true">
+        <dc:Bounds x="200" y="105" width="2470" height="175" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_2ote18y_di" emnElement="Specification_0wjemf5">
+        <dc:Bounds x="2470" y="860" width="500" height="550" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Given_2uun07f_di" emnElement="Given_0z7eshb">
+        <dc:Bounds x="2480" y="900" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="When_2wrpria_di" emnElement="When_0t6n42q">
+        <dc:Bounds x="2480" y="1070" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_24u3bw3_di" emnElement="Command_18yqilx">
+        <dc:Bounds x="2540" y="1100" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Then_1tkg7df_di" emnElement="Then_1dezz9r">
+        <dc:Bounds x="2480" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Error_0q2v7fo_di" emnElement="Error_0q2v7fo">
+        <dc:Bounds x="2540" y="1270" width="200" height="120" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1ote18y_di" emnElement="Specification_1ote18y">
+        <dc:Bounds x="1930" y="860" width="500" height="550" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Given_0uun07f_di" emnElement="Given_0uun07f">
+        <dc:Bounds x="1940" y="900" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_0ge116t_di" emnElement="Event_0ge116t">
+        <dc:Bounds x="2000" y="930" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="When_0wrpria_di" emnElement="When_0wrpria">
+        <dc:Bounds x="1940" y="1070" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_04u3bw3_di" emnElement="Command_04u3bw3">
+        <dc:Bounds x="2000" y="1100" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Then_2tkg7df_di" emnElement="Then_1tkg7df">
+        <dc:Bounds x="1940" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1gtvjcl_di" emnElement="Specification_1gtvjcl">
+        <dc:Bounds x="1400" y="860" width="500" height="550" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1gtvjcl_given_di" emnElement="Specification_1gtvjcl_given">
+        <dc:Bounds x="1410" y="900" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_1oza6ao_di" emnElement="Event_1oza6ao">
+        <dc:Bounds x="1470" y="930" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1gtvjcl_when_di" emnElement="Specification_1gtvjcl_when">
+        <dc:Bounds x="1410" y="1070" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_1tlkgbx_di" emnElement="Command_1tlkgbx">
+        <dc:Bounds x="1470" y="1100" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1gtvjcl_then_di" emnElement="Specification_1gtvjcl_then">
+        <dc:Bounds x="1410" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_1tuemla_di" emnElement="Event_1tuemla">
+        <dc:Bounds x="1470" y="1260" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1quqjt0_di" emnElement="Specification_create_course_error">
+        <dc:Bounds x="800" y="875" width="500" height="550" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1quqjt0_given_di" emnElement="Specification_1quqjt0_given">
+        <dc:Bounds x="810" y="900" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_1hq514a_di" emnElement="Event_1hq514a">
+        <dc:Bounds x="850" y="930" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1quqjt0_when_di" emnElement="Specification_1quqjt0_when">
+        <dc:Bounds x="810" y="1070" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_04gsa49_di" emnElement="Command_04gsa49">
+        <dc:Bounds x="850" y="1100" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_1quqjt0_then_di" emnElement="Specification_1quqjt0_then">
+        <dc:Bounds x="810" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Error_1h6wufi_di" emnElement="Error_1h6wufi">
+        <dc:Bounds x="850" y="1260" width="200" height="120" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_18vdxuw_di" emnElement="Specification_create_course_success">
+        <dc:Bounds x="200" y="875" width="500" height="550" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_18vdxuw_given_di" emnElement="Specification_18vdxuw_given">
+        <dc:Bounds x="210" y="900" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_18vdxuw_when_di" emnElement="Specification_18vdxuw_when">
+        <dc:Bounds x="210" y="1070" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_04yfs5h_di" emnElement="Command_04yfs5h">
+        <dc:Bounds x="260" y="1100" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Specification_18vdxuw_then_di" emnElement="Specification_18vdxuw_then">
+        <dc:Bounds x="210" y="1240" width="480" height="160" />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_0wny2nt_di" emnElement="Event_0wny2nt">
+        <dc:Bounds x="260" y="1260" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_0dwxu7r_di" emnElement="View_page_24">
+        <dc:Bounds x="330" y="150" width="100" height="80" />
+        <emndi:EMNLabel>
+          <dc:Bounds x="360" y="125" width="41" height="14" />
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_1y2duqg_di" emnElement="Command_create_course_1">
+        <dc:Bounds x="280" y="310" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_course_created_di" emnElement="Event_course_created">
+        <dc:Bounds x="280" y="620" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Query_1msi0rf_di" emnElement="Query_courses_1">
+        <dc:Bounds x="710" y="310" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_1eft2am_di" emnElement="View_page27_1">
+        <dc:Bounds x="760" y="140" width="100" height="80" />
+        <emndi:EMNLabel>
+          <dc:Bounds x="790" y="115" width="41" height="14" />
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_0sbv8ib_di" emnElement="View_page_25">
+        <dc:Bounds x="1130" y="-15" width="100" height="80" />
+        <emndi:EMNLabel>
+          <dc:Bounds x="1161" y="-33" width="41" height="14" />
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_1c7nbgb_di" emnElement="Command_enroll_student">
+        <dc:Bounds x="1080" y="310" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_1mtw5ng_di" emnElement="Event_student_enrolled">
+        <dc:Bounds x="1080" y="470" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Query_1y1fy8w_di" emnElement="Query_students">
+        <dc:Bounds x="1500" y="310" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_0wmygiz_di" emnElement="View_page_28">
+        <dc:Bounds x="1550" y="160" width="100" height="80" />
+        <emndi:EMNLabel>
+          <dc:Bounds x="1581" y="142" width="41" height="14" />
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_page_26_di" emnElement="View_page_26">
+        <dc:Bounds x="2060" y="150" width="100" height="80" />
+        <emndi:EMNLabel>
+          <dc:Bounds x="2090" y="132" width="41" height="14" />
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_rename_course_di" emnElement="Command_rename_course">
+        <dc:Bounds x="2010" y="300" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_course_renamed_di" emnElement="Event_course_renamed">
+        <dc:Bounds x="2010" y="620" width="200" height="120" />
+        <emndi:EMNLabel />
+      </emndi:EMNShape>
+      <emndi:EMNEdge id="Flow_0ytn02p_di" emnElement="Flow_0ytn02p">
+        <di:waypoint x="380" y="230" />
+        <di:waypoint x="380" y="290" />
+        <di:waypoint x="380" y="310" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_0gbfqub_di" emnElement="Flow_0gbfqub">
+        <di:waypoint x="380" y="430" />
+        <di:waypoint x="380" y="620" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1b9v137_di" emnElement="Flow_1b9v137">
+        <di:waypoint x="810" y="310" />
+        <di:waypoint x="810" y="220" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1etqwcf_di" emnElement="Flow_1etqwcf">
+        <di:waypoint x="380" y="620" />
+        <di:waypoint x="380" y="515" />
+        <di:waypoint x="810" y="515" />
+        <di:waypoint x="810" y="430" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1snpycr_di" emnElement="Flow_1snpycr">
+        <di:waypoint x="1180" y="65" />
+        <di:waypoint x="1180" y="310" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_11fr4m1_di" emnElement="Flow_11fr4m1">
+        <di:waypoint x="1180" y="430" />
+        <di:waypoint x="1180" y="470" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_0lfdiju_di" emnElement="Flow_0lfdiju">
+        <di:waypoint x="1600" y="310" />
+        <di:waypoint x="1600" y="240" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_03ygtcq_di" emnElement="Flow_03ygtcq">
+        <di:waypoint x="1130" y="470" />
+        <di:waypoint x="1130" y="450" />
+        <di:waypoint x="1550" y="450" />
+        <di:waypoint x="1550" y="430" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_0mufuw6_di" emnElement="Flow_0mufuw6">
+        <di:waypoint x="2110" y="230" />
+        <di:waypoint x="2110" y="300" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1xr2kq6_di" emnElement="Flow_1xr2kq6">
+        <di:waypoint x="2110" y="420" />
+        <di:waypoint x="2110" y="620" />
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1gi8c1f_di" emnElement="Flow_1gi8c1f">
+        <di:waypoint x="810" y="310" />
+        <di:waypoint x="810" y="270" />
+        <di:waypoint x="2110" y="270" />
+        <di:waypoint x="2110" y="230" />
+      </emndi:EMNEdge>
+    </emndi:EMNPlane>
+  </emndi:EMNDiagram>
+  <emndi:EMNDiagram id="EMNDiagram_1tvt0ra">
+    <emndi:EMNPlane id="EMNPlane_09ywxtm" emnElement="Definitions_1p59kc5" />
+  </emndi:EMNDiagram>
+</emn:definitions>

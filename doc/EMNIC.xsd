@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"
+  xmlns="https://holixon.io/spec/EMN/20241231/IC"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="https://holixon.io/spec/EMN/20241231/IC">
+
+  <xsd:element name="informationCompleteness" type="tInformationCompleteness"/>
+  <xsd:complexType name="tInformationCompleteness">
+    <xsd:sequence>
+      <xsd:element ref="ignoredProperties" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="ignoredProperties" type="tIgnoredProperties"/>
+  <xsd:complexType name="tIgnoredProperties">
+    <xsd:sequence>
+      <xsd:element ref="ignoredProperty" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="ignoredProperty" type="tIgnoredProperty"/>
+  <xsd:complexType name="tIgnoredProperty">
+    <xsd:attribute name="name" type="xsd:string" use="required"/>
+    <xsd:attribute name="comment" type="xsd:string"/>
+  </xsd:complexType>
+
+</xsd:schema>

@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.holixon.emn._</groupId>
+    <artifactId>emn-kotlin-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../../_build/parent/pom.xml</relativePath>
+  </parent>
+
+  <groupId>io.holixon.emn</groupId>
+  <artifactId>emn-verify-core</artifactId>
+  <name>emn-verify-core</name>
+  <description>Framework-neutral verification of code against EMN models.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.holixon.emn</groupId>
+      <artifactId>emn-parser</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

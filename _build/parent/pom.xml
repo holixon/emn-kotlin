@@ -17,6 +17,7 @@
   <properties>
     <avro-kotlin.version>1.12.6.1</avro-kotlin.version>
     <kotlin-code-generation.version>0.3.1</kotlin-code-generation.version>
+    <archunit.version>1.5.1</archunit.version>
   </properties>
 
   <dependencyManagement>
@@ -46,8 +47,50 @@
       </dependency>
 
       <dependency>
+        <groupId>io.holixon.emn</groupId>
+        <artifactId>emn-verify-annotations</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.holixon.emn</groupId>
+        <artifactId>emn-verify-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.holixon.emn</groupId>
+        <artifactId>emn-verify-axon5</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>io.holixon.emn.generation</groupId>
-        <artifactId>emn-kotlin-axon5-generator</artifactId>
+        <artifactId>emn-schema-exporter-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.holixon.emn.generation</groupId>
+        <artifactId>emn-kotlin-axon5</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.holixon.emn.generation</groupId>
+        <artifactId>emn-kotlin-axon5-gradle-plugin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.holixon.emn</groupId>
+        <artifactId>emn-verify-gradle-plugin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.holixon.emn.generation</groupId>
+        <artifactId>emn-schema-exporter-gradle-plugin</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
+                 xmlns:emndi="https://holixon.io/spec/EMN/20241231/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                 xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:emnic="https://holixon.io/spec/EMN/20241231/IC" id="simple" name="Simple"
+                 targetNamespace="https://holixon.io/schema/emn"
+                 xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../doc/EMN.xsd">
+  <emn:types>
+    <emn:schemaDefinition id="CourseType" name="Course Type">
+      <emn:schema schemaFormat="application/schema+json">{
+        "type": "string",
+        "enum": ["LIVE", "REMOTE"]
+        }
+      </emn:schema>
+    </emn:schemaDefinition>
+    <emn:viewType id="AdminCourseView" name="Admin Course View"/>
+    <emn:commandType id="CreateCourse" name="Create course">
+      <emn:schema schemaFormat="application/schema+json">{
+        "type": "object",
+        "required": ["courseId", "name", "courseType"],
+        "properties": {
+        "courseId": {
+        "type": "string",
+        "format": "uuid",
+        "x-emn-role": "entity-id"
+        },
+        "name": {
+        "type": "string"
+        },
+        "courseType": {
+        "$ref": "CourseType"
+        },
+        "capacity": {
+        "type": "integer"
+        },
+        "createdAt": {
+        "type": "string",
+        "format": "date-time"
+        }
+        }
+        }
+      </emn:schema>
+    </emn:commandType>
+    <emn:eventType id="CourseCreated" name="Course created">
+      <emn:schema schemaFormat="application/schema+json">{
+        "type": "object",
+        "required": ["courseId", "name", "courseType"],
+        "properties": {
+        "courseId": {
+        "type": "string",
+        "format": "uuid",
+        "x-emn-tag-key": "course"
+        },
+        "name": {
+        "type": "string"
+        },
+        "courseType": {
+        "$ref": "CourseType"
+        },
+        "capacity": {
+        "type": "integer"
+        },
+        "createdAt": {
+        "type": "string",
+        "format": "date-time"
+        }
+        }
+        }
+      </emn:schema>
+    </emn:eventType>
+    <emn:informationFlowType id="InformationFlowType_1sgw71v" name="InformationFlow" sourceRef="AdminCourseView" targetRef="CreateCourse"/>
+    <emn:informationFlowType id="InformationFlowType_0wv7e30" name="InformationFlow" sourceRef="CreateCourse" targetRef="CourseCreated"/>
+    <emn:queryType id="CourseOverview" name="Course Overview">
+      <emn:extensionElements>
+        <emnic:informationCompleteness>
+          <emnic:ignoredProperties>
+            <emnic:ignoredProperty name="students" comment=""/>
+          </emnic:ignoredProperties>
+        </emnic:informationCompleteness>
+      </emn:extensionElements>
+      <emn:schema schemaFormat="application/schema+json">{
+        "type": "array",
+        "items": {
+        "type": "object",
+        "required": ["courseId", "name", "courseType"],
+        "properties": {
+        "courseId": {
+        "type": "string",
+        "format": "uuid"
+        },
+        "name": {
+        "type": "string"
+        },
+        "courseType": {
+        "$ref": "CourseType"
+        },
+        "capacity": {
+        "type": "integer"
+        },
+        "createdAt": {
+        "type": "string",
+        "format": "date-time"
+        },
+        "students": {
+        "type": "integer"
+        }
+        }
+        }
+        }
+      </emn:schema>
+    </emn:queryType>
+    <emn:informationFlowType id="InformationFlowType_1c3le5u" name="InformationFlow" sourceRef="CourseOverview" targetRef="AdminCourseView"/>
+    <emn:informationFlowType id="InformationFlowType_029kx1b" name="InformationFlow" sourceRef="CourseCreated" targetRef="CourseOverview"/>
+  </emn:types>
+  <emn:timeline id="timeline_1" name="Timeline">
+    <emn:laneSet id="lanes_1">
+      <emn:triggerLaneSet>
+        <emn:triggerLane id="triggerLane_1" name="Trigger">
+          <emn:flowNodeRef>View_17os1za</emn:flowNodeRef>
+          <emn:flowNodeRef>View_1f1k40r</emn:flowNodeRef>
+        </emn:triggerLane>
+      </emn:triggerLaneSet>
+      <emn:interactionLane id="interaction_1" name="Interaction">
+        <emn:flowNodeRef>Command_1yzvj3t</emn:flowNodeRef>
+        <emn:flowNodeRef>Query_1fcam5f</emn:flowNodeRef>
+      </emn:interactionLane>
+      <emn:conceptLaneSet>
+        <emn:conceptLane id="ConceptLane_0h6eawq" name="Concept">
+          <emn:flowNodeRef>Event_048divc</emn:flowNodeRef>
+        </emn:conceptLane>
+      </emn:conceptLaneSet>
+    </emn:laneSet>
+    <emn:sliceSet id="SliceSet_0j22kfr">
+      <emn:slice id="Slice_1wugz8l" name="Command Slice">
+        <emn:flowNodeRef>View_17os1za</emn:flowNodeRef>
+        <emn:flowNodeRef>Command_1yzvj3t</emn:flowNodeRef>
+        <emn:flowNodeRef>Event_048divc</emn:flowNodeRef>
+      </emn:slice>
+      <emn:slice id="Slice_0knhamy" name="View Slice">
+        <emn:flowNodeRef>Query_1fcam5f</emn:flowNodeRef>
+        <emn:flowNodeRef>View_1f1k40r</emn:flowNodeRef>
+      </emn:slice>
+    </emn:sliceSet>
+    <emn:view id="View_17os1za" typeRef="AdminCourseView"/>
+    <emn:command id="Command_1yzvj3t" typeRef="CreateCourse">
+      <emn:value>{
+        "courseId": "9b6ecaa8-bb6d-4d65-92e7-0d10ba9cb7ba",
+        "name": "Java 101",
+        "courseType": "LIVE",
+        "capacity": 5,
+        "createdAt": "2026-09-04T09:00:00Z"
+        }
+      </emn:value>
+    </emn:command>
+    <emn:event id="Event_048divc" typeRef="CourseCreated">
+      <emn:value>{
+        "courseId": "9b6ecaa8-bb6d-4d65-92e7-0d10ba9cb7ba",
+        "name": "Java 101",
+        "courseType": "LIVE",
+        "capacity": 5,
+        "createdAt": "2026-09-04T09:00:00Z"
+        }
+      </emn:value>
+    </emn:event>
+    <emn:informationFlow id="Flow_0v44byv" typeRef="InformationFlowType_1sgw71v" sourceRef="View_17os1za" targetRef="Command_1yzvj3t"/>
+    <emn:informationFlow id="Flow_01kxiv8" typeRef="InformationFlowType_0wv7e30" sourceRef="Command_1yzvj3t" targetRef="Event_048divc"/>
+    <emn:query id="Query_1fcam5f" typeRef="CourseOverview">
+      <emn:value>[
+        {
+        "courseId": "9b6ecaa8-bb6d-4d65-92e7-0d10ba9cb7ba",
+        "name": "Java 101",
+        "courseType": "LIVE",
+        "capacity": 5,
+        "createdAt": "2026-09-04T09:00:00Z",
+        "students": 0
+        }
+        ]
+      </emn:value>
+    </emn:query>
+    <emn:view id="View_1f1k40r" typeRef="AdminCourseView"/>
+    <emn:informationFlow id="Flow_1ljsec6" typeRef="InformationFlowType_1c3le5u" sourceRef="Query_1fcam5f" targetRef="View_1f1k40r"/>
+    <emn:informationFlow id="Flow_01tg3mz" typeRef="InformationFlowType_029kx1b" sourceRef="Event_048divc" targetRef="Query_1fcam5f"/>
+  </emn:timeline>
+  <emndi:EMNDiagram id="EMNDiagram_1">
+    <emndi:EMNPlane id="EMNPlane_1" emnElement="timeline_1">
+      <emndi:EMNShape id="ConceptLane_0h6eawq_di" emnElement="ConceptLane_0h6eawq" isHorizontal="true">
+        <dc:Bounds x="200" y="440" width="1020" height="160"/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="interaction_1_di" emnElement="interaction_1" isHorizontal="true">
+        <dc:Bounds x="200" y="280" width="1020" height="160"/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="triggerLane_1_di" emnElement="triggerLane_1" isHorizontal="true">
+        <dc:Bounds x="200" y="105" width="1020" height="175"/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_1wugz8l_di" emnElement="Slice_1wugz8l">
+        <dc:Bounds x="250" y="72" width="300" height="555"/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_17os1za_di" emnElement="View_17os1za">
+        <dc:Bounds x="380" y="173" width="40" height="40"/>
+        <emndi:EMNLabel>
+          <dc:Bounds x="365" y="155" width="70" height="27"/>
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Command_1yzvj3t_di" emnElement="Command_1yzvj3t">
+        <dc:Bounds x="300" y="300" width="200" height="120"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Event_048divc_di" emnElement="Event_048divc">
+        <dc:Bounds x="300" y="460" width="200" height="120"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Query_1fcam5f_di" emnElement="Query_1fcam5f">
+        <dc:Bounds x="620" y="300" width="200" height="120"/>
+        <emndi:EMNLabel/>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="View_1f1k40r_di" emnElement="View_1f1k40r">
+        <dc:Bounds x="700" y="173" width="40" height="40"/>
+        <emndi:EMNLabel>
+          <dc:Bounds x="685" y="155" width="70" height="27"/>
+        </emndi:EMNLabel>
+      </emndi:EMNShape>
+      <emndi:EMNShape id="Slice_0knhamy_di" emnElement="Slice_0knhamy">
+        <dc:Bounds x="570" y="72" width="300" height="555"/>
+      </emndi:EMNShape>
+      <emndi:EMNEdge id="Flow_0v44byv_di" emnElement="Flow_0v44byv">
+        <di:waypoint x="400" y="213"/>
+        <di:waypoint x="400" y="300"/>
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_01kxiv8_di" emnElement="Flow_01kxiv8">
+        <di:waypoint x="400" y="420"/>
+        <di:waypoint x="400" y="460"/>
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_1ljsec6_di" emnElement="Flow_1ljsec6">
+        <di:waypoint x="720" y="300"/>
+        <di:waypoint x="720" y="213"/>
+      </emndi:EMNEdge>
+      <emndi:EMNEdge id="Flow_01tg3mz_di" emnElement="Flow_01tg3mz">
+        <di:waypoint x="400" y="460"/>
+        <di:waypoint x="400" y="440"/>
+        <di:waypoint x="720" y="440"/>
+        <di:waypoint x="720" y="420"/>
+      </emndi:EMNEdge>
+    </emndi:EMNPlane>
+  </emndi:EMNDiagram>
+</emn:definitions>

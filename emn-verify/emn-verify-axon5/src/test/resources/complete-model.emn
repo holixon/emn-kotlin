@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
+                 id="complete-model"
+                 name="Complete model"
+                 targetNamespace="https://holixon.io/schema/emn">
+  <emn:types>
+    <emn:commandType id="CreateCourse" name="Create course"/>
+    <emn:eventType id="CourseCreated" name="Course created"/>
+    <emn:queryType id="CourseOverview" name="Course overview"/>
+    <emn:queryType id="CourseDetails" name="Course details"/>
+    <emn:informationFlowType id="course-created-overview"
+                             name="Course created to overview"
+                             sourceRef="CourseCreated"
+                             targetRef="CourseOverview"/>
+  </emn:types>
+  <emn:specification id="spec-create-course" name="Create course"/>
+</emn:definitions>

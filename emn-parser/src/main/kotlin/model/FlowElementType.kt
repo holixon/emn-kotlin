@@ -47,6 +47,11 @@ class CommandType(id: String, name: String, schema: Schema?) : FlowNodeType(id =
 
 class ErrorType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
 class EventType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
+class EventSequenceType(
+  id: String,
+  name: String,
+  val eventTypes: List<EventType>,
+) : FlowNodeType(id = id, name = name, schema = null)
 class ExternalEventType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
 class ExternalSystemType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
 
@@ -59,4 +64,3 @@ class QueryType(id: String, name: String, schema: Schema?) : FlowNodeType(id = i
 class TranslationType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
 
 class ViewType(id: String, name: String, schema: Schema?) : FlowNodeType(id = id, name = name, schema = schema)
-

@@ -2,13 +2,81 @@ package io.holixon.emn
 
 
 import io.holixon.emn.model.Definitions
+import io.holixon.emn.model.EmbeddedSchema
 import io.holixon.emn.model.Event
+import io.holixon.emn.model.EventSequence
+import io.holixon.emn.model.EventSequenceType
 import io.holixon.emn.model.FlowNodeReference
 import io.holixon.emn.model.FlowNodeTypeReference
+import io.holixon.emn.model.ReferencedSchema
+import io.holixon.emn.model.CommandType
+import io.holixon.emn.model.EventType
+import io.holixon.emn.model.QueryType
+import org.dom4j.DocumentHelper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class ParserTest {
+
+  @Test
+  fun `parse type definitions without requiring complete diagram flows`() {
+    val definitions = parser.parseTypeDefinitions(TestFixtures.resourceUrl("quizmania/quizmania-blueprint.emn"))
+
+    assertThat(definitions.schemaDefinitions).hasSize(24)
+    assertThat(definitions.nodeTypes.filterIsInstance<CommandType>()).hasSize(19)
+    assertThat(definitions.nodeTypes.filterIsInstance<EventType>()).hasSize(20)
+    assertThat(definitions.nodeTypes.filterIsInstance<EventSequenceType>()).hasSize(1)
+    assertThat(definitions.nodeTypes.filterIsInstance<QueryType>()).hasSize(11)
+    assertThat(definitions.flowTypes).isEmpty()
+    assertThat(definitions.timelines).isEmpty()
+  }
+
+  @Test
+  fun `parses event sequence types definitions occurrences and flows`() {
+    val document = DocumentHelper.parseText(
+      """
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
+        id="event-sequence" name="Event Sequence" targetNamespace="https://holixon.io/schema/emn">
+        <emn:types>
+          <emn:eventType id="GameCreated" name="Game created"/>
+          <emn:eventType id="PlayerJoined" name="Player joined"/>
+          <emn:eventSequenceType id="GameStartedWithPlayer" name="Game started with player">
+            <emn:eventTypeRef>GameCreated</emn:eventTypeRef>
+            <emn:eventTypeRef>PlayerJoined</emn:eventTypeRef>
+          </emn:eventSequenceType>
+          <emn:queryType id="GameState" name="Game state"/>
+          <emn:informationFlowType id="sequence-to-state" name="Sequence to state"
+            sourceRef="GameStartedWithPlayer" targetRef="GameState"/>
+        </emn:types>
+        <emn:timeline id="timeline" name="Timeline">
+          <emn:informationFlow id="flow" typeRef="sequence-to-state"
+            sourceRef="sequence" targetRef="query"/>
+          <emn:eventSequence id="sequence" definitionRef="started-game">
+            <emn:variable name="gameId">game-1</emn:variable>
+          </emn:eventSequence>
+          <emn:query id="query" typeRef="GameState"/>
+        </emn:timeline>
+        <emn:eventSequenceDefinition id="started-game" typeRef="GameStartedWithPlayer">
+          <emn:variableDefinition name="gameId">default-game</emn:variableDefinition>
+          <emn:event id="created" typeRef="GameCreated"/>
+          <emn:event id="joined" typeRef="PlayerJoined"/>
+        </emn:eventSequenceDefinition>
+      </emn:definitions>
+      """.trimIndent()
+    )
+
+    val result = parser.parseDefinitions(document)
+    val sequenceType = result.nodeTypes.filterIsInstance<EventSequenceType>().single()
+    assertThat(sequenceType.eventTypes.map { it.id }).containsExactly("GameCreated", "PlayerJoined")
+    val definition = result.eventSequenceDefinitions.single()
+    assertThat(definition.typeReference).isSameAs(sequenceType)
+    assertThat(definition.events.map { it.id }).containsExactly("created", "joined")
+    assertThat(definition.variableDefinitions.single().value).isEqualTo("default-game")
+    val sequence = result.timelines.single().nodes.filterIsInstance<EventSequence>().single()
+    assertThat(sequence.definitionReference).isSameAs(definition)
+    assertThat(sequence.variables.single().value).isEqualTo("game-1")
+    assertThat(result.timelines.single().messages.single().source).isSameAs(sequence)
+  }
 
   private val parser = EmnDocumentParser()
 
@@ -34,6 +102,41 @@ class ParserTest {
     assert_all_types_and_timelines(result)
     assert_specifications(result)
     assert_events_belong_to_aggregates(result, true)
+  }
+
+  @Test
+  fun parses_schema_definitions() {
+    val file = TestFixtures.resourceUrl("json-schema/faculty.emn")
+    val result = parser.parseDefinitions(file)
+
+    assertThat(result.schemaDefinitions).hasSize(1)
+    assertThat(result.schemaDefinitions.first().id).isEqualTo("CourseType")
+    assertThat(result.schemaDefinitions.first().schema).isInstanceOf(EmbeddedSchema::class.java)
+  }
+
+  @Test
+  fun parses_referenced_schemas() {
+    val document = DocumentHelper.parseText(
+      """
+      <emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL"
+        id="schema-reference" name="Schema Reference" targetNamespace="https://holixon.io/schema/emn">
+        <emn:types>
+          <emn:schemaDefinition id="CourseType" name="Course Type">
+            <emn:schema schemaFormat="application/schema+json">{"type":"string","enum":["LIVE","REMOTE"]}</emn:schema>
+          </emn:schemaDefinition>
+          <emn:commandType id="CreateCourse" name="Create Course">
+            <emn:schema schemaFormat="application/schema+json" reference="CourseType"/>
+          </emn:commandType>
+        </emn:types>
+      </emn:definitions>
+      """.trimIndent()
+    )
+
+    val result = parser.parseDefinitions(document)
+    val commandType = result.nodeTypes.filterIsInstance<CommandType>().single()
+
+    assertThat(commandType.schema).isInstanceOf(ReferencedSchema::class.java)
+    assertThat((commandType.schema as ReferencedSchema).reference).isEqualTo("CourseType")
   }
 
   private fun assert_specifications(result: Definitions, verbose: Boolean = false) {

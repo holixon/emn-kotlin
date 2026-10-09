@@ -4,7 +4,9 @@ data class Definitions(
   val nodeTypes: List<FlowNodeType>,
   val flowTypes: List<MessageFlowType>,
   val timelines: List<Timeline>,
-  val specifications: List<Specification>
+  val specifications: List<Specification>,
+  val schemaDefinitions: List<SchemaDefinition> = emptyList(),
+  val eventSequenceDefinitions: List<EventSequenceDefinition> = emptyList(),
 ) {
   val typeDefinitions: List<FlowElementType> by lazy {
     nodeTypes + flowTypes
@@ -83,5 +85,3 @@ data class Definitions(
       .flatMap { c -> aggregates(c) }
   }
 }
-
-
