@@ -32,14 +32,14 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.axonframework</groupId>
-      <artifactId>axon-spring-boot-starter</artifactId>
+      <groupId>io.axoniq.framework</groupId>
+      <artifactId>axoniq-spring-boot-starter</artifactId>
       <version>${axon.version}</version>
     </dependency>
 
     <!-- Event Store Dependencies -->
     <dependency>
-      <groupId>org.axonframework</groupId>
+      <groupId>io.axoniq.framework</groupId>
       <artifactId>axon-server-connector</artifactId>
       <version>${axon.version}</version>
     </dependency>
@@ -58,6 +58,10 @@
       <groupId>org.axonframework</groupId>
       <artifactId>axon-eventsourcing</artifactId>
       <version>${axon.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.axonframework.extensions.kotlin</groupId>
+      <artifactId>axon-kotlin</artifactId>
     </dependency>
 
     <dependency>

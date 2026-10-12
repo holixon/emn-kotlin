@@ -16,6 +16,7 @@
 
   <properties>
     <avro-kotlin.version>1.12.6.1</avro-kotlin.version>
+    <jackson-annotations.version>2.22</jackson-annotations.version>
     <kotlin-code-generation.version>0.3.1</kotlin-code-generation.version>
     <archunit.version>1.5.1</archunit.version>
   </properties>
@@ -38,6 +39,19 @@
         <version>${avro-kotlin.version}</version>
         <scope>import</scope>
         <type>pom</type>
+      </dependency>
+
+      <!-- Jackson 3 still uses the Jackson 2 annotations artifact. -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson-annotations.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.axonframework.extensions.kotlin</groupId>
+        <artifactId>axon-kotlin</artifactId>
+        <version>${axon.version}</version>
       </dependency>
 
       <dependency>

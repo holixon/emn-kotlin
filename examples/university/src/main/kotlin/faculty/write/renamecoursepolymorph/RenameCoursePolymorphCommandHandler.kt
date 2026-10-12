@@ -7,21 +7,21 @@ import io.holixon.emn.example.university.faculty.type.course.CourseId
 import io.holixon.emn.example.university.faculty.write.renamecoursepolymorph.RenameCoursePolymorphCommandHandler.State.NamedCourseState
 import io.holixon.emn.example.university.faculty.write.renamecoursepolymorph.RenameCoursePolymorphCommandHandler.State.NoCourseState
 import io.holixon.emn.example.university.infrastructure.DecidingState
-import org.axonframework.commandhandling.annotations.CommandHandler
-import org.axonframework.eventhandling.gateway.EventAppender
-import org.axonframework.eventsourcing.annotations.EventSourcingHandler
-import org.axonframework.eventsourcing.annotations.EventCriteriaBuilder
-import org.axonframework.eventsourcing.annotations.EventSourcedEntity
-import org.axonframework.eventsourcing.annotations.reflection.EntityCreator
-import org.axonframework.eventstreaming.EventCriteria
-import org.axonframework.eventstreaming.Tag
-import org.axonframework.modelling.annotations.InjectEntity
+import org.axonframework.messaging.commandhandling.annotation.CommandHandler
+import org.axonframework.messaging.eventhandling.gateway.EventAppender
+import org.axonframework.eventsourcing.annotation.EventSourcingHandler
+import org.axonframework.eventsourcing.annotation.EventCriteriaBuilder
+import org.axonframework.eventsourcing.annotation.EventSourcedEntity
+import org.axonframework.eventsourcing.annotation.reflection.EntityCreator
+import org.axonframework.messaging.eventstreaming.EventCriteria
+import org.axonframework.messaging.eventstreaming.Tag
+import org.axonframework.modelling.annotation.InjectEntity
 
 class RenameCoursePolymorphCommandHandler {
 
   @CommandHandler
-  fun handle(command: RenameCourse, @InjectEntity state: State, eventAppender: EventAppender) {
-    eventAppender.append(state.decide(command))
+  fun handle(command: RenameCourse, @InjectEntity state: State?, eventAppender: EventAppender) {
+    eventAppender.append((state ?: NoCourseState()).decide(command))
   }
 
   @EventSourcedEntity(

@@ -34,6 +34,10 @@
       <artifactId>axon-eventsourcing</artifactId>
       <version>${axon.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.axonframework.extensions.kotlin</groupId>
+      <artifactId>axon-kotlin</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.toolisticon.kotlin.avro</groupId>

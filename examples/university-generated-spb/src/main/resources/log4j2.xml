@@ -8,7 +8,7 @@
 
     <Loggers>
         <!-- DEBUG for your package -->
-        <Logger name="org.axonframework.commandhandling" level="debug" additivity="false">
+        <Logger name="org.axonframework.messaging.commandhandling" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
 

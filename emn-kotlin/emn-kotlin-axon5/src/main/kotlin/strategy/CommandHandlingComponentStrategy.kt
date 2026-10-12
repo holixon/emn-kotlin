@@ -117,14 +117,14 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
             this.addParameter("command", commandPoetType.typeName)
 
             this.addParameter(
-              buildParameter("state", stateClassName) {
+              buildParameter("state", stateClassName.copy(nullable = true)) {
                 addAnnotation(InjectEntityAnnotation(idProperty))
               }
             )
 
             this.addParameter("eventAppender", EventAppender::class)
 
-            addStatement("eventAppender.append(state.decide(command))")
+            addStatement("eventAppender.append((state ?: %T()).decide(command))", stateClassName)
           }
         )
       }

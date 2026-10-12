@@ -61,4 +61,19 @@ class EmnAxon5AvroBasedGeneratorTest {
       .contains("CreateCourseCommandHandler", "CreateCourseState")
       .doesNotContain("CreateCourseCommandHandlerTest")
   }
+
+  @Test
+  fun `generated handlers support missing event sourced state`() {
+    val definitions = emnParser.parseDefinitions(resourceUrl("faculty/faculty.emn"))
+    val declaration = avprParser.parseProtocol(resourceUrl("faculty/faculty.avpr"))
+
+    val handler = generator.generate(definitions, declaration)
+      .single { it.className.simpleName == "CreateCourseCommandHandler" }
+      .code
+
+    assertThat(handler)
+      .contains("@InjectEntity state: CreateCourseState?")
+      .contains("(state ?: CreateCourseState()).decide(command)")
+      .doesNotContain("@Nullable")
+  }
 }

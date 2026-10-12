@@ -116,6 +116,21 @@ Run `exportEmnSchemas`. The default output is
 files below the EMN directory or a configured `schemaResourceDirectories` entry;
 network resources and unresolved references fail the export.
 
+## Generate Axon Components
+
+The Avro-backed `generate-axon-components` goal generates Axon 5 command handlers with
+nullable event-sourced state for commands that may create a new entity. Consumer
+applications must use Kotlin 2.4, target JVM 21, and include Axon's Kotlin extension so
+Axon can resolve Kotlin nullability and properties at runtime:
+
+```xml
+<dependency>
+  <groupId>org.axonframework.extensions.kotlin</groupId>
+  <artifactId>axon-kotlin</artifactId>
+  <version>5.3.2</version>
+</dependency>
+```
+
 ## Generate Axon Specification Tests
 
 The Axon 5 Kotlin module can generate fixture tests from EMN Given/When/Then

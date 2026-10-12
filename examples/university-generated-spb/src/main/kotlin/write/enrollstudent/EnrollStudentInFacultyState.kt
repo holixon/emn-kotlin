@@ -2,8 +2,8 @@ package io.holixon.emn.example.faculty.write.enrollstudent
 
 import io.holixon.emn.example.faculty.EnrollStudentInFaculty
 import io.holixon.emn.example.faculty.StudentEnrolledInFaculty
-import org.axonframework.eventsourcing.annotations.EventSourcingHandler
-import org.axonframework.eventsourcing.annotations.reflection.EntityCreator
+import org.axonframework.eventsourcing.annotation.EventSourcingHandler
+import org.axonframework.eventsourcing.annotation.reflection.EntityCreator
 
 class EnrollStudentInFacultyState @EntityCreator constructor() {
   @EventSourcingHandler

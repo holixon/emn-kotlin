@@ -5,9 +5,9 @@ import io.holixon.emn.example.faculty.CourseDoesNotExist
 import io.holixon.emn.example.faculty.CourseRenamed
 import io.holixon.emn.example.faculty.FacultyTags.COURSE
 import io.holixon.emn.example.faculty.RenameCourse
-import org.axonframework.eventsourcing.annotations.EventSourcedEntity
-import org.axonframework.eventsourcing.annotations.EventSourcingHandler
-import org.axonframework.eventsourcing.annotations.reflection.EntityCreator
+import org.axonframework.eventsourcing.annotation.EventSourcedEntity
+import org.axonframework.eventsourcing.annotation.EventSourcingHandler
+import org.axonframework.eventsourcing.annotation.reflection.EntityCreator
 
 @EventSourcedEntity(tagKey = COURSE)
 class RenameCourseState @EntityCreator constructor() {

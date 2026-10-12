@@ -1,12 +1,8 @@
 package io.holixon.emn.example.faculty
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.holixon.emn.example.faculty.write.createcourse.configureCreateCourse
-import io.holixon.emn.example.faculty.write.renamecourse.configureRenameCourse
-import org.axonframework.commandhandling.gateway.CommandGateway
-import org.axonframework.configuration.ApplicationConfigurer
-import org.axonframework.eventhandling.processors.streaming.token.store.inmemory.InMemoryTokenStore
-import org.axonframework.eventsourcing.configuration.EventSourcingConfigurer
+import org.axonframework.messaging.commandhandling.gateway.CommandGateway
+import org.axonframework.messaging.eventhandling.processing.streaming.token.store.inmemory.InMemoryTokenStore
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication

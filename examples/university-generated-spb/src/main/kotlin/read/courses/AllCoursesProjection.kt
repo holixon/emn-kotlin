@@ -3,7 +3,7 @@ package io.holixon.emn.example.faculty.read.courses
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.holixon.emn.example.faculty.CourseCreated
 import io.holixon.emn.example.faculty.CourseRenamed
-import org.axonframework.eventhandling.annotations.EventHandler
+import org.axonframework.messaging.eventhandling.annotation.EventHandler
 import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger {}

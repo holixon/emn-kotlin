@@ -5,10 +5,10 @@ import io.holixon.emn.example.university.faculty.configureFacultyModule
 import io.holixon.emn.example.university.faculty.type.course.CourseId
 import io.holixon.emn.example.university.faculty.write.createcourse.CreateCourse
 import io.holixon.emn.example.university.faculty.write.renamecourse.RenameCourse
-import org.axonframework.commandhandling.gateway.CommandGateway
+import org.axonframework.messaging.commandhandling.gateway.CommandGateway
 import org.axonframework.common.infra.FilesystemStyleComponentDescriptor
-import org.axonframework.configuration.ApplicationConfigurer
-import org.axonframework.configuration.AxonConfiguration
+import org.axonframework.common.configuration.ApplicationConfigurer
+import org.axonframework.common.configuration.AxonConfiguration
 import org.axonframework.eventsourcing.configuration.EventSourcingConfigurer
 import java.util.logging.Logger
 
