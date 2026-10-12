@@ -84,6 +84,19 @@ class EmnSchemaKotlinGeneratorTest {
   }
 
   @Test
+  fun `does not generate exception classes from error schemas yet`() {
+    val generated = generateSchemas(
+      schema(
+        "DuplicateCourse",
+        """{"type":"object","properties":{"type":{"type":"string"}}}""",
+        EmnSchemaTypeKind.ERROR
+      )
+    )
+
+    assertThat(generated).isEmpty()
+  }
+
+  @Test
   fun `generates List alias for top level arrays referencing a common object schema`() {
     val commonSchema = EmnSchemaDefinition(
       typeId = "GameDto",

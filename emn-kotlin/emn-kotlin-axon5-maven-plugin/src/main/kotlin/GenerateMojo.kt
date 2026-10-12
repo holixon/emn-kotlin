@@ -96,6 +96,20 @@ class GenerateMojo : AbstractContextAwareMojo() {
   )
   private var annotateForSpringBoot : Boolean = false
 
+  @Parameter(
+    property = "generateCommandSlices",
+    required = true,
+    defaultValue = "true"
+  )
+  private var generateCommandSlices: Boolean = true
+
+  @Parameter(
+    property = "generateCommandSliceTests",
+    required = true,
+    defaultValue = "true"
+  )
+  private var generateCommandSliceTests: Boolean = true
+
   private val SPI_REGISTRY = load()
 
   override fun execute() {
@@ -131,8 +145,8 @@ class GenerateMojo : AbstractContextAwareMojo() {
       emnName = "faculty",
       rootPackageName = "io.holixon.emn.example.faculty",
       instanceCreator = instanceCreator,
-      generateCommandSlices = true,
-      generateCommandSliceTests = true,
+      generateCommandSlices = generateCommandSlices,
+      generateCommandSliceTests = generateCommandSliceTests,
       generateConcreteStateImpl = generateConcreteStateImpl,
       annotateForSpringBoot = annotateForSpringBoot,
     )

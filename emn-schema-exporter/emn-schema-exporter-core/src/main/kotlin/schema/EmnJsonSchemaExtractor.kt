@@ -3,6 +3,7 @@ package io.holixon.emn.generation.schema
 import io.holixon.emn.model.CommandType
 import io.holixon.emn.model.Definitions
 import io.holixon.emn.model.EmbeddedSchema
+import io.holixon.emn.model.ErrorType
 import io.holixon.emn.model.EventType
 import io.holixon.emn.model.FlowNodeType
 import io.holixon.emn.model.QueryType
@@ -41,6 +42,7 @@ class EmnJsonSchemaExtractor(
   private fun FlowNodeType.schemaTypeKind(): EmnSchemaTypeKind? =
     when (this) {
       is CommandType -> EmnSchemaTypeKind.COMMAND
+      is ErrorType -> EmnSchemaTypeKind.ERROR
       is EventType -> EmnSchemaTypeKind.EVENT
       is QueryType -> EmnSchemaTypeKind.QUERY
       else -> null

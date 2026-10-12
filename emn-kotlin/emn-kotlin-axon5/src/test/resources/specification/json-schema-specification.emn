@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emn:definitions xmlns:emn="https://holixon.io/spec/EMN/20241231/MODEL" id="Definitions_Test">
+  <emn:types>
+    <emn:schemaDefinition id="CourseId" name="CourseId">
+      <emn:schema schemaFormat="application/schema+json">{"type":"string","format":"uuid"}</emn:schema>
+    </emn:schemaDefinition>
+    <emn:schemaDefinition id="CourseCommand" name="Course Command">
+      <emn:schema schemaFormat="application/schema+json">
+        {"type":"object","properties":{"courseId":{"$ref":"CourseId"}},"required":["courseId"]}
+      </emn:schema>
+    </emn:schemaDefinition>
+    <emn:schemaDefinition id="CommandProblem" name="Command Problem">
+      <emn:schema schemaFormat="application/schema+json">
+        {"type":"object","properties":{"type":{"type":"string"},"category":{"type":"string"},"title":{"type":"string"}},"required":["type","category","title"]}
+      </emn:schema>
+    </emn:schemaDefinition>
+    <emn:commandType id="CreateCourse" name="Create Course">
+      <emn:schema schemaFormat="application/schema+json">
+        {"allOf":[{"$ref":"CourseCommand"},{"type":"object","properties":{"capacity":{"type":"integer","format":"int32"}},"required":["capacity"]}]}
+      </emn:schema>
+    </emn:commandType>
+    <emn:eventType id="CourseCreated" name="Course Created">
+      <emn:schema schemaFormat="application/schema+json">
+        {"type":"object","properties":{"courseId":{"$ref":"CourseId"},"capacity":{"type":"integer","format":"int32"},"scores":{"type":"object","propertyNames":{"$ref":"CourseId"},"additionalProperties":{"type":"integer","format":"int32"}}},"required":["courseId","capacity","scores"]}
+      </emn:schema>
+    </emn:eventType>
+    <emn:eventSequenceType id="ExistingCourse" name="Existing course">
+      <emn:eventTypeRef>CourseCreated</emn:eventTypeRef>
+    </emn:eventSequenceType>
+    <emn:errorType id="DuplicateCourse" name="Duplicate Course">
+      <emn:schema schemaFormat="application/schema+json">
+        {"allOf":[{"$ref":"CommandProblem"},{"type":"object","properties":{"type":{"const":"urn:university:course:duplicate"},"context":{"type":"object","properties":{"courseId":{"$ref":"CourseId"}},"required":["courseId"]}},"required":["context"]}]}
+      </emn:schema>
+    </emn:errorType>
+  </emn:types>
+  <emn:timeline id="Timeline_Test" name="Test">
+    <emn:laneSet id="LaneSet_Test">
+      <emn:interactionLane id="Interaction_Test">
+        <emn:flowNodeRef>Command_Test</emn:flowNodeRef>
+      </emn:interactionLane>
+      <emn:conceptLaneSet>
+        <emn:conceptLane id="Aggregate_Test" name="Course">
+          <emn:flowNodeRef>Event_Test</emn:flowNodeRef>
+        </emn:conceptLane>
+      </emn:conceptLaneSet>
+    </emn:laneSet>
+    <emn:sliceSet id="SliceSet_Test">
+      <emn:slice id="Slice_CreateCourse" name="Create Course">
+        <emn:flowNodeRef>Command_Test</emn:flowNodeRef>
+        <emn:flowNodeRef>Event_Test</emn:flowNodeRef>
+      </emn:slice>
+    </emn:sliceSet>
+    <emn:command id="Command_Test" typeRef="CreateCourse" />
+    <emn:event id="Event_Test" typeRef="CourseCreated" />
+  </emn:timeline>
+  <emn:specification id="create-course-success" name="Create a course" scenario="A new course is created" sliceRef="Slice_CreateCourse">
+    <emn:given id="Given_Test" />
+    <emn:when id="When_Test">
+      <emn:command id="When_Command" typeRef="CreateCourse">
+        <emn:value>{"courseId":"course-4711","capacity":25}</emn:value>
+      </emn:command>
+    </emn:when>
+    <emn:then id="Then_Test">
+      <emn:event id="Then_Event" typeRef="CourseCreated">
+        <emn:value>{"courseId":"course-4711","capacity":25,"scores":{"123e4567-e89b-12d3-a456-426614174000":10}}</emn:value>
+      </emn:event>
+    </emn:then>
+  </emn:specification>
+  <emn:specification id="create-course-duplicate" name="Reject a duplicate course" sliceRef="Slice_CreateCourse">
+    <emn:given id="Given_Duplicate">
+      <emn:eventSequence id="Given_ExistingCourse" definitionRef="ExistingCourseDefinition">
+        <emn:variable name="COURSE_ID">course-4711</emn:variable>
+      </emn:eventSequence>
+    </emn:given>
+    <emn:when id="When_Duplicate">
+      <emn:command id="When_Duplicate_Command" typeRef="CreateCourse">
+        <emn:value>{"courseId":"course-4711","capacity":25}</emn:value>
+      </emn:command>
+    </emn:when>
+    <emn:then id="Then_Duplicate">
+      <emn:error id="Then_Error" typeRef="DuplicateCourse">
+        <emn:value>{"category":"BUSINESS_INVALID_COMMAND","title":"Course already exists","context":{"courseId":"course-4711"}}</emn:value>
+      </emn:error>
+    </emn:then>
+  </emn:specification>
+  <emn:eventSequenceDefinition id="ExistingCourseDefinition" typeRef="ExistingCourse">
+    <emn:variableDefinition name="COURSE_ID">default-course</emn:variableDefinition>
+    <emn:event id="Given_Event" typeRef="CourseCreated">
+      <emn:value>{"courseId":"${COURSE_ID}","capacity":25,"scores":{"123e4567-e89b-12d3-a456-426614174000":10}}</emn:value>
+    </emn:event>
+  </emn:eventSequenceDefinition>
+</emn:definitions>

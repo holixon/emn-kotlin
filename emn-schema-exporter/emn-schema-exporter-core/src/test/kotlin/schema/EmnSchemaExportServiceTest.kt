@@ -45,6 +45,14 @@ class EmnSchemaExportServiceTest {
           <emn:eventType id="CourseCreated" name="Course created">
             <emn:schema schemaFormat="application/schema+json" resource="../resources/CourseCreated.json" />
           </emn:eventType>
+          <emn:errorType id="DuplicateCourse" name="Duplicate course">
+            <emn:schema schemaFormat="application/schema+json"><![CDATA[
+              {
+                "type": "object",
+                "properties": { "courseId": { "${'$'}ref": "CourseId" } }
+              }
+            ]]></emn:schema>
+          </emn:errorType>
           <emn:queryType id="FindCourse" name="Find course">
             <emn:schema schemaFormat="application/schema+json" reference="CourseId" />
           </emn:queryType>
@@ -61,11 +69,12 @@ class EmnSchemaExportServiceTest {
     ))
 
     assertThat(result.entries.map { it.typeId })
-      .containsExactly("CourseCreated", "CourseId", "CreateCourse", "FindCourse")
+      .containsExactly("CourseCreated", "CourseId", "CreateCourse", "DuplicateCourse", "FindCourse")
     assertThat(result.entries.associate { it.typeId to it.kind }).containsAllEntriesOf(mapOf(
       "CourseId" to "common",
       "CreateCourse" to "command",
       "CourseCreated" to "event",
+      "DuplicateCourse" to "error",
       "FindCourse" to "query"
     ))
     assertThat(result.entries.single { it.typeId == "CourseCreated" }.source.origin).isEqualTo("resource")
@@ -82,7 +91,7 @@ class EmnSchemaExportServiceTest {
     val manifest = objectMapper.readTree(result.manifestFile)
     assertThat(manifest.path("format").asText()).isEqualTo(EmnSchemaExportService.MANIFEST_FORMAT)
     assertThat(manifest.path("version").asInt()).isEqualTo(1)
-    assertThat(manifest.path("schemas").size()).isEqualTo(4)
+    assertThat(manifest.path("schemas").size()).isEqualTo(5)
     assertThat(manifest.at("/schemas/0/source/emnFile").asText()).isEqualTo("model/faculty.emn")
   }
 

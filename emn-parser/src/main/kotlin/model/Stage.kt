@@ -11,8 +11,35 @@ data class GivenStage(
 ) : Stage(id, values) {
 
   val events: List<Event> by lazy {
-    values.filterIsInstance<Event>()
+    values.flatMap { value ->
+      when (value) {
+        is Event -> listOf(value)
+        is EventSequence -> value.expandedEvents()
+        else -> emptyList()
+      }
+    }
   }
+}
+
+private fun EventSequence.expandedEvents(): List<Event> {
+  val effectiveVariables = definitionReference.variableDefinitions.associate { it.name to it.value } +
+    variables.associate { it.name to it.value }
+  return definitionReference.events.map { event ->
+    Event(
+      id = event.id,
+      typeReference = event.eventType,
+      value = event.value.resolveVariables(effectiveVariables),
+    )
+  }
+}
+
+private fun ElementValue?.resolveVariables(variables: Map<String, String>): ElementValue? = when (this) {
+  is EmbeddedValue -> copy(
+    content = variables.entries.fold(content) { resolved, (name, value) ->
+      resolved.replace("\${$name}", value)
+    }
+  )
+  else -> this
 }
 
 data class WhenStage(

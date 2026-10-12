@@ -25,6 +25,28 @@
       <artifactId>axon-eventsourcing</artifactId>
       <version>${axon.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.axonframework</groupId>
+      <artifactId>axon-test</artifactId>
+      <version>${axon.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.22</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.holixon.emn</groupId>
+      <artifactId>emn-verify-annotations</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -70,11 +92,25 @@
             </goals>
             <configuration>
               <resourceDirectory>${kp.generatedResources}</resourceDirectory>
-              <includes>json-schema/**.emn</includes>
+              <includes>faculty-json-schema/**.emn</includes>
               <rootPackageName>io.holixon.emn.example.university</rootPackageName>
               <annotationEnhancers>
                 <annotationEnhancer>axon5</annotationEnhancer>
               </annotationEnhancers>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-json-schema-specification-tests</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>generate-specification-tests</goal>
+            </goals>
+            <configuration>
+              <resourceDirectory>${kp.generatedResources}</resourceDirectory>
+              <includes>faculty-json-schema/**.emn</includes>
+              <rootPackageName>io.holixon.emn.example.university</rootPackageName>
+              <fixtureProvider>io.holixon.emn.example.university.UniversityFixtureProvider</fixtureProvider>
+              <errorVerifier>io.holixon.emn.example.university.UniversityErrorVerifier</errorVerifier>
             </configuration>
           </execution>
         </executions>

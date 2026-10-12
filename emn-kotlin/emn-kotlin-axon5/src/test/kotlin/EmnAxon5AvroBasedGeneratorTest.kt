@@ -6,6 +6,7 @@ import io.holixon.emn.EmnDocumentParser
 import io.holixon.emn.generation.TestFixtures.AvroKotlinFixtures.AVRO_PARSER
 import io.holixon.emn.generation.TestFixtures.logger
 import io.holixon.emn.generation.TestFixtures.writeTo
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalKotlinPoetApi::class)
@@ -37,5 +38,27 @@ class EmnAxon5AvroBasedGeneratorTest {
     files.filter { it -> it. className.simpleName.startsWith("CreateCourse") }
       .forEach { logger.info { it.code } }
 
+  }
+
+  @Test
+  fun `command handlers and specification tests can be generated independently`() {
+    val definitions = emnParser.parseDefinitions(resourceUrl("faculty/faculty.emn"))
+    val declaration = avprParser.parseProtocol(resourceUrl("faculty/faculty.avpr"))
+
+    val testsOnly = EmnAxon5AvroBasedGenerator.create(
+      TestFixtures.SPI_REGISTRY,
+      properties.copy(generateCommandSlices = false, generateCommandSliceTests = true)
+    ).generate(definitions, declaration)
+    assertThat(testsOnly.map { it.className.simpleName })
+      .contains("CreateCourseCommandHandlerTest")
+      .doesNotContain("CreateCourseCommandHandler", "CreateCourseState")
+
+    val handlersOnly = EmnAxon5AvroBasedGenerator.create(
+      TestFixtures.SPI_REGISTRY,
+      properties.copy(generateCommandSlices = true, generateCommandSliceTests = false)
+    ).generate(definitions, declaration)
+    assertThat(handlersOnly.map { it.className.simpleName })
+      .contains("CreateCourseCommandHandler", "CreateCourseState")
+      .doesNotContain("CreateCourseCommandHandlerTest")
   }
 }

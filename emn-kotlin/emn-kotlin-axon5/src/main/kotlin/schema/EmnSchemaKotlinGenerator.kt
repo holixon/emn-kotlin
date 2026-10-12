@@ -23,21 +23,22 @@ class EmnSchemaKotlinGenerator(
   )
 
   fun generateToDirectory(schemas: List<EmnSchemaDefinition>, rootPackageName: String, outputDirectory: File): List<File> {
-    val duplicateTypeIds = schemas.groupBy { it.typeId }.filterValues { it.size > 1 }.keys
+    val generatedSchemas = schemas.filter { it.typeKind != EmnSchemaTypeKind.ERROR }
+    val duplicateTypeIds = generatedSchemas.groupBy { it.typeId }.filterValues { it.size > 1 }.keys
     require(duplicateTypeIds.isEmpty()) {
       "Duplicate schema TypeIds found: ${duplicateTypeIds.sorted().joinToString(", ")}."
     }
-    hintValidator.validate(schemas)
+    hintValidator.validate(generatedSchemas)
 
     val generatedFiles = jsonSchemaGenerator.generateToDirectory(
-      schemas = schemas,
+      schemas = generatedSchemas,
       rootPackageName = rootPackageName,
       outputDirectory = outputDirectory
     )
     val context = KotlinSchemaEnhancementContext(
-      schemasByTypeId = schemas.associateBy { it.typeId },
+      schemasByTypeId = generatedSchemas.associateBy { it.typeId },
       generatedFilesByTypeId = generatedFiles.associateBy { it.nameWithoutExtension },
-      packageNamesByTypeId = schemas.associate { schema ->
+      packageNamesByTypeId = generatedSchemas.associate { schema ->
         schema.typeId to packageLayout.packageName(rootPackageName, schema.typeKind)
       }
     )

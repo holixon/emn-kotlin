@@ -3,6 +3,7 @@ package io.holixon.emn
 
 import io.holixon.emn.model.Definitions
 import io.holixon.emn.model.EmbeddedSchema
+import io.holixon.emn.model.EmbeddedValue
 import io.holixon.emn.model.Event
 import io.holixon.emn.model.EventSequence
 import io.holixon.emn.model.EventSequenceType
@@ -52,14 +53,28 @@ class ParserTest {
           <emn:informationFlow id="flow" typeRef="sequence-to-state"
             sourceRef="sequence" targetRef="query"/>
           <emn:eventSequence id="sequence" definitionRef="started-game">
-            <emn:variable name="gameId">game-1</emn:variable>
+              <emn:variable name="GAME_ID">game-1</emn:variable>
           </emn:eventSequence>
           <emn:query id="query" typeRef="GameState"/>
         </emn:timeline>
+        <emn:specification id="specification" name="Sequence in given">
+          <emn:given id="given">
+            <emn:eventSequence id="given-sequence" definitionRef="started-game"/>
+            <emn:eventSequence id="overridden-given-sequence" definitionRef="started-game">
+              <emn:variable name="GAME_ID">override-game</emn:variable>
+            </emn:eventSequence>
+          </emn:given>
+          <emn:when id="when"/>
+          <emn:then id="then"/>
+        </emn:specification>
         <emn:eventSequenceDefinition id="started-game" typeRef="GameStartedWithPlayer">
-          <emn:variableDefinition name="gameId">default-game</emn:variableDefinition>
-          <emn:event id="created" typeRef="GameCreated"/>
-          <emn:event id="joined" typeRef="PlayerJoined"/>
+          <emn:variableDefinition name="GAME_ID">default-game</emn:variableDefinition>
+          <emn:event id="created" typeRef="GameCreated">
+            <emn:value>{"gameId":"${'$'}{GAME_ID}"}</emn:value>
+          </emn:event>
+          <emn:event id="joined" typeRef="PlayerJoined">
+            <emn:value>{"gameId":"${'$'}{GAME_ID}"}</emn:value>
+          </emn:event>
         </emn:eventSequenceDefinition>
       </emn:definitions>
       """.trimIndent()
@@ -76,6 +91,15 @@ class ParserTest {
     assertThat(sequence.definitionReference).isSameAs(definition)
     assertThat(sequence.variables.single().value).isEqualTo("game-1")
     assertThat(result.timelines.single().messages.single().source).isSameAs(sequence)
+    val givenStage = result.specifications.single().givenStage!!
+    assertThat(givenStage.values).allMatch { it is EventSequence }
+    assertThat(givenStage.events.map { it.id }).containsExactly("created", "joined", "created", "joined")
+    assertThat(givenStage.events.map { (it.value as EmbeddedValue).content }).containsExactly(
+      "{\"gameId\":\"default-game\"}",
+      "{\"gameId\":\"default-game\"}",
+      "{\"gameId\":\"override-game\"}",
+      "{\"gameId\":\"override-game\"}",
+    )
   }
 
   private val parser = EmnDocumentParser()

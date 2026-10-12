@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import io.holixon.emn.EmnDocumentParser
 import io.holixon.emn.model.CommandType
 import io.holixon.emn.model.EmbeddedSchema
+import io.holixon.emn.model.ErrorType
 import io.holixon.emn.model.EventType
 import io.holixon.emn.model.FlowNodeType
 import io.holixon.emn.model.QueryType
@@ -238,6 +239,7 @@ class EmnSchemaExportService(
 
   private fun FlowNodeType.kind(): EmnSchemaTypeKind? = when (this) {
     is CommandType -> EmnSchemaTypeKind.COMMAND
+    is ErrorType -> EmnSchemaTypeKind.ERROR
     is EventType -> EmnSchemaTypeKind.EVENT
     is QueryType -> EmnSchemaTypeKind.QUERY
     else -> null
@@ -246,6 +248,7 @@ class EmnSchemaExportService(
   private val EmnSchemaTypeKind.manifestName: String
     get() = when (this) {
       EmnSchemaTypeKind.COMMAND -> "command"
+      EmnSchemaTypeKind.ERROR -> "error"
       EmnSchemaTypeKind.EVENT -> "event"
       EmnSchemaTypeKind.QUERY -> "query"
       EmnSchemaTypeKind.SCHEMA_DEFINITION -> "common"

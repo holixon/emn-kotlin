@@ -11,7 +11,7 @@ class EmnJsonSchemaExtractorTest {
   private val extractor = EmnJsonSchemaExtractor()
 
   @Test
-  fun `extracts embedded json schemas from schema definitions command event and query types`() {
+  fun `extracts embedded json schemas from schema definitions command event query and error types`() {
     val definitions = parser.parseDefinitions(resourceUrl("json-schema/faculty.emn"))
 
     val schemas = extractor.extract(definitions)
@@ -47,7 +47,10 @@ class EmnJsonSchemaExtractorTest {
       "EventType_student_enrolled",
       "QueryType_students",
       "CommandType_rename_course",
-      "EventType_course_renamed"
+      "EventType_course_renamed",
+      "ErrorType_duplicate_course",
+      "ErrorType_course_does_not_exist"
     )
+    assertThat(schemas.filter { it.typeKind == EmnSchemaTypeKind.ERROR }).hasSize(2)
   }
 }

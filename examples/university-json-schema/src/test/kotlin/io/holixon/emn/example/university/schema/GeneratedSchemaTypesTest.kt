@@ -1,51 +1,37 @@
 package io.holixon.emn.example.university
 
-import io.holixon.emn.example.university.command.CreateCourse
-import io.holixon.emn.example.university.common.CourseType
-import io.holixon.emn.example.university.event.CourseCreated
-import io.holixon.emn.example.university.query.CourseOverview
-import io.holixon.emn.example.university.query.CourseOverviewItem
+import io.holixon.emn.example.university.command.CommandType_create_course
+import io.holixon.emn.example.university.event.EventType_course_created
+import io.holixon.emn.example.university.query.QueryType_courses
+import io.holixon.emn.example.university.query.QueryType_coursesItem
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.OffsetDateTime
-import java.util.UUID
 
 class GeneratedSchemaTypesTest {
 
   @Test
   fun `generated schema classes can be instantiated`() {
-    val courseId = UUID.fromString("9b6ecaa8-bb6d-4d65-92e7-0d10ba9cb7ba")
-    val createdAt = OffsetDateTime.parse("2026-09-04T09:00:00Z")
-    val command = CreateCourse(
-      courseId = courseId,
+    val command = CommandType_create_course(
+      courseId = "course-4711",
       name = "Java 101",
-      courseType = CourseType.LIVE,
-      capacity = 5,
-      createdAt = createdAt
+      capacity = 5
     )
-    val event = CourseCreated(
+    val event = EventType_course_created(
       courseId = command.courseId,
       name = command.name,
-      courseType = command.courseType,
-      capacity = command.capacity,
-      createdAt = command.createdAt
+      capacity = command.capacity
     )
     val query = listOf(
-      CourseOverviewItem(
+      QueryType_coursesItem(
         courseId = event.courseId,
         name = event.name,
-        courseType = event.courseType,
-        capacity = event.capacity,
-        createdAt = event.createdAt,
-        students = 0
+        capacity = event.capacity
       )
     )
-    val courseOverview: CourseOverview = query
+    val courseOverview: QueryType_courses = query
     val queryItem = courseOverview.single()
 
-    assertThat(queryItem.courseId).isEqualTo(courseId)
-    assertThat(queryItem.courseType).isEqualTo(CourseType.LIVE)
-    assertThat(queryItem.createdAt).isEqualTo(createdAt)
-    assertThat(queryItem.students).isZero()
+    assertThat(queryItem.courseId).isEqualTo("course-4711")
+    assertThat(queryItem.capacity).isEqualTo(5)
   }
 }

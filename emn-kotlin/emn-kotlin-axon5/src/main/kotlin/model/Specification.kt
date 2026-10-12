@@ -144,7 +144,7 @@ data class Specification(
     )
   }
 
-  val testMethodName = listOf(givenStage, whenStage, thenStage).joinToString("_") { it.funName }
+  val testMethodName = id
 }
 
 @Suppress("JavaDefaultMethodsNotOverriddenByDelegation")

@@ -12,17 +12,9 @@ class DefinitionsToCommandHandlerComponentStrategy : KotlinFileSpecListStrategy<
   contextType = EmnGenerationContext::class, inputType = Definitions::class
 ) {
   override fun invoke(context: EmnGenerationContext, input: Definitions): KotlinFileSpecList {
-
-    // empty if disabled in properties.
     val commandHandlerComponentFiles: List<KotlinFileSpec> = context.commandSlices.flatMap {
       CommandHandlingComponentStrategy().execute(context, it)
     }
-
-    // empty if disabled in properties.
-    val commandHandlerComponentTestFixtureFiles: List<KotlinFileSpec> = context.commandSlices.flatMap {
-      CommandHandlingComponentTestFixtureStrategy().execute(context, it)
-    }
-
-    return KotlinFileSpecList(commandHandlerComponentFiles + commandHandlerComponentTestFixtureFiles)
+    return KotlinFileSpecList(commandHandlerComponentFiles)
   }
 }

@@ -9,7 +9,9 @@ import io.holixon.emn.generation.model.CommandSlice
 import io.holixon.emn.generation.model.Specification
 import io.holixon.emn.generation.model.Specification.Stage.ThenStage.*
 import io.holixon.emn.generation.spi.EmnGenerationContext
+import io.holixon.emn.generation.specification.AvroMessageValueRenderer
 import io.holixon.emn.model.FlowNode
+import io.holixon.emn.verify.annotation.EmnSpecification
 import io.toolisticon.kotlin.avro.generator.AvroKotlinGenerator
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildClass
@@ -64,6 +66,9 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
 
   fun buildTestFunction(specification: Specification, context: EmnGenerationContext) = buildFun(specification.testMethodName) {
     addAnnotation(JUNIT_TEST)
+    addAnnotation(buildAnnotation(EmnSpecification::class) {
+      addStringMember("id", specification.id)
+    })
     addKdoc(specification.messageKdoc)
 
     addCode("fixture")
@@ -129,15 +134,7 @@ class CommandHandlingComponentTestFixtureStrategy : KotlinFileSpecListStrategy<E
   }
 
   fun messageInstantiation(message: FlowNode, context: EmnGenerationContext): CodeBlock {
-    val elementValue = requireNotNull(message.value) { "Element $message must have a value." }
-    val propertiesMap = elementValue.getEmbeddedJsonValueAsMap(context.objectMapper)
-    requireNotNull(propertiesMap) { "Could not parse value of $message as a map of properties." }
-    val avroPoetType = context.avroTypes.messages.single { it.nodeType == message.typeReference }.poetType
-
-    return when (context.properties.instanceCreator) {
-      "instancio" -> instantiateMessageWithInstancio(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
-      else -> instantiateMessageDirectly(avroPoetType, context.protocolDeclarationContext.avroPoetTypes, propertiesMap)
-    }
+    return AvroMessageValueRenderer(context).render(message)
   }
 
   override fun test(context: EmnGenerationContext, input: Any): Boolean {

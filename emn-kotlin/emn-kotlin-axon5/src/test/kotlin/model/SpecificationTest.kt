@@ -94,7 +94,8 @@ class SpecificationTest {
       )
     )
 
-    assertThat(Specification(emnSpecification).testMethodName).isEqualTo("givenEvent1AndEvent2_whenCommand1_thenEvent3AndEvent4")
+    assertThat(Specification(emnSpecification).testMethodName).isEqualTo("spec1")
+    assertThat(Specification(emnSpecification.copy(id = "spec2")).testMethodName).isEqualTo("spec2")
   }
 
   @Test
@@ -142,7 +143,7 @@ class SpecificationTest {
       )
     )
 
-    assertThat(Specification(emnSpecification).testMethodName).isEqualTo("givenEvent1AndEvent2_whenCommand1_thenNoEvents")
+    assertThat(Specification(emnSpecification).testMethodName).isEqualTo("spec1")
   }
 
   @Test
@@ -196,7 +197,7 @@ class SpecificationTest {
       )
     )
 
-    assertThat(Specification(emnSpecification).testMethodName).isEqualTo("givenEvent1AndEvent2_whenCommand1_thenError1")
+    assertThat(Specification(emnSpecification).testMethodName).isEqualTo("spec1")
   }
 
   @Test
@@ -238,7 +239,7 @@ class SpecificationTest {
     )
 
     // Verify the test method name
-    assertThat(Specification(emnSpecification).testMethodName).isEqualTo("givenNoEvents_whenCommand1_thenEvent3")
+    assertThat(Specification(emnSpecification).testMethodName).isEqualTo("spec1")
   }
 
   @Test

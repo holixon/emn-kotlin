@@ -2,6 +2,7 @@ package io.holixon.emn.generation.schema
 
 enum class EmnSchemaTypeKind {
   COMMAND,
+  ERROR,
   EVENT,
   QUERY,
   SCHEMA_DEFINITION

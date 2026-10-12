@@ -9,6 +9,7 @@ class EmnSchemaPackageLayout {
 
   fun packageSuffix(typeKind: EmnSchemaTypeKind): String = when (typeKind) {
     EmnSchemaTypeKind.COMMAND -> "command"
+    EmnSchemaTypeKind.ERROR -> "error"
     EmnSchemaTypeKind.EVENT -> "event"
     EmnSchemaTypeKind.QUERY -> "query"
     EmnSchemaTypeKind.SCHEMA_DEFINITION -> "common"

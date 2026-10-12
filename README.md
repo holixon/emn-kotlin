@@ -70,6 +70,96 @@ Run `exportEmnSchemas`. The default output is
 files below the EMN directory or a configured `schemaResourceDirectories` entry;
 network resources and unresolved references fail the export.
 
+## Generate Axon Specification Tests
+
+The Axon 5 Kotlin module can generate fixture tests from EMN Given/When/Then
+specifications independently from command-handler generation. The neutral generation
+service reads example values from the specification and uses the embedded JSON Schemas
+to render constructor calls, including scalar aliases, UUID and date/time formats,
+collections, maps, enums, references, and `allOf` object properties. Every generated
+test method carries `@EmnSpecification(id = "...")`, so `emn-verify` discovers it.
+
+Generated tests require `axon-test`, JUnit Jupiter, and the neutral annotations on the
+consumer's test classpath:
+
+```kotlin
+dependencies {
+  testImplementation("org.axonframework:axon-test:5.3.2")
+  testImplementation("org.junit.jupiter:junit-jupiter-api:6.1.2")
+  testImplementation("io.holixon.emn:emn-verify-annotations:0.0.1-SNAPSHOT")
+}
+```
+
+Gradle:
+
+```kotlin
+emnSchemaKotlin {
+  emnFiles.from(file("src/main/resources/game.emn"))
+  rootPackageName.set("org.example.game.api")
+  specifications {
+    generate = true
+    fixtureProvider = "org.example.game.test.GameFixtureProvider"
+    // Optional: overrides the built-in CommandExecutionException details verifier.
+    errorVerifier = "org.example.game.test.GameErrorVerifier"
+  }
+}
+```
+
+The dedicated task is `generateEmnSpecificationTests`; generated files are registered
+with the Kotlin `test` source set under
+`build/generated/sources/emn-specification-tests`. Generation is opt-in and remains
+separate from `generateEmnSchemaKotlin`.
+
+Generated test classes use Axon's `AxonFrameworkExtension`. The configured fixture
+provider implements `AxonTestFixtureProvider`; Axon creates a fresh fixture for each
+test and stops it afterwards. No custom JUnit extension registration is required.
+
+Maven:
+
+```xml
+<execution>
+  <id>generate-emn-specification-tests</id>
+  <goals>
+    <goal>generate-specification-tests</goal>
+  </goals>
+  <configuration>
+    <rootPackageName>org.example.game.api</rootPackageName>
+    <includes>**/*.emn</includes>
+    <fixtureProvider>org.example.game.test.GameFixtureProvider</fixtureProvider>
+    <errorVerifier>org.example.game.test.GameErrorVerifier</errorVerifier>
+  </configuration>
+</execution>
+```
+
+The Maven goal runs in `generate-test-sources` and writes to
+`target/generated-test-sources/emn-specification-tests`.
+
+By default, an EMN error expectation requires Axon's `CommandExecutionException` and
+compares the schema-typed JSON value from the specification with the exception's
+structured details. Object comparison is recursive and treats the expected value as a
+subset, so transported details may contain additional fields. Error schemas are
+extracted and exported but do not generate Kotlin exception classes yet.
+
+Applications with a different error representation can configure `errorVerifier`.
+The named Kotlin object or Java class must provide a callable static-style method with
+this contract:
+
+```kotlin
+object GameErrorVerifier {
+  fun verify(
+    errorTypeId: String,
+    expectedDetails: Map<String, Any?>,
+    exception: Throwable,
+  ) {
+    // Application-specific assertion.
+  }
+}
+```
+
+For the older AVRO-backed `generate` goal, command-handler and fixture-test generation
+can now also be controlled independently with `generateCommandSlices` and
+`generateCommandSliceTests`.
+
 ## Verify Code Against EMN
 
 The Axon 5 verification service checks compiled classes against EMN type and
