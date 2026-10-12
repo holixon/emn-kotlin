@@ -8,7 +8,7 @@ It also enables the `axon5` annotation enhancer, which maps neutral JSON Schema 
 - `x-emn-tag-key: "course"` -> `@EventTag(key = "course")`
 
 The Maven build copies the repository-level `_emn` folder into generated resources and runs
-both `generate-schema-kotlin` and `generate-specification-tests`:
+the unified plugin's `generate-kotlin` and `generate-specification-tests` goals:
 
 ```bash
 ./mvnw -pl examples/university-json-schema -am generate-sources
@@ -17,15 +17,15 @@ both `generate-schema-kotlin` and `generate-specification-tests`:
 After installing the plugin artifacts in Maven Local, the same example can be built with Gradle:
 
 ```bash
-gradle -p examples :university-json-schema:build
+./gradlew -p examples :university-json-schema:build
 ```
 
 The generated classes and specification tests are written to:
 
 ```text
-examples/university-json-schema/target/generated-sources/emn-schema-kotlin # Maven
+examples/university-json-schema/target/generated-sources/emn-kotlin # Maven
 examples/university-json-schema/target/generated-test-sources/emn-specification-tests # Maven
-examples/university-json-schema/build/generated/sources/emn-schema-kotlin # Gradle
+examples/university-json-schema/build/generated/sources/emn-kotlin # Gradle
 examples/university-json-schema/build/generated/sources/emn-specification-tests # Gradle
 ```
 

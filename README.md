@@ -13,15 +13,58 @@ The repository is grouped by capability. Runtime/core artifacts are independent 
 build tool; Maven and Gradle integrations are thin adapters around them.
 
 - `emn-parser`: EMN document model and parser.
-- `emn-kotlin`: Axon 5 Kotlin generation service plus Maven and Gradle adapters.
-- `emn-schema-exporter`: build-tool-neutral schema export service plus Maven and Gradle adapters.
-- `emn-verify`: neutral annotations and verification model, the Axon 5 inspector, and Maven and Gradle adapters.
+- `emn-kotlin`: Axon 5 Kotlin generation services.
+- `emn-schema-exporter`: build-tool-neutral schema export service.
+- `emn-verify`: neutral annotations and verification model plus the Axon 5 inspector.
+- `emn-gradle-plugin`: unified public Gradle adapter with the `io.holixon.emn` plugin ID.
+- `emn-maven-plugin`: unified public Maven adapter exposing the modern EMN goals.
 - `examples`: one Maven reactor and one Gradle multi-project build over the same example directories.
 
-Each Gradle plugin has a small marker POM module. Gradle resolves a plugin ID such as
-`io.holixon.emn.verify` through the corresponding
-`io.holixon.emn.verify.gradle.plugin` marker coordinate; the marker then depends on
-the actual Gradle plugin implementation JAR.
+The Gradle plugin has a small marker POM module. Gradle resolves the public
+`io.holixon.emn` plugin through the `io.holixon.emn.gradle.plugin` marker coordinate;
+the marker then depends on the actual Gradle plugin implementation JAR. There are no
+capability-specific build plugins; all capabilities use the unified Gradle and Maven
+plugins shown below.
+
+## Unified Build Plugin
+
+Declare EMN inputs once and enable any combination of Kotlin generation,
+specification-test generation, schema export, and verification.
+
+Gradle:
+
+```kotlin
+plugins {
+  id("io.holixon.emn") version "0.0.1-SNAPSHOT"
+}
+
+emn {
+  emnFiles.from(fileTree("src/main/resources") { include("**/*.emn") })
+  schemaResourceDirectories.from("src/main/json-schema")
+  rootPackageName.set("org.example.game.api")
+
+  kotlin {
+    enabled.set(true)
+    annotationEnhancers.set(listOf("axon5", "jackson"))
+  }
+  specifications {
+    enabled.set(true)
+    fixtureProvider.set("org.example.game.test.GameFixtureProvider")
+  }
+  schemaExport {
+    enabled.set(true)
+  }
+  verification {
+    enabled.set(true)
+    failOnWarnings.set(false)
+  }
+}
+```
+
+Maven uses the single `io.holixon.emn:emn-maven-plugin` artifact. Executions enable
+individual capabilities; shared source and package configuration belongs at plugin level.
+The goals are `generate-kotlin`, `generate-specification-tests`, `export-schemas`,
+`verify`, and the Avro-backed `generate-axon-components`.
 
 ## Export JSON Schemas
 
@@ -35,8 +78,8 @@ Maven:
 
 ```xml
 <plugin>
-  <groupId>io.holixon.emn.generation</groupId>
-  <artifactId>emn-schema-exporter-maven-plugin</artifactId>
+  <groupId>io.holixon.emn</groupId>
+  <artifactId>emn-maven-plugin</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <executions>
     <execution>
@@ -56,12 +99,15 @@ Gradle:
 
 ```kotlin
 plugins {
-  id("io.holixon.emn.schema-export") version "0.0.1-SNAPSHOT"
+  id("io.holixon.emn") version "0.0.1-SNAPSHOT"
 }
 
-emnSchemaExport {
+emn {
   emnFiles.from(fileTree("src/main/resources") { include("**/*.emn") })
   schemaResourceDirectories.from(file("src/main/json-schema"))
+  schemaExport {
+    enabled.set(true)
+  }
 }
 ```
 
@@ -93,14 +139,14 @@ dependencies {
 Gradle:
 
 ```kotlin
-emnSchemaKotlin {
+emn {
   emnFiles.from(file("src/main/resources/game.emn"))
   rootPackageName.set("org.example.game.api")
   specifications {
-    generate = true
-    fixtureProvider = "org.example.game.test.GameFixtureProvider"
+    enabled.set(true)
+    fixtureProvider.set("org.example.game.test.GameFixtureProvider")
     // Optional: overrides the built-in CommandExecutionException details verifier.
-    errorVerifier = "org.example.game.test.GameErrorVerifier"
+    errorVerifier.set("org.example.game.test.GameErrorVerifier")
   }
 }
 ```
@@ -201,16 +247,18 @@ Gradle:
 
 ```kotlin
 plugins {
-  id("io.holixon.emn.verify") version "0.0.1-SNAPSHOT"
+  id("io.holixon.emn") version "0.0.1-SNAPSHOT"
 }
 
-emnVerify {
+emn {
   emnFiles.from(file("src/main/resources/game.emn"))
-  failOnWarnings.set(false)
-
-  ignoredIssues {
-    ignoreMissingReadModel("GameState", reason = "Implemented by the frontend")
-    ignoreMissingCommandHandler("CloseGameCommand", reason = "Handled by an external service")
+  verification {
+    enabled.set(true)
+    failOnWarnings.set(false)
+    ignoredIssues {
+      ignoreMissingReadModel("GameState", reason = "Implemented by the frontend")
+      ignoreMissingCommandHandler("CloseGameCommand", reason = "Handled by an external service")
+    }
   }
 }
 ```
@@ -231,13 +279,13 @@ Maven:
 ```xml
 <plugin>
   <groupId>io.holixon.emn</groupId>
-  <artifactId>emn-verify-maven-plugin</artifactId>
+  <artifactId>emn-maven-plugin</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <executions>
     <execution>
       <id>verify-emn</id>
       <goals>
-        <goal>verify-emn</goal>
+        <goal>verify</goal>
       </goals>
     </execution>
   </executions>

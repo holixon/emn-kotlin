@@ -1,6 +1,6 @@
 plugins {
   kotlin("jvm")
-  id("io.holixon.emn.kotlin-schema") version "0.0.1-SNAPSHOT"
+  id("io.holixon.emn") version "0.0.1-SNAPSHOT"
 }
 
 dependencies {
@@ -14,14 +14,19 @@ dependencies {
   testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.2")
 }
 
-emnSchemaKotlin {
+emn {
   emnFiles.from(file("../../_emn/faculty-json-schema/faculty.emn"))
   rootPackageName.set("io.holixon.emn.example.university")
-  annotationEnhancers.set(listOf("axon5"))
+
+  kotlin {
+    enabled.set(true)
+    annotationEnhancers.set(listOf("axon5"))
+  }
+
   specifications {
-    generate = true
-    fixtureProvider = "io.holixon.emn.example.university.UniversityFixtureProvider"
-    errorVerifier = "io.holixon.emn.example.university.UniversityErrorVerifier"
+    enabled.set(true)
+    fixtureProvider.set("io.holixon.emn.example.university.UniversityFixtureProvider")
+    errorVerifier.set("io.holixon.emn.example.university.UniversityErrorVerifier")
   }
 }
 

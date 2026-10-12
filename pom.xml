@@ -30,6 +30,9 @@
     <module>emn-verify</module>
     <module>emn-kotlin</module>
     <module>emn-schema-exporter</module>
+    <module>emn-gradle-plugin</module>
+    <module>emn-gradle-plugin-marker</module>
+    <module>emn-maven-plugin</module>
     <!-- Examples are in the profile -->
   </modules>
 

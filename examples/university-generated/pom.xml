@@ -107,20 +107,21 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>io.holixon.emn.generation</groupId>
-        <artifactId>emn-kotlin-axon5-maven-plugin</artifactId>
+        <groupId>io.holixon.emn</groupId>
+        <artifactId>emn-maven-plugin</artifactId>
         <version>${project.version}</version>
+        <configuration>
+          <resourceDirectory>${kp.generatedResources}</resourceDirectory>
+          <includes>faculty/**.emn</includes>
+        </configuration>
         <executions>
           <execution>
             <id>generate-emn</id>
-            <phase>generate-sources</phase>
             <goals>
-              <goal>generate</goal>
+              <goal>generate-axon-components</goal>
             </goals>
             <configuration>
-              <resourceDirectory>${kp.generatedResources}</resourceDirectory>
               <generateConcreteStateImpl>false</generateConcreteStateImpl>
-              <includes>faculty/**.emn</includes>
             </configuration>
           </execution>
         </executions>

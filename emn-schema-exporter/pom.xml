@@ -16,8 +16,5 @@
 
   <modules>
     <module>emn-schema-exporter-core</module>
-    <module>emn-schema-exporter-maven-plugin</module>
-    <module>emn-schema-exporter-gradle-plugin</module>
-    <module>emn-schema-exporter-gradle-plugin-marker</module>
   </modules>
 </project>

@@ -18,8 +18,5 @@
     <module>emn-verify-annotations</module>
     <module>emn-verify-core</module>
     <module>emn-verify-axon5</module>
-    <module>emn-verify-maven-plugin</module>
-    <module>emn-verify-gradle-plugin</module>
-    <module>emn-verify-gradle-plugin-marker</module>
   </modules>
 </project>

@@ -67,43 +67,36 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>io.holixon.emn.generation</groupId>
-        <artifactId>emn-schema-exporter-maven-plugin</artifactId>
+        <groupId>io.holixon.emn</groupId>
+        <artifactId>emn-maven-plugin</artifactId>
         <version>${project.version}</version>
-        <executions>
-          <execution>
-            <id>export-json-schemas</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>export-schemas</goal>
-            </goals>
-            <configuration>
-              <resourceDirectory>${project.root.dir}/_emn</resourceDirectory>
-              <includes>quizmania/**.emn</includes>
-              <sourceRoot>${project.root.dir}</sourceRoot>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>io.holixon.emn.generation</groupId>
-        <artifactId>emn-kotlin-axon5-maven-plugin</artifactId>
-        <version>${project.version}</version>
+        <configuration>
+          <resourceDirectory>${project.root.dir}/_emn</resourceDirectory>
+          <includes>
+            <include>quizmania/**.emn</include>
+          </includes>
+          <rootPackageName>io.holixon.emn.example.quizmania</rootPackageName>
+        </configuration>
         <executions>
           <execution>
             <id>generate-json-schema-kotlin</id>
-            <phase>generate-sources</phase>
             <goals>
-              <goal>generate-schema-kotlin</goal>
+              <goal>generate-kotlin</goal>
             </goals>
             <configuration>
-              <resourceDirectory>${kp.generatedResources}</resourceDirectory>
-              <includes>quizmania/**.emn</includes>
-              <rootPackageName>io.holixon.emn.example.quizmania</rootPackageName>
               <annotationEnhancers>
                 <annotationEnhancer>axon5</annotationEnhancer>
                 <annotationEnhancer>jackson</annotationEnhancer>
               </annotationEnhancers>
+            </configuration>
+          </execution>
+          <execution>
+            <id>export-json-schemas</id>
+            <goals>
+              <goal>export-schemas</goal>
+            </goals>
+            <configuration>
+              <sourceRoot>${project.root.dir}</sourceRoot>
             </configuration>
           </execution>
         </executions>

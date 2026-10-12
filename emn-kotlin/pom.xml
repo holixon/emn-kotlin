@@ -16,8 +16,5 @@
 
   <modules>
     <module>emn-kotlin-axon5</module>
-    <module>emn-kotlin-axon5-maven-plugin</module>
-    <module>emn-kotlin-axon5-gradle-plugin</module>
-    <module>emn-kotlin-axon5-gradle-plugin-marker</module>
   </modules>
 </project>

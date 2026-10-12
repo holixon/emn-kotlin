@@ -1,7 +1,6 @@
 plugins {
   kotlin("jvm")
-  id("io.holixon.emn.kotlin-schema") version "0.0.1-SNAPSHOT"
-  id("io.holixon.emn.schema-export") version "0.0.1-SNAPSHOT"
+  id("io.holixon.emn") version "0.0.1-SNAPSHOT"
 }
 
 repositories {
@@ -18,19 +17,19 @@ dependencies {
   testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.13.4")
 }
 
-emnSchemaKotlin {
+emn {
   emnFiles.from(file("../../_emn/quizmania/quizmania-blueprint.emn"))
   rootPackageName.set("io.holixon.emn.example.quizmania")
-  annotationEnhancers.set(listOf("axon5", "jackson"))
-}
 
-emnSchemaExport {
-  emnFiles.from(file("../../_emn/quizmania/quizmania-blueprint.emn"))
-  sourceRoot.set(file("../..").canonicalPath)
-}
+  kotlin {
+    enabled.set(true)
+    annotationEnhancers.set(listOf("axon5", "jackson"))
+  }
 
-tasks.named("check") {
-  dependsOn("exportEmnSchemas")
+  schemaExport {
+    enabled.set(true)
+    sourceRoot.set(file("../..").canonicalPath)
+  }
 }
 
 kotlin {

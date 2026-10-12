@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.holixon.emn._</groupId>
+    <artifactId>emn-kotlin-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../_build/parent/pom.xml</relativePath>
+  </parent>
+
+  <groupId>io.holixon.emn</groupId>
+  <artifactId>emn-gradle-plugin</artifactId>
+  <name>gradle: ${project.artifactId}</name>
+  <description>Unified Gradle plugin for EMN Kotlin/Axon tooling.</description>
+
+  <properties>
+    <gradle-api.version>8.11.1</gradle-api.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.holixon.emn.generation</groupId>
+      <artifactId>emn-kotlin-axon5</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.holixon.emn.generation</groupId>
+      <artifactId>emn-schema-exporter-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.holixon.emn</groupId>
+      <artifactId>emn-verify-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.holixon.emn</groupId>
+      <artifactId>emn-verify-axon5</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.gradleplugins</groupId>
+      <artifactId>gradle-api</artifactId>
+      <version>${gradle-api.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
