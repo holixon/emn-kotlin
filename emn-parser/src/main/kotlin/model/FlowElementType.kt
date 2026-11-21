@@ -8,30 +8,30 @@ sealed class FlowElementType(
   override fun toString(): String = "${this::class.simpleName}(id=$id, name=$name)"
 }
 
-open class MessageFlowType(
+open class InformationFlowType(
   override val id: String,
   override val name: String?,
   val source: FlowNodeType,
   val target: FlowNodeType
 ) : FlowElementType(id = id, name = name) {
 
-  fun copy(source: FlowNodeType, target: FlowNodeType): MessageFlowType = MessageFlowType(
+  fun copy(source: FlowNodeType, target: FlowNodeType): InformationFlowType = InformationFlowType(
     id = this.id,
     name = this.name,
     source = source,
     target = target
   )
 
-  class MessageTypeReference(id: String) :
-    MessageFlowType(id = id, name = null, source = NoTypeReference, target = NoTypeReference)
+  class InformationTypeReference(id: String) :
+    InformationFlowType(id = id, name = null, source = NoTypeReference, target = NoTypeReference)
 }
 
 sealed class FlowNodeType(
   override val id: String,
   override val name: String,
   open val schema: Schema?,
-  open val incoming: MutableList<MessageFlowType> = mutableListOf(),
-  open val outgoing: MutableList<MessageFlowType> = mutableListOf(),
+  open val incoming: MutableList<InformationFlowType> = mutableListOf(),
+  open val outgoing: MutableList<InformationFlowType> = mutableListOf(),
 ) : FlowElementType(id = id, name = name) {
 
   fun schemaReference(): String {

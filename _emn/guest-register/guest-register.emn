@@ -9,8 +9,8 @@
   exporter="Hand crafted"
   exporterVersion="1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd
-  https://holixon.io/spec/EMN/20241231/DI ../../../../doc/EMNDI.xsd"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../doc/EMN.xsd
+  https://holixon.io/spec/EMN/20241231/DI ../../doc/EMNDI.xsd"
 >
   <emn:types>
     <emn:viewType id="viewType_register">
@@ -44,12 +44,12 @@
     <emn:viewType id="viewType_room_overview">
       <emn:incoming>FlowType_0iyhsxq</emn:incoming>
     </emn:viewType>
-    <emn:messageFlowType id="FlowType_0dqki78" sourceRef="viewType_register" targetRef="commandType_register"/>
-    <emn:messageFlowType id="FlowType_1wvxgnj" sourceRef="commandType_register" targetRef="eventType_registered"/>
-    <emn:messageFlowType id="FlowType_0jb9b1k" sourceRef="viewType_add_room" targetRef="commandType_add_room"/>
-    <emn:messageFlowType id="FlowType_057t34b" sourceRef="commandType_add_room" targetRef="eventType_room_added"/>
-    <emn:messageFlowType id="FlowType_012j3jp" sourceRef="eventType_room_added" targetRef="queryType_room_availability"/>
-    <emn:messageFlowType id="FlowType_0iyhsxq" sourceRef="queryType_room_availability" targetRef="viewType_room_overview"/>
+    <emn:informationFlowType id="FlowType_0dqki78" sourceRef="viewType_register" targetRef="commandType_register"/>
+    <emn:informationFlowType id="FlowType_1wvxgnj" sourceRef="commandType_register" targetRef="eventType_registered"/>
+    <emn:informationFlowType id="FlowType_0jb9b1k" sourceRef="viewType_add_room" targetRef="commandType_add_room"/>
+    <emn:informationFlowType id="FlowType_057t34b" sourceRef="commandType_add_room" targetRef="eventType_room_added"/>
+    <emn:informationFlowType id="FlowType_012j3jp" sourceRef="eventType_room_added" targetRef="queryType_room_availability"/>
+    <emn:informationFlowType id="FlowType_0iyhsxq" sourceRef="queryType_room_availability" targetRef="viewType_room_overview"/>
   </emn:types>
 
   <emn:timeline id="customer_registration" name="Customer Registration">
@@ -68,16 +68,16 @@
         <emn:flowNodeRef>add_room_command</emn:flowNodeRef>
         <emn:flowNodeRef>room_availability_query</emn:flowNodeRef>
       </emn:interactionLane>
-      <emn:aggregateLaneSet>
-        <emn:aggregateLane id="aggregate_inventory" name="Inventory">
+      <emn:conceptLaneSet>
+        <emn:conceptLane id="aggregate_inventory" name="Inventory">
           <emn:flowNodeRef>room_added_event</emn:flowNodeRef>
-        </emn:aggregateLane>
-        <emn:aggregateLane id="aggregate_auth" name="Auth">
+        </emn:conceptLane>
+        <emn:conceptLane id="aggregate_auth" name="Auth">
           <emn:flowNodeRef>event_registered</emn:flowNodeRef>
-        </emn:aggregateLane>
-        <emn:aggregateLane id="aggregate_payment" name="Payment"/>
-        <emn:aggregateLane id="aggregate_gps" name="GPS"/>
-      </emn:aggregateLaneSet>
+        </emn:conceptLane>
+        <emn:conceptLane id="aggregate_payment" name="Payment"/>
+        <emn:conceptLane id="aggregate_gps" name="GPS"/>
+      </emn:conceptLaneSet>
     </emn:laneSet>
 
     <emn:sliceSet id="Slide_1234">
@@ -116,12 +116,12 @@
     <emn:view id="view_room_overview" typeRef="viewType_room_overview">
       <emn:incoming>Flow_0iyhsxq</emn:incoming>
     </emn:view>
-    <emn:messageFlow id="Flow_0dqki78" typeRef="FlowType_0dqki78" sourceRef="view_register" targetRef="command_register" />
-    <emn:messageFlow id="Flow_1wvxgnj" typeRef="FlowType_1wvxgnj" sourceRef="command_register" targetRef="event_registered"/>
-    <emn:messageFlow id="Flow_0jb9b1k" typeRef="FlowType_0jb9b1k" sourceRef="view_add_room" targetRef="add_room_command"/>
-    <emn:messageFlow id="Flow_057t34b" typeRef="FlowType_057t34b" sourceRef="add_room_command" targetRef="room_added_event"/>
-    <emn:messageFlow id="Flow_012j3jp" typeRef="FlowType_012j3jp" sourceRef="room_added_event" targetRef="room_availability_query"/>
-    <emn:messageFlow id="Flow_0iyhsxq" typeRef="FlowType_0iyhsxq" sourceRef="room_availability_query" targetRef="view_room_overview"/>
+    <emn:informationFlow id="Flow_0dqki78" typeRef="FlowType_0dqki78" sourceRef="view_register" targetRef="command_register" />
+    <emn:informationFlow id="Flow_1wvxgnj" typeRef="FlowType_1wvxgnj" sourceRef="command_register" targetRef="event_registered"/>
+    <emn:informationFlow id="Flow_0jb9b1k" typeRef="FlowType_0jb9b1k" sourceRef="view_add_room" targetRef="add_room_command"/>
+    <emn:informationFlow id="Flow_057t34b" typeRef="FlowType_057t34b" sourceRef="add_room_command" targetRef="room_added_event"/>
+    <emn:informationFlow id="Flow_012j3jp" typeRef="FlowType_012j3jp" sourceRef="room_added_event" targetRef="room_availability_query"/>
+    <emn:informationFlow id="Flow_0iyhsxq" typeRef="FlowType_0iyhsxq" sourceRef="room_availability_query" targetRef="view_room_overview"/>
   </emn:timeline>
 
   <emndi:EMNDiagram id="EMNDiagram_1">

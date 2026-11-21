@@ -54,8 +54,8 @@ class EmnGenerationContext(
             }
           }
 
-        val aggregateIdSchemaRefs = ctx.definitions.aggregates().filter { it.hasAvroTypeDefinitionRef() }
-          .map { it.id to CanonicalName.parse(it.schemaReference()) }
+        val aggregateIdSchemaRefs = ctx.definitions.concepts().filter { it.hasAvroTypeDefinitionRef() }
+          .map { it.id to CanonicalName.parse(it.idSchemaReference()) }
 
         // Checks that all referenced id types are actually declared in the used protocol.
         aggregateIdSchemaRefs.forEach { (id, fqn) ->
@@ -86,7 +86,7 @@ class EmnGenerationContext(
           run(Specification.validateParsedSpecification)
         }
         dynamic { definitions ->
-          definitions.aggregates().forEach { aggregateLane ->
+          definitions.concepts().forEach { aggregateLane ->
             constrain("AggregateLane must have a name, was null for id '${aggregateLane.id}'") {
               !aggregateLane.name.isNullOrBlank()
             }
@@ -175,9 +175,9 @@ class EmnGenerationContext(
         }
       }
 
-    val idTypes = definitions.aggregates().filter { it.hasAvroTypeDefinitionRef() }
+    val idTypes = definitions.concepts().filter { it.hasAvroTypeDefinitionRef() }
       .map {
-        it to protocolTypesByFqn[CanonicalName.parse(it.schemaReference())]!!
+        it to protocolTypesByFqn[CanonicalName.parse(it.idSchemaReference())]!!
       }
       .map {
         it.first to protocolDeclarationContext.avroPoetTypes[it.second.hashCode]
@@ -242,8 +242,8 @@ class EmnGenerationContext(
    */
   fun isQueryType(recordType: RecordType): Boolean = getEmnType(recordType) is QueryType
 
-  fun resolveAggregateTagName(aggregateLane: AggregateLane): MemberName {
-    val aggregateName = requireNotNull(aggregateLane.name) { "Aggregate name must not be blank" }
+  fun resolveAggregateTagName(conceptLane: ConceptLane): MemberName {
+    val aggregateName = requireNotNull(conceptLane.name) { "Aggregate name must not be blank" }
     return MemberName(getTagClassName(), constantName(aggregateName))
   }
 

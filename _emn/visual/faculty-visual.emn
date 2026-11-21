@@ -9,8 +9,8 @@
   exporter="Hand crafted"
   exporterVersion="1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../../../doc/EMN.xsd
-  https://holixon.io/spec/EMN/20241231/DI ../../../../doc/EMNDI.xsd"
+  xsi:schemaLocation="https://holixon.io/spec/EMN/20241231/MODEL ../../doc/EMN.xsd
+  https://holixon.io/spec/EMN/20241231/DI ../../doc/EMNDI.xsd"
 >
   <emn:types>
     <emn:viewType id="ViewType_05cftck" name="Related View">
@@ -20,11 +20,11 @@
       <emn:incoming>MessageFlowType_14xd2bp</emn:incoming>
       <emn:outgoing>MessageFlowType_1d6x5jq</emn:outgoing>
     </emn:commandType>
-    <emn:messageFlowType id="MessageFlowType_14xd2bp" name="MessageFlow" sourceRef="ViewType_05cftck" targetRef="CommandType_1rrzcyz" />
+    <emn:informationFlowType id="MessageFlowType_14xd2bp" name="MessageFlow" sourceRef="ViewType_05cftck" targetRef="CommandType_1rrzcyz" />
     <emn:eventType id="EventType_107kz5t" name="Result Event">
       <emn:incoming>MessageFlowType_1d6x5jq</emn:incoming>
     </emn:eventType>
-    <emn:messageFlowType id="MessageFlowType_1d6x5jq" name="MessageFlow" sourceRef="CommandType_1rrzcyz" targetRef="EventType_107kz5t" />
+    <emn:informationFlowType id="MessageFlowType_1d6x5jq" name="MessageFlow" sourceRef="CommandType_1rrzcyz" targetRef="EventType_107kz5t" />
   </emn:types>
   <emn:timeline id="timeline_1" name="Timeline">
     <emn:laneSet id="lanes_1">
@@ -36,11 +36,11 @@
       <emn:interactionLane id="interaction_1" name="Interaction">
         <emn:flowNodeRef>Command_1f3xmub</emn:flowNodeRef>
       </emn:interactionLane>
-      <emn:aggregateLaneSet>
-        <emn:aggregateLane id="aggregateLane_1" name="Aggregate">
+      <emn:conceptLaneSet>
+        <emn:conceptLane id="aggregateLane_1" name="Aggregate">
           <emn:flowNodeRef>Event_1077zjs</emn:flowNodeRef>
-        </emn:aggregateLane>
-      </emn:aggregateLaneSet>
+        </emn:conceptLane>
+      </emn:conceptLaneSet>
     </emn:laneSet>
     <emn:sliceSet id="SliceSet_0744zhr">
       <emn:slice id="Slice_09tey9y" name="Command Slice">
@@ -51,9 +51,9 @@
     </emn:sliceSet>
     <emn:view id="View_07761x7" typeRef="ViewType_05cftck" />
     <emn:command id="Command_1f3xmub" typeRef="CommandType_1rrzcyz" />
-    <emn:messageFlow id="Flow_10lmo9r" typeRef="MessageFlowType_14xd2bp" sourceRef="View_07761x7" targetRef="Command_1f3xmub" />
+    <emn:informationFlow id="Flow_10lmo9r" typeRef="MessageFlowType_14xd2bp" sourceRef="View_07761x7" targetRef="Command_1f3xmub" />
     <emn:event id="Event_1077zjs" typeRef="EventType_107kz5t" />
-    <emn:messageFlow id="Flow_0xohyp4" typeRef="MessageFlowType_1d6x5jq" sourceRef="Command_1f3xmub" targetRef="Event_1077zjs" />
+    <emn:informationFlow id="Flow_0xohyp4" typeRef="MessageFlowType_1d6x5jq" sourceRef="Command_1f3xmub" targetRef="Event_1077zjs" />
   </emn:timeline>
   <emn:specification name="My spec">
     <emn:given stateName="name">
