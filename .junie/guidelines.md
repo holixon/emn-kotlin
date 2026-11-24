@@ -44,3 +44,7 @@ Whenever we ask to implement the concreteType State, we need to follow these gui
   * Never change the CommandHandlerTest, only change the concrete State implementation
   * Adding mutable state variables is ok
 * If the implementation is complete, ask for a code review, and then move the classes to there correct package location in the `src/main/kotlin` directory
+
+### KDoc
+
+A KDoc should for a method / function should describe what it does focusing on contract, not on implementation.

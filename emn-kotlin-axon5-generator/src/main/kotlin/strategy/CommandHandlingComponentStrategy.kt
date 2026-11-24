@@ -2,18 +2,16 @@ package io.holixon.emn.generation.strategy
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
-import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.asClassName
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.holixon.emn.generation.*
 import io.holixon.emn.generation.model.CommandSlice
 import io.holixon.emn.generation.spi.EmnGenerationContext
-import io.holixon.emn.model.AggregateLane
+import io.holixon.emn.model.ConceptLane
 import io.holixon.emn.model.Command
 import io.holixon.emn.model.Event
 import io.holixon.emn.model.applyIfExactlyOne
-import io.toolisticon.kotlin.avro.generator.AvroKotlinGenerator
 import io.toolisticon.kotlin.avro.generator.poet.AvroPoetType
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildAnnotation
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.buildFun
@@ -25,7 +23,6 @@ import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.className
 import io.toolisticon.kotlin.generation.KotlinCodeGeneration.name.simpleName
 import io.toolisticon.kotlin.generation.spec.KotlinFileSpecList
 import io.toolisticon.kotlin.generation.spi.strategy.KotlinFileSpecListStrategy
-import io.toolisticon.kotlin.generation.support.GeneratedAnnotation
 import org.axonframework.eventhandling.gateway.EventAppender
 import org.axonframework.eventsourcing.annotations.EventSourcingHandler
 import org.axonframework.eventsourcing.annotations.reflection.EntityCreator
@@ -42,7 +39,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
     val possibleEvents: List<Event>,
     val sourcingEventTypes: List<AvroPoetType>,
     val possibleEventTypes: List<AvroPoetType>,
-    val aggregateLanes: List<AggregateLane>
+    val conceptLanes: List<ConceptLane>
   ) : Iterable<Pair<AvroPoetType, Boolean>> {
     companion object {
       operator fun invoke(command: Command, commandSlice: CommandSlice, context: EmnGenerationContext): EventTypesToHandle {
@@ -59,9 +56,9 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
             .map { context.avroTypes[it.eventType].poetType }
             .distinct(),
           // gather aggregates for all events relevant to this command included in the slice
-          aggregateLanes = (sourcingEvents + possibleEvents).distinct()
+          conceptLanes = (sourcingEvents + possibleEvents).distinct()
             .filter { e -> commandSlice.slice.containsFlowElement(e) }
-            .flatMap { e -> context.definitions.aggregates(e) }
+            .flatMap { e -> context.definitions.concepts(e) }
             .distinct()
         )
       }
@@ -94,7 +91,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
 
     val eventTypesToHandle = EventTypesToHandle(command, input, context)
 
-    eventTypesToHandle.aggregateLanes.applyIfExactlyOne(
+    eventTypesToHandle.conceptLanes.applyIfExactlyOne(
       logger.noAggregateFoundLogger(command.typeReference),
       logger.conflictingAggregatesFound(command.typeReference) // TODO -> replace with DCB state generation!
     ) {
@@ -105,7 +102,7 @@ class CommandHandlingComponentStrategy : KotlinFileSpecListStrategy<EmnGeneratio
       // @TargetEntityId in the command
       val idProperty = context.avroTypes[input.command.commandType].idProperty()
       val tagMember = context.resolveAggregateTagName(aggregateLane)
-      val idType = context.avroTypes.ids.single { it.aggregateLane.id == aggregateLane.id }
+      val idType = context.avroTypes.ids.single { it.conceptLane.id == aggregateLane.id }
 
       // add one handle method to the commandHandler
 
